@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:background="@color/list_background"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/supplierName"
+        style="@style/TextViewStyleItem"
+        android:layout_height="50dp"
+        android:text="供货商名称：9527 丫头弟弟"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.3" />
+
+    <TextView
+        android:id="@+id/supplierAccountName"
+        style="@style/TextViewStyleItem"
+        android:layout_height="50dp"
+        android:text="登录账号姓名：沈勇"
+        app:layout_constraintStart_toEndOf="@+id/supplierName"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.3" />
+
+    <TextView
+        android:id="@+id/supplierAccountTel"
+        style="@style/TextViewStyleItem"
+        android:layout_height="50dp"
+        android:text="绑定的手机号：182****848"
+        app:layout_constraintStart_toEndOf="@+id/supplierAccountName"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.4" />
+
+    <View
+        android:id="@+id/divider7"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/supplierAccountName" />
+
+    <TextView
+        android:id="@+id/loginTime"
+        style="@style/TextViewStyleItem"
+        android:layout_height="50dp"
+        android:text="登录时间：2020-06-18 09:42:58"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider7"
+        app:layout_constraintWidth_percent="0.5" />
+
+    <TextView
+        android:id="@+id/ip"
+        style="@style/TextViewStyleItem"
+        android:layout_height="50dp"
+        android:text="登陆IP：127.0.0.1"
+        app:layout_constraintStart_toEndOf="@+id/loginTime"
+        app:layout_constraintTop_toBottomOf="@+id/divider7"
+        app:layout_constraintWidth_percent="0.5" />
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="goodsIdTypeValue">
+        <item>正常</item>
+        <item>试卖</item>
+        <item>代卖</item>
+        <item>特殊要求</item>
+    </string-array>
+</resources>

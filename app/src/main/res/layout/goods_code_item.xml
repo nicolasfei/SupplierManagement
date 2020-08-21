@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/list_background">
+
+    <ImageView
+        android:id="@+id/photo"
+        android:layout_width="0dp"
+        android:layout_height="200dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.25"
+        app:srcCompat="@mipmap/photo" />
+
+    <TextView
+        android:id="@+id/describe"
+        style="@style/TextViewStyleItem"
+        android:layout_height="50dp"
+        android:gravity="start|center"
+        android:text="9527丫头弟弟/衬衫/2020-07-10 09:41"
+        app:layout_constraintStart_toEndOf="@+id/photo"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.5" />
+
+    <CheckBox
+        android:id="@+id/isStock"
+        style="@style/TextViewStyleItem"
+        android:layout_height="50dp"
+        android:text="允许下单"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/describe"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.25" />
+
+
+    <LinearLayout
+        android:id="@+id/line1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintStart_toEndOf="@+id/photo"
+        app:layout_constraintTop_toBottomOf="@+id/describe"
+        app:layout_constraintWidth_percent="0.25">
+
+        <TextView
+            android:id="@+id/goodsType"
+            style="@style/TextViewStyleItem"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:singleLine="true"
+            android:text="货号类型：普通" />
+
+        <TextView
+            android:id="@+id/oldGoodsId"
+            style="@style/TextViewStyleItem"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:singleLine="true"
+            android:text="旧货号：1213" />
+
+        <TextView
+            android:id="@+id/goodsId"
+            style="@style/TextViewStyleItem"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:singleLine="true"
+            android:text="新货号：200710201" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/line2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintStart_toEndOf="@+id/line1"
+        app:layout_constraintTop_toBottomOf="@+id/describe"
+        app:layout_constraintWidth_percent="0.25">
+
+        <TextView
+            android:id="@+id/inPrice"
+            style="@style/TextViewStyleItem"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="进价：￥30.00" />
+
+        <TextView
+            android:id="@+id/originalPrice"
+            style="@style/TextViewStyleItem"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="原进价：￥30.00" />
+
+        <TextView
+            android:id="@+id/orderPrice"
+            style="@style/TextViewStyleItem"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="订货价：￥30.00" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/line3"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintStart_toEndOf="@+id/line2"
+        app:layout_constraintTop_toBottomOf="@+id/isStock"
+        app:layout_constraintWidth_percent="0.25">
+
+        <TextView
+            android:id="@+id/deliveryDate"
+            style="@style/TextViewStyleItem"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="交货天数：1天" />
+
+        <TextView
+            android:id="@+id/seasonName"
+            style="@style/TextViewStyleItem"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:singleLine="true"
+            android:text="季节装：夏装" />
+
+        <TextView
+            android:id="@+id/customer"
+            style="@style/TextViewStyleItem"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:drawableEnd="@drawable/ic_sj_down"
+            android:singleLine="true"
+            android:text="顾客群：少女款" />
+
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/property"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxHeight="200dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/line2" />
+
+    <TextView
+        android:id="@+id/remark"
+        style="@style/TextViewStyleItem"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="start|center"
+        android:singleLine="false"
+        android:text="备注：测试"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/property" />
+</androidx.constraintlayout.widget.ConstraintLayout>

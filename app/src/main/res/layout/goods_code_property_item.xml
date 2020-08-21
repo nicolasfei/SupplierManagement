@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/gId"
+        style="@style/TextViewStyleItem"
+        android:layout_height="40dp"
+        android:text="货号：20071018"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.25" />
+
+    <TextView
+        android:id="@+id/color"
+        style="@style/TextViewStyleItem"
+        android:layout_height="40dp"
+        android:text="颜色：白色"
+        app:layout_constraintStart_toEndOf="@+id/gId"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.25" />
+
+    <TextView
+        android:id="@+id/size"
+        style="@style/TextViewStyleItem"
+        android:layout_height="40dp"
+        android:text="尺码：M"
+        app:layout_constraintStart_toEndOf="@+id/color"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.25" />
+
+    <CheckBox
+        android:id="@+id/stock"
+        style="@style/TextViewStyleItem"
+        android:layout_height="40dp"
+        android:text="@string/stockOrder"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.25" />
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/list_background">
+
+    <ImageView
+        android:id="@+id/photo"
+        android:layout_width="0dp"
+        android:layout_height="240dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.25"
+        app:srcCompat="@mipmap/ic_launcher_foreground" />
+
+    <TextView
+        android:id="@+id/warehouse"
+        style="@style/TextViewStyleItem"
+        android:layout_height="80dp"
+        android:singleLine="false"
+        android:text="E库房\n地址：金牛之心14楼 E库房"
+        android:textSize="16sp"
+        app:layout_constraintStart_toEndOf="@+id/photo"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.35" />
+
+    <TextView
+        android:id="@+id/orderStatus"
+        style="@style/TextViewStyleItem"
+        android:layout_height="80dp"
+        android:background="@android:color/holo_red_dark"
+        android:drawableEnd="@drawable/ic_sr_blue"
+        android:gravity="center"
+        android:text="供货商待接单"
+        app:layout_constraintStart_toEndOf="@+id/warehouse"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.3" />
+
+    <CheckBox
+        android:id="@+id/checkBox"
+        style="@style/TextViewStyleItem"
+        android:gravity="center"
+        app:layout_constraintStart_toEndOf="@+id/orderStatus"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.1" />
+
+    <View
+        android:id="@+id/divider0"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintStart_toEndOf="@+id/photo"
+        app:layout_constraintTop_toBottomOf="@+id/warehouse"
+        app:layout_constraintWidth_percent="0.75" />
+
+    <LinearLayout
+        android:id="@+id/line1"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/text_view_item_height"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toEndOf="@+id/photo"
+        app:layout_constraintTop_toBottomOf="@+id/divider0"
+        app:layout_constraintWidth_percent="0.75">
+
+        <TextView
+            android:id="@+id/orderTime"
+            style="@style/TextViewStyleItem"
+            android:layout_weight="1.1"
+            android:text="下单日期：2020-07-31 12:00" />
+
+        <TextView
+            android:id="@+id/invalidTime"
+            style="@style/TextViewStyleItem"
+            android:layout_weight="1.05"
+            android:text="交货日期：2020-07-31" />
+
+        <TextView
+            android:id="@+id/shop"
+            style="@style/TextViewStyleItem"
+            android:layout_weight="0.8"
+            android:text="店铺：JM023" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/divider1"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:background="?android:attr/listDivider"
+        android:visibility="invisible"
+        app:layout_constraintStart_toEndOf="@+id/photo"
+        app:layout_constraintTop_toBottomOf="@+id/line1"
+        app:layout_constraintWidth_percent="0.75" />
+
+    <LinearLayout
+        android:id="@+id/line2"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/text_view_item_height"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toEndOf="@+id/photo"
+        app:layout_constraintTop_toBottomOf="@+id/divider1"
+        app:layout_constraintWidth_percent="0.75">
+
+        <TextView
+            android:id="@+id/newGoodsID"
+            style="@style/TextViewStyleItem"
+            android:layout_weight="1.1"
+            android:text="新货号：00430E612345" />
+
+        <TextView
+            android:id="@+id/goodsID"
+            style="@style/TextViewStyleItem"
+            android:layout_weight="1.05"
+            android:text="原来货号：3096" />
+
+        <TextView
+            android:id="@+id/orderClass"
+            style="@style/TextViewStyleItem"
+            android:layout_weight="0.8"
+            android:text="下单类型：统下单" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/divider22"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:background="?android:attr/listDivider"
+        android:visibility="invisible"
+        app:layout_constraintStart_toEndOf="@+id/photo"
+        app:layout_constraintTop_toBottomOf="@+id/line2"
+        app:layout_constraintWidth_percent="0.75" />
+
+    <LinearLayout
+        android:id="@+id/line4"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/text_view_item_height"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toEndOf="@+id/photo"
+        app:layout_constraintTop_toBottomOf="@+id/divider22"
+        app:layout_constraintWidth_percent="0.75">
+
+        <TextView
+            android:id="@+id/inPrice"
+            style="@style/TextViewStyleItem"
+            android:layout_weight="1.1"
+            android:text="进价：￥50.00" />
+
+        <TextView
+            android:id="@+id/orderPrice"
+            style="@style/TextViewStyleItem"
+            android:layout_weight="1.05"
+            android:text="订货价：￥50.00" />
+
+        <TextView
+            android:id="@+id/amount"
+            style="@style/TextViewStyleItem"
+            android:layout_weight="0.8"
+            android:text="订单数量：1000" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/divider2"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:background="?android:attr/listDivider"
+        android:visibility="invisible"
+        app:layout_constraintStart_toEndOf="@+id/photo"
+        app:layout_constraintTop_toBottomOf="@+id/line4"
+        app:layout_constraintWidth_percent="0.75" />
+
+    <LinearLayout
+        android:id="@+id/line3"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/text_view_item_height"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toEndOf="@+id/photo"
+        app:layout_constraintTop_toBottomOf="@+id/divider2"
+        app:layout_constraintWidth_percent="0.75">
+
+        <TextView
+            android:id="@+id/isPrint"
+            style="@style/TextViewStyleItem"
+            android:layout_weight="1.1"
+            android:text="打印时间：2020-07-31 12:00" />
+
+        <TextView
+            android:id="@+id/orderID"
+            style="@style/TextViewStyleItem"
+            android:layout_weight="1.05"
+            android:text="订单编号：98562145974555" />
+
+        <TextView
+            android:id="@+id/sendAmount"
+            style="@style/TextViewStyleItem"
+            android:layout_weight="0.8"
+            android:background="@drawable/shape_rectangle_blue"
+            android:drawableEnd="@drawable/ic_sj_down"
+            android:paddingEnd="5dp"
+            android:text="发货数量：999" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/divider4"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:background="?android:attr/listDivider"
+        android:visibility="invisible"
+        app:layout_constraintStart_toEndOf="@+id/photo"
+        app:layout_constraintTop_toBottomOf="@+id/line3"
+        app:layout_constraintWidth_percent="0.75" />
+
+    <LinearLayout
+        android:id="@+id/goodsContent"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/text_view_margin"
+        android:layout_marginEnd="@dimen/text_view_margin"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider4">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/TextViewStyleItem"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="颜色" />
+
+            <TextView
+                style="@style/TextViewStyleItem"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="尺码" />
+
+            <TextView
+                style="@style/TextViewStyleItem"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="数量" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="?android:attr/listDivider" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/divider3"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?android:attr/listDivider"
+        android:visibility="invisible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/goodsContent" />
+
+    <TextView
+        android:id="@+id/remark"
+        style="@style/TextViewStyleItem"
+        android:text="备注：商业机密请勿外泄"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider3" />
+</androidx.constraintlayout.widget.ConstraintLayout>
