@@ -11,6 +11,7 @@ import com.nicolas.supplier.app.SupplierApp;
 import com.nicolas.supplier.common.OperateError;
 import com.nicolas.supplier.common.OperateInUserView;
 import com.nicolas.supplier.common.OperateResult;
+import com.nicolas.supplier.data.OrderDistribution;
 import com.nicolas.supplier.ui.device.printer.PrintContent;
 import com.nicolas.supplier.data.OrderInformation;
 
@@ -22,7 +23,9 @@ import static com.nicolas.printerlibraryforufovo.PrinterDevice.LINK_TYPE_BLUETOO
 
 public class OrderPrintViewModel extends ViewModel {
     private static final String TAG = "OrderPrintViewModel";
+    private ArrayList<OrderDistribution> distributions;
     private ArrayList<OrderInformation> orders;
+    private ArrayList<Object> printOrders;
     private int goodsTotal;     //商品合计
     private int orderTotal;     //订单合计
     private float priceTotal;   //价格合计
@@ -37,16 +40,41 @@ public class OrderPrintViewModel extends ViewModel {
         return printOrderResult;
     }
 
-    public void setOrders(ArrayList<OrderInformation> orders) {
+    public void setOrders(ArrayList<OrderInformation> orders, ArrayList<OrderDistribution> distributions) {
         this.orders = orders;
+        this.distributions = distributions;
+        this.printOrders = new ArrayList<>();
         this.goodsTotal = 0;
         this.orderTotal = 0;
         this.priceTotal = 0;
+
+        OrderInformation lastOrder = null;
         for (OrderInformation order : this.orders) {
             this.goodsTotal += order.sendAmount;
             this.priceTotal += (order.sendAmount * order.orderPrice);
             this.orderTotal++;
-            Log.d(TAG, "setOrders: " + order.goodsId + "---");//+ order.orderClass.toString());
+            //组合订单和订单配送顺序
+            if (lastOrder == null || !(order.goodsId.equals(lastOrder.goodsId))) {
+                //查找此goodsId是否有配送顺序表
+                for (OrderDistribution d : this.distributions) {
+                    if (d.goodsId.equals(order.goodsId)) {
+                        printOrders.add(d);
+                        break;
+                    }
+                }
+            }
+            //添加订单
+            printOrders.add(order);
+            lastOrder = order;
+        }
+
+        for (Object o : printOrders) {
+            if (o instanceof OrderInformation) {
+                Log.d(TAG, "getCheckedOrders: OrderInformation-->" + ((OrderInformation) o).goodsId);
+            }
+            if (o instanceof OrderDistribution) {
+                Log.d(TAG, "getCheckedOrders: OrderDistribution-->" + ((OrderDistribution) o).goodsId);
+            }
         }
     }
 
@@ -56,22 +84,38 @@ public class OrderPrintViewModel extends ViewModel {
 
     public String getTotalString() {
         return SupplierApp.getInstance().getString(R.string.ordernum) + "\u3000" + "<font color=\"green\">" + "x" + this.orderTotal + "</font>" + "\u3000\u3000" +
-                SupplierApp.getInstance().getString(R.string.sendGoods) + "\u3000" + "<font color=\"green\">" + "x" + this.goodsTotal + "</font>" + "\u3000\u3000" +
-                SupplierApp.getInstance().getString(R.string.totalPrice) + "\u3000" + "<font color=\"red\">" + SupplierApp.getInstance().getString(R.string.money) + this.priceTotal + "</font>";
+                SupplierApp.getInstance().getString(R.string.sendGoods) + "\u3000" + "<font color=\"green\">" + "x" + this.goodsTotal + "</font>";//+ "\u3000\u3000" +
+        //SupplierApp.getInstance().getString(R.string.totalPrice) + "\u3000" + "<font color=\"red\">" + SupplierApp.getInstance().getString(R.string.money) + this.priceTotal + "</font>";
     }
 
     /**
      * 打印订单条码
      */
     public void printOrder() {
-        for (OrderInformation order : this.orders) {
-            try {
-                PrinterManager.getInstance().printLabel(PrintContent.getOrderReceipt(order), LINK_TYPE_BLUETOOTH);
-            } catch (IOException e) {
-                e.printStackTrace();
-                order.printTime = "";
-                printOrderResult.setValue(new OperateResult(new OperateError(0, SupplierApp.getInstance().getString(R.string.printer_no_link), null)));
-                return;
+        int i = 1;
+        for (Object object : this.printOrders) {
+            if (object instanceof OrderInformation) {
+                OrderInformation order = (OrderInformation) object;
+                try {
+                    PrinterManager.getInstance().printLabel(PrintContent.getOrderReceipt(order, i), LINK_TYPE_BLUETOOTH);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    order.printTime = "";
+                    printOrderResult.setValue(new OperateResult(new OperateError(0, SupplierApp.getInstance().getString(R.string.printer_no_link), null)));
+                    return;
+                }
+                i++;
+            }
+            if (object instanceof OrderDistribution) {
+                OrderDistribution distribution = (OrderDistribution) object;
+                Log.d(TAG, "printOrder: print OrderDistribution-->" + distribution.goodsId + "-->" + distribution.distribution);
+                try {
+                    PrinterManager.getInstance().printLabel(PrintContent.getDistribution(distribution), LINK_TYPE_BLUETOOTH);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    printOrderResult.setValue(new OperateResult(new OperateError(0, SupplierApp.getInstance().getString(R.string.printer_no_link), null)));
+                    return;
+                }
             }
         }
         printOrderResult.setValue(new OperateResult(new OperateInUserView(null)));

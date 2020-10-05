@@ -7,7 +7,7 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.nicolas.pullrefreshlibrary.PullRefreshListView;
+import com.nicolas.componentlibrary.pullrefresh.PullRefreshListView;
 import com.nicolas.toollibrary.BruceDialog;
 import com.nicolas.toollibrary.Utils;
 import com.nicolas.supplier.R;

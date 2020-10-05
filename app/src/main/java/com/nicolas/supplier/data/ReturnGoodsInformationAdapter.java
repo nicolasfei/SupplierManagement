@@ -1,6 +1,7 @@
 package com.nicolas.supplier.data;
 
 import android.content.Context;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -10,7 +11,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.nicolas.toollibrary.ImageLoadClass;
+import com.nicolas.toollibrary.imageload.ImageLoadClass;
 import com.nicolas.toollibrary.Tool;
 import com.nicolas.supplier.R;
 
@@ -43,7 +44,7 @@ public class ReturnGoodsInformationAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder holder;
+        final ViewHolder holder;
         if (convertView == null) {
             convertView = LayoutInflater.from(this.mContext).inflate(R.layout.return_goods_item, parent, false);
             holder = new ViewHolder(convertView);
@@ -52,9 +53,8 @@ public class ReturnGoodsInformationAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
         final ReturnGoodsInformation returnGoods = returnGoodsList.get(position);
-
         //加载图片
-        new ImageLoadClass(mContext, holder.photo, returnGoods.img).load();
+        ImageLoadClass.getInstance().displayImage(returnGoods.img, holder.photo, false);
 
         String fIdValue = mContext.getString(R.string.branchID) + mContext.getString(R.string.colon) + "<font color=\"black\"><big>" + returnGoods.fId + "</big></font>";
         holder.fId.setText(Html.fromHtml(fIdValue, Html.FROM_HTML_MODE_COMPACT));
@@ -81,7 +81,7 @@ public class ReturnGoodsInformationAdapter extends BaseAdapter {
         String checkTimeValue = mContext.getString(R.string.returnTime) + mContext.getString(R.string.colon) + "<font color=\"black\">" + returnGoods.checkTime + "</font>";
         holder.checkTime.setText(Html.fromHtml(checkTimeValue, Html.FROM_HTML_MODE_COMPACT));
 
-        String codeValue = mContext.getString(R.string.code) + mContext.getString(R.string.colon) + "<font color=\"black\">" + returnGoods.code + "</font>";
+        String codeValue = mContext.getString(R.string.code) + mContext.getString(R.string.colon) + "<font color=\"black\">" + returnGoods.b_b_BarCode_Id + "</font>";
         holder.code.setText(Html.fromHtml(codeValue, Html.FROM_HTML_MODE_COMPACT));
 
         String remarkValue = mContext.getString(R.string.remark) + mContext.getString(R.string.colon) + "<font color=\"black\">" + returnGoods.remark + "</font>";
@@ -103,7 +103,7 @@ public class ReturnGoodsInformationAdapter extends BaseAdapter {
         private TextView remark;
 
         private ViewHolder(View root) {
-            this.photo = root.findViewById(R.id.phone);
+            this.photo = root.findViewById(R.id.photo);
             this.fId = root.findViewById(R.id.fId);
             this.goodsId = root.findViewById(R.id.goodsId);
             this.oldGoodsId = root.findViewById(R.id.oldGoodsId);

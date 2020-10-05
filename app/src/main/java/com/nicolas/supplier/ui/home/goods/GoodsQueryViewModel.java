@@ -29,12 +29,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.nicolas.supplier.server.goods.GoodsInterface.GoodsPropertyStock;
+
 public class GoodsQueryViewModel extends ViewModel {
 
     //查询条件
     private int currentPage = 1;
-    private int pageSize = 16;              //每一页16条记录
-    private int pageCount = 0;              //一共多少也，默认为0
+    private int pageSize = 64;              //每一页16条记录
+    private int pageCount = 0;              //一共多少也，默认为0 --- 当前查询条件下的订单总数
     public GoodsCodeQueryCondition queryCondition;      //查询条件
 
     private String updateGoodsID;           //更新货号ID
@@ -42,11 +44,15 @@ public class GoodsQueryViewModel extends ViewModel {
     private String updateStock;             //更新Stock值
     private List<GoodsCode> goodsCodeList;
 
+    private String propertyQueryGoodsCodeID;    //当前查询属性的货号ID
+
     private MutableLiveData<OperateResult> queryGoodsIDResult;
+    private MutableLiveData<OperateResult> queryGoodsPropertyResult;
     private MutableLiveData<OperateResult> updateGoodsStatusResult;
 
     public GoodsQueryViewModel() {
         this.queryGoodsIDResult = new MutableLiveData<>();
+        this.queryGoodsPropertyResult = new MutableLiveData<>();
         this.updateGoodsStatusResult = new MutableLiveData<>();
         this.goodsCodeList = new ArrayList<>();
         this.queryCondition = new GoodsCodeQueryCondition();
@@ -54,6 +60,10 @@ public class GoodsQueryViewModel extends ViewModel {
 
     public LiveData<OperateResult> getQueryGoodsIDResult() {
         return queryGoodsIDResult;
+    }
+
+    public LiveData<OperateResult> getQueryGoodsPropertyResult() {
+        return queryGoodsPropertyResult;
     }
 
     public LiveData<OperateResult> getUpdateGoodsStatusResult() {
@@ -132,6 +142,25 @@ public class GoodsQueryViewModel extends ViewModel {
     }
 
     /**
+     * 查询货号属性
+     *
+     * @param goodsCodeID 货号ID
+     */
+    public void queryGoodsCodeProperty(String goodsCodeID) {
+        this.propertyQueryGoodsCodeID = goodsCodeID;
+        CommandVo vo = new CommandVo();
+        vo.typeEnum = CommandTypeEnum.COMMAND_SUPPLIER_GOODS_ID;
+        vo.url = GoodsInterface.GoodsPropertyQuery;
+        vo.contentType = HttpHandler.ContentType_APP;
+        vo.requestMode = HttpHandler.RequestMode_POST;
+        Map<String, String> parameters = new HashMap<>();
+        parameters.put("id", goodsCodeID);
+        vo.parameters = parameters;
+        Invoker.getInstance().setOnEchoResultCallback(this.callback);
+        Invoker.getInstance().exec(vo);
+    }
+
+    /**
      * 设置货号无货
      *
      * @param goodsID 货号ID
@@ -167,7 +196,7 @@ public class GoodsQueryViewModel extends ViewModel {
         this.updateStock = stock;
         CommandVo vo = new CommandVo();
         vo.typeEnum = CommandTypeEnum.COMMAND_SUPPLIER_GOODS_ID;
-        vo.url = GoodsInterface.GoodsPropertyStock;
+        vo.url = GoodsPropertyStock;
         vo.contentType = HttpHandler.ContentType_APP;
         vo.requestMode = HttpHandler.RequestMode_POST;
         Map<String, String> parameters = new HashMap<>();
@@ -214,29 +243,57 @@ public class GoodsQueryViewModel extends ViewModel {
                         queryGoodsIDResult.setValue(new OperateResult(new OperateError(result.code, result.msg, null)));
                     }
                     break;
-                case GoodsInterface.GoodsStock:
+                case GoodsInterface.GoodsPropertyQuery:
                     if (result.success) {
-                        //更新货号stock
-                        if (TextUtils.isEmpty(updateGoodsPropertyID)) {
-                            for (GoodsCode goodsCode : goodsCodeList) {
-                                if (goodsCode.id.equals(updateGoodsID)) {
-                                    goodsCode.isStock = updateStock;
-                                    break;
-                                }
-                            }
-                        }
-                        //更新货号属性stock
-                        else {
-                            for (GoodsCode goodsCode : goodsCodeList) {
-                                if (goodsCode.id.equals(updateGoodsID)) {
-                                    for (GoodsCode.Property property : goodsCode.properties) {
-                                        if (property.id.equals(updateGoodsPropertyID)) {
-                                            property.isStock = updateStock;
-                                            break;
-                                        }
+                        if (TextUtils.isEmpty(result.data) || result.data.length() < 5) {
+                            Message msg = new Message();
+                            msg.obj = SupplierApp.getInstance().getString(R.string.noData);
+                            queryGoodsPropertyResult.setValue(new OperateResult(new OperateInUserView(msg)));
+                        } else {
+                            for (GoodsCode good : goodsCodeList) {
+                                if (good.id.equals(propertyQueryGoodsCodeID)) {
+                                    if (!good.hasQueryProperties) {
+                                        good.setProperties(result.data);
+                                        good.showProperties = true;         //数据加载完成，可以显示了
+                                        good.hasQueryProperties = true;     //标记该货号的属性已经查询过了
                                     }
                                     break;
                                 }
+                            }
+                            queryGoodsPropertyResult.setValue(new OperateResult(new OperateInUserView(null)));
+                        }
+                    } else {
+                        queryGoodsPropertyResult.setValue(new OperateResult(new OperateError(result.code, result.msg, null)));
+                    }
+                    break;
+                case GoodsInterface.GoodsStock:
+                    if (result.success) {
+                        //更新货号stock
+                        for (GoodsCode goodsCode : goodsCodeList) {
+                            if (goodsCode.id.equals(updateGoodsID)) {
+                                goodsCode.isStock = updateStock.equals("allow") ? (SupplierApp.getInstance().getString(R.string.stock)) :
+                                        (SupplierApp.getInstance().getString(R.string.noStock));
+                                break;
+                            }
+                        }
+                        updateGoodsStatusResult.setValue(new OperateResult(new OperateInUserView(null)));
+                    } else {
+                        updateGoodsStatusResult.setValue(new OperateResult(new OperateError(result.code, result.msg, null)));
+                    }
+                    break;
+                case GoodsInterface.GoodsPropertyStock:
+                    if (result.success) {
+                        //更新货号属性stock
+                        for (GoodsCode goodsCode : goodsCodeList) {
+                            if (goodsCode.id.equals(updateGoodsID)) {
+                                for (GoodsCode.Property property : goodsCode.properties) {
+                                    if (property.id.equals(updateGoodsPropertyID)) {
+                                        property.isStock = updateStock.equals("allow") ? (SupplierApp.getInstance().getString(R.string.stock)) :
+                                                (SupplierApp.getInstance().getString(R.string.noStock));
+                                        break;
+                                    }
+                                }
+                                break;
                             }
                         }
                         updateGoodsStatusResult.setValue(new OperateResult(new OperateInUserView(null)));
@@ -249,4 +306,13 @@ public class GoodsQueryViewModel extends ViewModel {
             }
         }
     };
+
+    /**
+     * 获取当前查询条件下的总货号数
+     *
+     * @return 总订单数
+     */
+    public int getGoodsCodeTotal() {
+        return this.pageCount;
+    }
 }

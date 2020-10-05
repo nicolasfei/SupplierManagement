@@ -20,13 +20,13 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.nicolas.datetimepickerlibrary.DateTimePickerDialog;
-import com.nicolas.multileveltreelibrary.TreeNode;
-import com.nicolas.multileveltreelibrary.TreeNodeViewDialog;
-import com.nicolas.pullrefreshlibrary.PullRefreshListView;
+import com.nicolas.componentlibrary.datetimepicker.DateTimePickerDialog;
+import com.nicolas.componentlibrary.multileveltree.TreeNode;
+import com.nicolas.componentlibrary.multileveltree.TreeNodeViewDialog;
+import com.nicolas.componentlibrary.pullrefresh.PullRefreshListView;
 import com.nicolas.supplier.data.ReturnGoodsInformationAdapter;
+import com.nicolas.supplier.ui.home.goods.GoodsQueryActivity;
 import com.nicolas.toollibrary.BruceDialog;
-import com.nicolas.toollibrary.Utils;
 import com.nicolas.supplier.R;
 import com.nicolas.supplier.common.OperateResult;
 import com.nicolas.supplier.supplier.SupplierKeeper;
@@ -36,7 +36,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-
 
 public class ReturnGoodsQueryActivity extends BaseActivity implements View.OnClickListener {
 
@@ -49,6 +48,7 @@ public class ReturnGoodsQueryActivity extends BaseActivity implements View.OnCli
     private TextView oldGoodsId;
     private TextView goodsId;
     private TextView checkTime;
+    private TextView barcodeId;                 //条码查询
     //list
     private PullRefreshListView pullToRefreshListView;
     private ReturnGoodsInformationAdapter adapter;
@@ -84,24 +84,22 @@ public class ReturnGoodsQueryActivity extends BaseActivity implements View.OnCli
         this.staff = findViewById(R.id.staff);
         this.updateStaff(SupplierKeeper.getInstance().getOnDutySupplier().name);
 
-        this.goodsClassId = findViewById(R.id.goodsClassId);
-        this.goodsClassId.setOnClickListener(this);
+        this.goodsClassId = findClickView(R.id.goodsClassId);
         this.goodsClassId.setClickable(true);
 
-        this.fId = findViewById(R.id.fId);
-        this.fId.setOnClickListener(this);
+        this.fId = findClickView(R.id.fId);
         this.fId.setClickable(true);
 
-        this.oldGoodsId = findViewById(R.id.oldGoodsId);
-        this.oldGoodsId.setOnClickListener(this);
+        this.oldGoodsId = findClickView(R.id.oldGoodsId);
         this.oldGoodsId.setClickable(true);
 
-        this.goodsId = findViewById(R.id.goodsId);
-        this.goodsId.setOnClickListener(this);
+        this.goodsId = findClickView(R.id.goodsId);
         this.goodsId.setClickable(true);
 
-        this.checkTime = findViewById(R.id.checkTime);
-        this.checkTime.setOnClickListener(this);
+        this.barcodeId = findClickView(R.id.barcodeId);
+        this.barcodeId.setClickable(true);
+
+        this.checkTime = findClickView(R.id.checkTime);
         this.checkTime.setClickable(true);
         this.updateCheckTime(this.viewModel.queryCondition.checkTime.replace("~", "\u3000~\u3000"));       //默认是近3天
 
@@ -121,11 +119,8 @@ public class ReturnGoodsQueryActivity extends BaseActivity implements View.OnCli
             }
         });
 
-        Button button = findViewById(R.id.query);
-        button.setOnClickListener(this);
-
-        Button button1 = findViewById(R.id.reset);
-        button1.setOnClickListener(this);
+        Button button = findClickView(R.id.query);
+        Button button1 = findClickView(R.id.reset);
 
         //监听查询结果
         this.viewModel.getReturnGoodsQueryResult().observe(this, new Observer<OperateResult>() {
@@ -136,11 +131,23 @@ public class ReturnGoodsQueryActivity extends BaseActivity implements View.OnCli
                     adapter.notifyDataSetChanged();
                     Message msg = operateResult.getSuccess().getMessage();
                     if (msg != null) {
-                        Utils.toast(ReturnGoodsQueryActivity.this, (String) msg.obj);
+                        BruceDialog.showAlertDialog(ReturnGoodsQueryActivity.this, getString(R.string.success),
+                                (String) msg.obj, new BruceDialog.OnAlertDialogListener() {
+                                    @Override
+                                    public void onSelect(boolean confirm) {
+
+                                    }
+                                });
                     }
                 }
                 if (operateResult.getError() != null) {
-                    Utils.toast(ReturnGoodsQueryActivity.this, operateResult.getError().getErrorMsg());
+                    BruceDialog.showAlertDialog(ReturnGoodsQueryActivity.this, getString(R.string.failed),
+                            operateResult.getError().getErrorMsg(), new BruceDialog.OnAlertDialogListener() {
+                                @Override
+                                public void onSelect(boolean confirm) {
+
+                                }
+                            });
                 }
                 if (pullToRefreshListView.isPullToRefreshing()) {
                     pullToRefreshListView.refreshFinish();
@@ -157,6 +164,10 @@ public class ReturnGoodsQueryActivity extends BaseActivity implements View.OnCli
                 pullToRefreshListView.updateContentDate(queryDate);
             }
         });
+
+        //查询返货
+        BruceDialog.showProgressDialog(this, getString(R.string.querying));
+        viewModel.queryReturnGoods();
     }
 
     @Override
@@ -240,13 +251,24 @@ public class ReturnGoodsQueryActivity extends BaseActivity implements View.OnCli
                     }
                 });
                 break;
+            case R.id.barcodeId:
+                BruceDialog.showEditInputDialog(R.string.barcodeId, R.string.barcodeIdInput, InputType.TYPE_CLASS_TEXT, this, new BruceDialog.OnInputFinishListener() {
+                    @Override
+                    public void onInputFinish(String itemName) {
+                        if (!TextUtils.isEmpty(itemName)) {
+                            viewModel.queryCondition.barcodeID = itemName;
+                            updateBarcodeId(itemName);
+                        }
+                    }
+                });
+                break;
             case R.id.query:
                 BruceDialog.showProgressDialog(this, getString(R.string.querying));
                 drawerLayout.closeDrawer(Gravity.RIGHT, true);
                 viewModel.queryReturnGoods();
                 break;
             case R.id.reset:
-                resetQueryqueryCondition();
+                resetQueryCondition();
                 break;
             default:
                 break;
@@ -278,6 +300,11 @@ public class ReturnGoodsQueryActivity extends BaseActivity implements View.OnCli
         this.goodsId.setText(Html.fromHtml(value, Html.FROM_HTML_MODE_COMPACT));
     }
 
+    private void updateBarcodeId(String barcodeID) {
+        String value = getString(R.string.barcodeId) + "\u3000\u3000\u3000\u3000\u3000" + "<font color=\"black\">" + barcodeID + "</font>";
+        this.barcodeId.setText(Html.fromHtml(value, Html.FROM_HTML_MODE_COMPACT));
+    }
+
     private void updateCheckTime(String checkTime) {
         String value = "<font color=\"black\">" + checkTime + "</font>";
         this.checkTime.setText(Html.fromHtml(value, Html.FROM_HTML_MODE_COMPACT));
@@ -286,12 +313,18 @@ public class ReturnGoodsQueryActivity extends BaseActivity implements View.OnCli
     /**
      * 重置查询条件
      */
-    private void resetQueryqueryCondition() {
+    private void resetQueryCondition() {
         this.viewModel.resetQueryCondition();
         this.updateGoodsClassId("");
         this.updateBranchID("");
         this.updateOldGoodsId("");
         this.updateGoodsId("");
+        this.updateBarcodeId("");
         this.updateCheckTime(this.viewModel.queryCondition.checkTime.replace("~", "\u3000~\u3000"));
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 }

@@ -6,9 +6,9 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.nicolas.pullrefreshlibrary.PullRefreshListView;
+import com.nicolas.componentlibrary.pullrefresh.PullRefreshListView;
+import com.nicolas.supplier.ui.home.returngoods.ReturnGoodsQueryActivity;
 import com.nicolas.toollibrary.BruceDialog;
-import com.nicolas.toollibrary.Utils;
 import com.nicolas.supplier.R;
 import com.nicolas.supplier.common.OperateResult;
 import com.nicolas.supplier.data.ScoreClassAdapter;
@@ -57,7 +57,13 @@ public class ScoreClassActivity extends BaseActivity {
                     adapter.notifyDataSetChanged();
                 }
                 if (operateResult.getError() != null) {
-                    Utils.toast(ScoreClassActivity.this, operateResult.getError().getErrorMsg());
+                    BruceDialog.showAlertDialog(ScoreClassActivity.this, getString(R.string.failed),
+                            operateResult.getError().getErrorMsg(), new BruceDialog.OnAlertDialogListener() {
+                                @Override
+                                public void onSelect(boolean confirm) {
+
+                                }
+                            });
                 }
                 if (pullToRefreshListView.isPullToRefreshing()) {
                     pullToRefreshListView.refreshFinish();

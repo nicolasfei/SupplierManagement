@@ -44,7 +44,7 @@ public class GoodsCodePropertyAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
         if (convertView == null) {
-            convertView = LayoutInflater.from(this.mContext).inflate(R.layout.goods_code_item, parent, false);
+            convertView = LayoutInflater.from(this.mContext).inflate(R.layout.goods_code_property_item, parent, false);
             holder = new ViewHolder(convertView);
             convertView.setTag(holder);
         } else {

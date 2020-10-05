@@ -20,7 +20,7 @@ import com.nicolas.supplier.common.ModuleNavigation;
 import com.nicolas.supplier.common.ModuleNavigationAdapter;
 import com.nicolas.supplier.common.OperateResult;
 
-public class HomeFragment extends Fragment implements ModuleNavigationAdapter.OnItemClickListener{
+public class HomeFragment extends Fragment implements ModuleNavigationAdapter.OnItemClickListener {
 
     private HomeViewModel viewModel;
 
@@ -71,20 +71,27 @@ public class HomeFragment extends Fragment implements ModuleNavigationAdapter.On
         viewModel.getUpdateNavNumResult().observe(requireActivity(), new Observer<OperateResult>() {
             @Override
             public void onChanged(OperateResult operateResult) {
-                if (operateResult.getSuccess()!=null){
+                if (operateResult.getSuccess() != null) {
                     adapter.notifyDataSetChanged();
                 }
             }
         });
     }
 
+    //上一次点击时间
+    private static long lastClickTime = 0;
+    private static final int INTERVAL_TIME = 1000;
+
     @Override
     public void onItemClick(int position) {
-        ModuleNavigation navigation = viewModel.getModuleNavigationList().get(position);
-        if (navigation.isTitle || navigation.navActivity == null) {
-            return;
+        if (System.currentTimeMillis() - lastClickTime > INTERVAL_TIME) {
+            ModuleNavigation navigation = viewModel.getModuleNavigationList().get(position);
+            if (navigation.isTitle || navigation.navActivity == null) {
+                return;
+            }
+            Intent intent = new Intent(context, navigation.navActivity);
+            startActivity(intent);
+            lastClickTime = System.currentTimeMillis();
         }
-        Intent intent = new Intent(context, navigation.navActivity);
-        startActivity(intent);
     }
 }

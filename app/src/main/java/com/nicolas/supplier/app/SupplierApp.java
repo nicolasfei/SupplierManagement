@@ -19,7 +19,7 @@ public class SupplierApp extends Application {
         app = this;
         //初始化异常处理
         GlobalCrashHandler.getInstance().init(app, "",
-                "fshq_test@163.com", "fshq1219", "fshq_debug@163.com",
+                "fshq_test@163.com", "ZIPGXOJDAEZVOJBY", "fshq_debug@163.com",
                 "She bangs supplierManagement", FirstActivity.class);
     }
 }

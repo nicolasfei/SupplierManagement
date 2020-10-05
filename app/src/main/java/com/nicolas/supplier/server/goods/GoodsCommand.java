@@ -15,12 +15,15 @@ public class GoodsCommand extends Command {
 
     @Override
     protected void buildDutyChain() {
-        GoodsQuery query = new GoodsQuery();
-        ReturnGoodsQuery returnGoodsQuery = new ReturnGoodsQuery();
-        GoodsUpdate update = new GoodsUpdate();
-        GoodsPropertyUpdate propertyUpdate = new GoodsPropertyUpdate();
+        GoodsInterface query = new GoodsQuery();
+        GoodsInterface propertyQuery = new GoodsPropertyQuery();
+        GoodsInterface update = new GoodsUpdate();
+        GoodsInterface propertyUpdate = new GoodsPropertyUpdate();
 
-        query.setNextHandler(returnGoodsQuery);
+        GoodsInterface returnGoodsQuery = new ReturnGoodsQuery();
+
+        query.setNextHandler(propertyQuery);
+        propertyQuery.setNextHandler(returnGoodsQuery);
         returnGoodsQuery.setNextHandler(update);
         update.setNextHandler(propertyUpdate);
         propertyUpdate.setNextHandler(null);

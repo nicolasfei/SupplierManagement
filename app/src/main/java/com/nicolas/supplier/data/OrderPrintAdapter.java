@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+
 import com.nicolas.supplier.R;
 
 import java.util.List;
@@ -65,7 +66,7 @@ public class OrderPrintAdapter extends BaseAdapter {
         holder.w3.setText(Html.fromHtml(w3Value, Html.FROM_HTML_MODE_COMPACT));
 
         //分店编号
-        String b1Value = context.getString(R.string.print_branch_code) + context.getString(R.string.colon) + "<font color=\"black\">" + order.branchId + "</font>";
+        String b1Value = context.getString(R.string.print_branch_code) + context.getString(R.string.colon) + "<font color=\"black\">" + order.fId + "</font>";
         holder.b1.setText(Html.fromHtml(b1Value, Html.FROM_HTML_MODE_COMPACT));
 
         //下单日期，截至日期
@@ -73,9 +74,13 @@ public class OrderPrintAdapter extends BaseAdapter {
                 context.getString(R.string.print_invalid_date) + context.getString(R.string.colon) + "<font color=\"black\">" + order.inValidTime + "</font>";
         holder.b2.setText(Html.fromHtml(b2Value, Html.FROM_HTML_MODE_COMPACT));
 
+        //发货数量
+        String b3Value = context.getString(R.string.print_send_amount) + context.getString(R.string.colon) + "<font color=\"black\">" + order.sendAmount + "</font>";
+        holder.b3.setText(Html.fromHtml(b3Value, Html.FROM_HTML_MODE_COMPACT));
+
         //颜色尺码数量
         String b3_1Value = "<font color=\"red\">" + "&#12288" + context.getString(R.string.print_size) + "</font>" + "<br>";
-        String b3_2Value = "<font color=\"yellow\">" + "&#12288" + context.getString(R.string.print_attr) + "</font>" + "<br>";
+        String b3_2Value = "<font color=\"blue\">" + "&#12288" + context.getString(R.string.print_attr) + "</font>" + "<br>";
         String b3_3Value = "<font color=\"green\">" + "&#12288" + context.getString(R.string.print_num) + "</font>" + "<br>";
         for (OrderPropertyRecord attr : order.propertyRecords) {
             b3_1Value += "\u3000" + attr.actualSize + "</font>" + "<br>";
@@ -92,11 +97,12 @@ public class OrderPrintAdapter extends BaseAdapter {
     private class ViewHolder {
 
         private TextView w1, w2, w3;
-        private TextView b1, b2, b3_1, b3_2, b3_3;
+        private TextView b1, b2, b3, b3_1, b3_2, b3_3;
 
         private ViewHolder(View root) {
             this.b1 = root.findViewById(R.id.b1);       //分店编号
             this.b2 = root.findViewById(R.id.b2);       //下单日期，截至日期
+            this.b3 = root.findViewById(R.id.b3);       //发货数量
             this.b3_1 = root.findViewById(R.id.b3_1);       //尺码
             this.b3_2 = root.findViewById(R.id.b3_2);       //属性
             this.b3_3 = root.findViewById(R.id.b3_3);       //数量

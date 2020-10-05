@@ -13,10 +13,9 @@
         android:drawableEnd="@drawable/ic_sr_blue"
         android:gravity="start|center"
         android:text="@string/recordTime"
-        android:textColor="@color/disable_gray"
         android:textSize="@dimen/text_size"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="@dimen/view_height_percent"
+        app:layout_constraintHeight_percent="0.03"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

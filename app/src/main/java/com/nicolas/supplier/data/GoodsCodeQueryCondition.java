@@ -1,5 +1,7 @@
 package com.nicolas.supplier.data;
 
+import com.nicolas.toollibrary.Tool;
+
 /**
  * 货号查询，查询条件
  */
@@ -19,12 +21,12 @@ public class GoodsCodeQueryCondition {
         this.goodsType = "";
 
         this.isStock = "";
-        this.createTime = "";
+        this.createTime = Tool.getNearlyThreeMonthDateSlot();        //默认查询近三天的货号
         this.goodsId = "";
     }
 
     public void clear() {
-        this.setCreateTime("");
+        this.setCreateTime(Tool.getNearlyThreeMonthDateSlot());
         this.setGoodsClassId("");
         this.setGoodsId("");
 

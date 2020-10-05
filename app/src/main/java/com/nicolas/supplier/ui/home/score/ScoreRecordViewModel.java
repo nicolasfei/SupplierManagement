@@ -19,6 +19,7 @@ import com.nicolas.supplier.server.CommandTypeEnum;
 import com.nicolas.supplier.server.CommandVo;
 import com.nicolas.supplier.server.Invoker;
 import com.nicolas.supplier.server.score.ScoreInterface;
+import com.nicolas.toollibrary.Tool;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -31,7 +32,7 @@ import java.util.Map;
 public class ScoreRecordViewModel extends ViewModel {
 
     private List<ScoreRecord> scoreRecordList;
-    private String recordTime;      //记录日期，区间值，不填默认当日 2019-01-01~2020-08-01
+    private String recordTime;      //记录日期，区间值，默认查询近三天
     private String scoreClassId;    //信誉分说明ID
     private String goodsId;         //新货号
     private MutableLiveData<OperateResult> scoreRecordQueryResult;
@@ -42,6 +43,7 @@ public class ScoreRecordViewModel extends ViewModel {
     public ScoreRecordViewModel() {
         this.scoreRecordQueryResult = new MutableLiveData<>();
         this.scoreRecordList = new ArrayList<>();
+        this.recordTime = Tool.getNearlyThreeDaysDateSlot();
     }
 
     public LiveData<OperateResult> getScoreRecordQueryResult() {
@@ -174,7 +176,7 @@ public class ScoreRecordViewModel extends ViewModel {
     };
 
     public void resetQueryCondition() {
-        this.recordTime = "";      //记录日期，区间值，不填默认当日 2019-01-01~2020-08-01
+        this.recordTime = Tool.getNearlyThreeDaysDateSlot();      //记录日期，区间值，默认近三天
         this.scoreClassId = "";    //信誉分说明ID
         this.goodsId = "";         //新货号
     }

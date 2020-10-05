@@ -16,12 +16,18 @@ public class OrderCommand extends Command {
     @Override
     protected void buildDutyChain() {
         OrderInterface query = new GoodsOrder();
+        OrderInterface propertyQuery = new GoodsPropertyOrder();
         OrderInterface print = new GoodsOrderPrint();
         OrderInterface val = new GoodsOrderVal();
+        OrderInterface inValid = new GoodsOrderInValid();
+        OrderInterface distribution = new GoodsOrderDistribution();
 
-        query.setNextHandler(print);
+        query.setNextHandler(propertyQuery);
+        propertyQuery.setNextHandler(print);
         print.setNextHandler(val);
-        val.setNextHandler(null);
+        val.setNextHandler(inValid);
+        inValid.setNextHandler(distribution);
+        distribution.setNextHandler(null);
 
         super.firstNode = query;
     }

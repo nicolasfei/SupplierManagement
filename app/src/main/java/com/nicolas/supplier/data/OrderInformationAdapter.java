@@ -10,18 +10,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.nicolas.supplier.R;
-import com.nicolas.toollibrary.ImageLoadClass;
+import com.nicolas.toollibrary.imageload.ImageLoadClass;
 import com.nicolas.toollibrary.Utils;
-import com.nicolas.supplier.app.SupplierApp;
 
 import java.util.List;
 
@@ -29,12 +28,26 @@ public class OrderInformationAdapter extends BaseAdapter {
     private static final String TAG = "OrderInformationAdapter";
     private List<OrderInformation> informationList;
     private Context context;
+    private boolean isBusy = false;               //表示list view是否在快速滑动
+    private boolean canSetNumColorSize = true;    //默认不能修改颜色尺码数量
 
     private OnOrderChangeListener orderChangeListener;
+
+    //上一次点击时间---点击防抖
+    private static long lastClickTime = 0;
+    private static final int INTERVAL_TIME = 600;
 
     public OrderInformationAdapter(Context context, List<OrderInformation> list) {
         this.context = context;
         this.informationList = list;
+    }
+
+    public void setIsBusy(boolean isBusy) {
+        this.isBusy = isBusy;
+    }
+
+    public void setCanSetNumColorSize(boolean canSetNumColorSize) {
+        this.canSetNumColorSize = canSetNumColorSize;
     }
 
     @Override
@@ -64,37 +77,66 @@ public class OrderInformationAdapter extends BaseAdapter {
         }
         final OrderInformation order = informationList.get(position);
 
+        //编号
+        String posValue = context.getString(R.string.pos) + context.getString(R.string.colon) + (position + 1);
+        holder.pos.setText(posValue);
         //加载图片
-        new ImageLoadClass(context, holder.photo, order.img).load();
+        if (!isBusy) {
+            ImageLoadClass.getInstance().displayImage(order.img, holder.photo, false);
+        } else {
+            ImageLoadClass.getInstance().displayImage(order.img, holder.photo, true);
+        }
 
         //库房
         String warehouse = "<font color=\"black\"><big>" + order.storeRoomName + "</big></font>";
         holder.warehouse.setText(Html.fromHtml(warehouse, Html.FROM_HTML_MODE_COMPACT));
 
-        //订单状态+打印时间
-        String inState = "<font color=\"black\"><big>" + order.inState + "</big></font>";
-//        if (order.isPrint.getStatus().equals(PrintStatus.PRINT)) {
-//            inState += "<br><font color=\"gray\">" + context.getString(R.string.print_time) + context.getString(R.string.colon) + order.printTime + "</font></br>";
-//        }
-        holder.orderStatus.setText(Html.fromHtml(inState, Html.FROM_HTML_MODE_COMPACT));
-        if (!(order.inState.equals(OrderStatus.SWAIT))) {        //(SupplierApp.getInstance().getString(R.string.swait))
-            holder.orderStatus.setBackgroundColor(Color.BLUE);
-            holder.orderStatus.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, null, null);
-            holder.orderStatus.setOnClickListener(null);
-            holder.orderStatus.setClickable(false);
-        } else {
-            holder.orderStatus.setBackgroundColor(Color.RED);
-            holder.orderStatus.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, SupplierApp.getInstance().getDrawable(R.drawable.ic_sr_blue), null);
-            holder.orderStatus.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (orderChangeListener != null) {
-                        orderChangeListener.orderInStatsChange(order.id);   //用户手动接单
-                    }
-                }
-            });
-            holder.orderStatus.setClickable(true);
+        //订单状态
+        String inState;
+        if (!(order.valid.equals(context.getString(R.string.inValid)))) {        //正常订单
+            inState = "<font color=\"black\"><big>" + order.inState.getStatus() + "</big></font>";
+            if (order.inState.getStatus().equals(OrderStatus.SWAIT)) {        //用户可以接单，可以作废订单
+                holder.orderStatus.setBackgroundColor(Color.RED);
+//                holder.orderStatus.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, SupplierApp.getInstance().getDrawable(R.drawable.ic_sr_blue), null);
+//                holder.orderStatus.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        if (System.currentTimeMillis() - lastClickTime > INTERVAL_TIME) {
+//                            if (orderChangeListener != null) {
+//                                orderChangeListener.orderTakeAndInValidOperation(order.id);   //用户操作接单状态
+//                            }
+//                            lastClickTime = System.currentTimeMillis();
+//                        }
+//                    }
+//                });
+//                holder.orderStatus.setClickable(true);
+            } else if (order.inState.getStatus().equals(OrderStatus.SWAITED)) {     //用户已经接单，可以作废订单
+                holder.orderStatus.setBackgroundColor(Color.YELLOW);
+//                holder.orderStatus.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, SupplierApp.getInstance().getDrawable(R.drawable.ic_sr_blue), null);
+//                holder.orderStatus.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        if (System.currentTimeMillis() - lastClickTime > INTERVAL_TIME) {
+//                            if (orderChangeListener != null) {
+//                                orderChangeListener.orderInValidOperation(order.id);   //用户操作接单状态
+//                            }
+//                            lastClickTime = System.currentTimeMillis();
+//                        }
+//                    }
+//                });
+//                holder.orderStatus.setClickable(true);
+            } else {
+                holder.orderStatus.setBackgroundColor(Color.GREEN);
+//                holder.orderStatus.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, null, null);
+//                holder.orderStatus.setOnClickListener(null);
+//                holder.orderStatus.setClickable(false);
+            }
+        } else {                                //作废订单
+            inState = "<font color=\"black\"><big>" + order.valid + "</big></font>";
+            holder.orderStatus.setBackgroundColor(Color.LTGRAY);
+//            holder.orderStatus.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, null, null);
         }
+        holder.orderStatus.setText(Html.fromHtml(inState, Html.FROM_HTML_MODE_COMPACT));
 
         String orderTime = context.getString(R.string.order_time) + "：" + "<font color=\"black\">" + order.createTime + "</font>";
         holder.orderTime.setText(Html.fromHtml(orderTime, Html.FROM_HTML_MODE_COMPACT));
@@ -110,25 +152,34 @@ public class OrderInformationAdapter extends BaseAdapter {
         holder.sendAmount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (order.expansion) {       //展开状态，关闭
-                    holder.goodsContent.setVisibility(View.GONE);
-                    order.expansion = false;
-                    holder.sendAmount.setCompoundDrawablesWithIntrinsicBounds(null, null, context.getDrawable(R.drawable.ic_sj_down), null);
-                } else {
-                    holder.goodsContent.setVisibility(View.VISIBLE);
-                    order.expansion = true;
-                    holder.sendAmount.setCompoundDrawablesWithIntrinsicBounds(null, null, context.getDrawable(R.drawable.ic_sj_up), null);
+                if (System.currentTimeMillis() - lastClickTime > INTERVAL_TIME) {
+                    if (order.hasQueryProperties) {     //已经查询了属性
+                        if (order.expansion) {       //展开状态，关闭
+                            holder.goodsContent.setVisibility(View.GONE);
+                            order.expansion = false;
+                            holder.sendAmount.setCompoundDrawablesWithIntrinsicBounds(null, null, context.getDrawable(R.drawable.ic_sj_down), null);
+                        } else {
+                            holder.goodsContent.setVisibility(View.VISIBLE);
+                            order.expansion = true;
+                            holder.sendAmount.setCompoundDrawablesWithIntrinsicBounds(null, null, context.getDrawable(R.drawable.ic_sj_up), null);
+                        }
+                    } else {        //还未查属性，查询属性
+                        if (orderChangeListener != null) {
+                            orderChangeListener.orderPropertyQuery(order.id);
+                        }
+                    }
+                    lastClickTime = System.currentTimeMillis();
                 }
             }
         });
 
-        String shop = context.getString(R.string.branch) + "：" + "<font color=\"red\">" + order.branchId + "</font>";
+        String shop = context.getString(R.string.branch) + "：" + "<font color=\"red\">" + order.fId + "</font>";
         holder.shop.setText(Html.fromHtml(shop, Html.FROM_HTML_MODE_COMPACT));
 
         String orderID = context.getString(R.string.orderID) + "：" + "<font color=\"black\">" + order.id + "</font>";
         holder.orderID.setText(Html.fromHtml(orderID, Html.FROM_HTML_MODE_COMPACT));
 
-        String orderClass = context.getString(R.string.order_class) + "：" + "<font color=\"black\">" + order.orderType.getType() + "</font>";
+        String orderClass = /*context.getString(R.string.order_class) + "：" + */"<font color=\"black\">" + order.orderType.getType() + "</font>";
         holder.orderClass.setText(Html.fromHtml(orderClass, Html.FROM_HTML_MODE_COMPACT));
 
         String goodsID = context.getString(R.string.old_goods_id) + "：" + "<font color=\"black\">" + order.oldGoodsId + "</font>";
@@ -151,25 +202,26 @@ public class OrderInformationAdapter extends BaseAdapter {
         }
         holder.isPrint.setText(Html.fromHtml(printTime, Html.FROM_HTML_MODE_COMPACT));
 
-//        String shipmentTime;
-//        if (order.status.getType() == OrderStatus.SHIPMENT) {
-//            shipmentTime = context.getString(R.string.shipment_time) + "：" + "<font color=\"blue\">" + order.shipmentTime + "</font>";
-//        } else {
-//            shipmentTime = "<font color=\"red\">" + order.status.toString() + "</font>";        //context.getString(R.string.no_shipment);
-//        }
-//        holder.orderStatus.setText(Html.fromHtml(shipmentTime, Html.FROM_HTML_MODE_COMPACT));
-
         String remark = context.getString(R.string.remark) + "：" + order.remark;
         holder.remark.setText(Html.fromHtml(remark, Html.FROM_HTML_MODE_COMPACT));
 
-        holder.choice.setVisibility(order.canChecked ? View.VISIBLE : View.INVISIBLE);
-        holder.choice.setChecked(order.checked);
+        holder.choice.setOnCheckedChangeListener(null);
+        holder.choice.setVisibility(order.canSelect ? View.VISIBLE : View.INVISIBLE);
+        holder.choice.setChecked(order.select);
         holder.choice.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                order.checked = isChecked;
-                if (orderChangeListener != null) {
-                    orderChangeListener.orderChoice(order);
+                if (System.currentTimeMillis() - lastClickTime > INTERVAL_TIME) {
+                    order.select = isChecked;
+                    if (orderChangeListener != null) {
+                        orderChangeListener.orderChoice(order);
+                    }
+//                    if (!order.hasQueryProperties) {
+//                        if (orderChangeListener != null) {
+//                            orderChangeListener.orderPropertyQuery(order.id);
+//                        }
+//                    }
+                    lastClickTime = System.currentTimeMillis();
                 }
             }
         });
@@ -182,161 +234,123 @@ public class OrderInformationAdapter extends BaseAdapter {
         }
         for (final OrderPropertyRecord attr : order.propertyRecords) {
             View layout = LayoutInflater.from(this.context).inflate(R.layout.order_goods_information_item, null, false);
-            TextView color = layout.findViewById(R.id.color);
+            TextView color = layout.findViewById(R.id.color);       //颜色
             color.setText(attr.actualColor);
-//            color.addTextChangedListener(new TextWatcher() {
-//                @Override
-//                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-//
-//                }
-//
-//                @Override
-//                public void onTextChanged(CharSequence s, int start, int before, int count) {
-//
-//                }
-//
-//                @Override
-//                public void afterTextChanged(Editable s) {
-//                    attr.actualColor = s.toString();
-//                }
-//            });
-            TextView size = layout.findViewById(R.id.size);
+            TextView size = layout.findViewById(R.id.size);         //尺码
             size.setText(attr.actualSize);
-//            size.addTextChangedListener(new TextWatcher() {
-//                @Override
-//                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-//
-//                }
-//
-//                @Override
-//                public void onTextChanged(CharSequence s, int start, int before, int count) {
-//
-//                }
-//
-//                @Override
-//                public void afterTextChanged(Editable s) {
-//                    attr.actualSize = s.toString();
-//                }
-//            });
-            final EditText numT = layout.findViewById(R.id.num);
-            numT.setText(("" + attr.actualNum));
-            numT.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-                /**
-                 * 参数说明
-                 * @param v 被监听的对象
-                 * @param actionId  动作标识符,如果值等于EditorInfo.IME_NULL，则回车键被按下。
-                 * @param event    如果由输入键触发，这是事件；否则，这是空的(比如非输入键触发是空的)。
-                 * @return 返回你的动作
-                 */
-                @Override
-                public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                    if (actionId == EditorInfo.IME_ACTION_NEXT || actionId == EditorInfo.IME_ACTION_DONE) {      //下一个/回车键
-                        String value = numT.getText().toString();
-                        if (!TextUtils.isEmpty(value)) {
-                            int newNum = Integer.parseInt(value);
-                            if (newNum <= 0 || newNum > attr.val) {
-                                numT.setText(("" + attr.actualNum));
-                                Utils.toast(context, R.string.inputError);
-                            } else if (newNum == attr.actualNum) {
-                                //
-                            } else {
-                                if (orderChangeListener != null) {
-                                    orderChangeListener.orderGoodsNumChange(attr.id, newNum);
+            final EditText numT = layout.findViewById(R.id.num);    //数量
+            numT.setText(String.valueOf(attr.actualNum));
+            ImageButton reduce = layout.findViewById(R.id.reduce);       //数量减
+            ImageButton add = layout.findViewById(R.id.add);             //数量加
+            //条件判断，修改颜色尺码
+            if (canSetNumColorSize) {
+                //发货数量的修改只能在：供应商待接单 和 供应商已接单 状态下才能修改
+                if (order.inState.getStatus().equals(OrderStatus.SWAIT) || order.inState.getStatus().equals(OrderStatus.SWAITED)) {
+                    numT.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                        /**
+                         * 参数说明
+                         *
+                         * @param v        被监听的对象
+                         * @param actionId 动作标识符,如果值等于EditorInfo.IME_NULL，则回车键被按下。
+                         * @param event    如果由输入键触发，这是事件；否则，这是空的(比如非输入键触发是空的)。
+                         * @return 返回你的动作
+                         */
+                        @Override
+                        public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                            if (System.currentTimeMillis() - lastClickTime > INTERVAL_TIME) {
+                                if (actionId == EditorInfo.IME_ACTION_NEXT || actionId == EditorInfo.IME_ACTION_DONE) {      //下一个/回车键
+                                    String value = numT.getText().toString();
+                                    if (!TextUtils.isEmpty(value)) {
+                                        int newNum = Integer.parseInt(value);
+                                        if (newNum <= 0 || newNum > attr.val) {
+                                            numT.setText(("" + attr.actualNum));
+                                            Utils.toast(context, R.string.inputError_fix_oder_pnum);
+                                        } else if (newNum == attr.actualNum) {
+                                            //
+                                        } else {
+                                            if (orderChangeListener != null) {
+                                                orderChangeListener.orderGoodsNumChange(order.id, attr.id, newNum);
+                                            }
+                                        }
+                                    } else {
+                                        numT.setText(("" + attr.actualNum));
+                                        Utils.toast(context, R.string.inputError_fix_oder_pnum);
+                                    }
                                 }
+                                lastClickTime = System.currentTimeMillis();
                             }
-                        } else {
-                            numT.setText(("" + attr.actualNum));
-                            Utils.toast(context, R.string.inputError);
+                            return false;
                         }
+                    });
+                    //监听数量减
+                    reduce.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (System.currentTimeMillis() - lastClickTime > INTERVAL_TIME) {
+                                if (orderChangeListener != null) {
+                                    orderChangeListener.orderGoodsNumChange(order.id, attr.id, attr.actualNum - 1);
+                                }
+                                lastClickTime = System.currentTimeMillis();
+                            }
+                        }
+                    });
+                    if (attr.actualNum == 0) {
+                        reduce.setImageDrawable(context.getDrawable(R.drawable.ic_reduce_grey));
+                        reduce.setClickable(false);
                     }
-                    return false;
-                }
-            });
-//            numT.addTextChangedListener(new TextWatcher() {
-//                @Override
-//                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-//                }
-//
-//                @Override
-//                public void onTextChanged(CharSequence s, int start, int before, int count) {
-//                }
-//
-//                @Override
-//                public void afterTextChanged(Editable s) {
-//                    String value = s.toString();
-//                    if (!TextUtils.isEmpty(value)) {
-//                        int newNum = Integer.parseInt(value);
-//                        if (newNum <= 0 || newNum > attr.val) {
-//                            numT.setText(("" + attr.actualNum));
-//                            Utils.toast(context, R.string.inputError);
-//                        } else {
-//                            if (orderChangeListener != null) {
-//                                orderChangeListener.orderGoodsNumChange(attr.id, newNum);
-//                            }
-//                        }
-//                    } else {
-//                        numT.setText(("" + attr.actualNum));
-//                        Utils.toast(context, R.string.inputError);
-//                    }
-//                }
-//            });
-            Button reduce = layout.findViewById(R.id.reduce);
-            Button add = layout.findViewById(R.id.add);
-            reduce.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-//                    attr.actualNum--;
-//                    order.sendAmount--;
-//                    if (attr.actualNum == 0) {
-//                        reduce.setBackground(context.getDrawable(R.drawable.ic_reduce_grey));
-//                        reduce.setClickable(false);
-//                    }
-//                    if (attr.actualNum < attr.val && !add.isClickable()) {
-//                        add.setBackground(context.getDrawable(R.drawable.button_add));
-//                        add.setClickable(true);
-//                    }
-//                    numT.setText(("x" + attr.actualNum));
-//                    String num = context.getString(R.string.num) + "：" + "<font color=\"red\">" + order.sendAmount + "</font>";
-//                    holder.num.setText(Html.fromHtml(num, Html.FROM_HTML_MODE_COMPACT));
-                    if (orderChangeListener != null) {
-                        orderChangeListener.orderGoodsNumChange(attr.id, attr.actualNum - 1);
+                    //监听数量加
+                    add.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (System.currentTimeMillis() - lastClickTime > INTERVAL_TIME) {
+                                if (orderChangeListener != null) {
+                                    orderChangeListener.orderGoodsNumChange(order.id, attr.id, attr.actualNum + 1);
+                                }
+                                lastClickTime = System.currentTimeMillis();
+                            }
+                        }
+                    });
+                    if (attr.actualNum == attr.val) {
+                        add.setImageDrawable(context.getDrawable(R.drawable.ic_add_grey));
+                        add.setClickable(false);
                     }
+                } else {     //其他订单状态下不能修改数量
+                    numT.setFocusable(false);
+                    numT.setBackground(null);
+                    add.setVisibility(View.INVISIBLE);
+                    reduce.setVisibility(View.INVISIBLE);
                 }
-            });
-            if (attr.actualNum == 0) {
-                reduce.setBackground(context.getDrawable(R.drawable.ic_reduce_grey));
-                reduce.setClickable(false);
-            }
-            add.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-//                    attr.actualNum++;
-//                    order.sendAmount++;
-//                    if (attr.actualNum == attr.val) {
-//                        add.setBackground(context.getDrawable(R.drawable.ic_add_grey));
-//                        add.setClickable(false);
-//                    }
-//                    if (attr.actualNum > 0 && !reduce.isClickable()) {
-//                        reduce.setBackground(context.getDrawable(R.drawable.button_reduce));
-//                        reduce.setClickable(true);
-//                    }
-//                    numT.setText(("x" + attr.actualNum));
-//                    String num = context.getString(R.string.num) + "：" + "<font color=\"red\">" + order.sendAmount + "</font>";
-//                    holder.num.setText(Html.fromHtml(num, Html.FROM_HTML_MODE_COMPACT));
-                    if (orderChangeListener != null) {
-                        orderChangeListener.orderGoodsNumChange(attr.id, attr.actualNum + 1);
-                    }
+                if (order.valid.equals(OrderValid.INVALID)) {
+                    numT.setFocusable(false);
+                    numT.setBackground(null);
+                    add.setVisibility(View.INVISIBLE);
+                    reduce.setVisibility(View.INVISIBLE);
                 }
-            });
-            if (attr.actualNum == attr.val) {
-                add.setBackground(context.getDrawable(R.drawable.ic_add_grey));
-                add.setClickable(false);
+            } else {
+                numT.setFocusable(false);
+                numT.setBackground(null);
+                add.setVisibility(View.INVISIBLE);
+                reduce.setVisibility(View.INVISIBLE);
             }
             holder.goodsContent.addView(layout);
         }
 
-        holder.goodsContent.setVisibility(order.expansion ? View.VISIBLE : View.GONE);
-
+        //根据expansion决定展开或是关闭
+        if (!order.expansion) {       //展开状态，关闭
+            holder.goodsContent.setVisibility(View.GONE);
+            holder.sendAmount.setCompoundDrawablesWithIntrinsicBounds(null, null, context.getDrawable(R.drawable.ic_sj_down), null);
+        } else {
+            holder.goodsContent.setVisibility(View.VISIBLE);
+            holder.sendAmount.setCompoundDrawablesWithIntrinsicBounds(null, null, context.getDrawable(R.drawable.ic_sj_up), null);
+        }
+        //加急订单背景色显著显示
+        if (order.isUrgent != null) {
+            if (order.isUrgent.equals(OrderUrgent.URGENT_URGENT)) {
+                convertView.setBackgroundColor(Color.rgb(0x99, 0x32, 0xCD));        //紫色
+            } else {
+                convertView.setBackgroundColor(Color.rgb(0xFF, 0xFF, 0xFF));        //白色
+            }
+        }
         return convertView;
     }
 
@@ -345,14 +359,19 @@ public class OrderInformationAdapter extends BaseAdapter {
     }
 
     public interface OnOrderChangeListener {
-        void orderChoice(OrderInformation information);
+        void orderChoice(OrderInformation information);         //订单被选中
 
-        void orderGoodsNumChange(String propertyRecordID, int num);
+        void orderGoodsNumChange(String orderID, String propertyRecordID, int num);     //订单货物数量改变
 
-        void orderInStatsChange(String orderID);
+        void orderTakeAndInValidOperation(String orderID);      //用户可以接单或者作废订单
+
+        void orderInValidOperation(String orderID);         //用户可以作废订单
+
+        void orderPropertyQuery(String orderID);      //订单属性查询
     }
 
     private static class ViewHolder {
+        private TextView pos;
         private ImageView photo;
         private TextView warehouse, orderTime, invalidTime, amount, sendAmount;
         private TextView shop, orderClass, goodsID, newGoodsID, orderID;
@@ -361,6 +380,7 @@ public class OrderInformationAdapter extends BaseAdapter {
         private LinearLayout goodsContent;
 
         private ViewHolder(View rootView) {
+            this.pos = rootView.findViewById(R.id.pos);
             this.photo = rootView.findViewById(R.id.photo);
             this.warehouse = rootView.findViewById(R.id.warehouse);
             this.orderTime = rootView.findViewById(R.id.orderTime);

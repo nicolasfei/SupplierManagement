@@ -20,10 +20,9 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.nicolas.datetimepickerlibrary.DateTimePickerDialog;
-import com.nicolas.pullrefreshlibrary.PullRefreshListView;
+import com.nicolas.componentlibrary.datetimepicker.DateTimePickerDialog;
+import com.nicolas.componentlibrary.pullrefresh.PullRefreshListView;
 import com.nicolas.toollibrary.BruceDialog;
-import com.nicolas.toollibrary.Utils;
 import com.nicolas.supplier.R;
 import com.nicolas.supplier.common.OperateResult;
 import com.nicolas.supplier.data.ScoreRecordAdapter;
@@ -41,6 +40,7 @@ public class ScoreRecordActivity extends BaseActivity implements View.OnClickLis
     private ScoreRecordViewModel viewModel;
     private DrawerLayout drawerLayout;
     private TextView staff;
+    //查询条件
     private TextView recordTime;
     private TextView scoreClassId;
     private TextView newGoodsID;
@@ -80,16 +80,14 @@ public class ScoreRecordActivity extends BaseActivity implements View.OnClickLis
         this.staff.setClickable(true);
         this.updateStaff(SupplierKeeper.getInstance().getOnDutySupplier().name);
 
-        this.recordTime = findViewById(R.id.recordTime);
-        this.recordTime.setOnClickListener(this);
+        this.recordTime = findClickView(R.id.recordTime);
         this.recordTime.setClickable(true);
+        this.updateRecordTime(this.viewModel.getRecordTime().replace("~", "\u3000~\u3000"));
 
-        this.scoreClassId = findViewById(R.id.scoreClassId);
-        this.scoreClassId.setOnClickListener(this);
+        this.scoreClassId = findClickView(R.id.scoreClassId);
         this.scoreClassId.setClickable(true);
 
-        this.newGoodsID = findViewById(R.id.newGoodsID);
-        this.newGoodsID.setOnClickListener(this);
+        this.newGoodsID = findClickView(R.id.newGoodsID);
         this.newGoodsID.setClickable(true);
 
         this.pullToRefreshListView = findViewById(R.id.pullToRefreshListView);
@@ -108,11 +106,8 @@ public class ScoreRecordActivity extends BaseActivity implements View.OnClickLis
             }
         });
 
-        Button button = findViewById(R.id.query);
-        button.setOnClickListener(this);
-
-        Button button1 = findViewById(R.id.reset);
-        button1.setOnClickListener(this);
+        Button button = findClickView(R.id.query);
+        Button button1 = findClickView(R.id.reset);
 
         /**
          * 监听查询结果
@@ -125,11 +120,23 @@ public class ScoreRecordActivity extends BaseActivity implements View.OnClickLis
                     adapter.notifyDataSetChanged();
                     Message msg = operateResult.getSuccess().getMessage();
                     if (msg != null) {
-                        Utils.toast(ScoreRecordActivity.this, (String) msg.obj);
+                        BruceDialog.showAlertDialog(ScoreRecordActivity.this, getString(R.string.success),
+                                (String) msg.obj, new BruceDialog.OnAlertDialogListener() {
+                                    @Override
+                                    public void onSelect(boolean confirm) {
+
+                                    }
+                                });
                     }
                 }
                 if (operateResult.getError() != null) {
-                    Utils.toast(ScoreRecordActivity.this, operateResult.getError().getErrorMsg());
+                    BruceDialog.showAlertDialog(ScoreRecordActivity.this, getString(R.string.failed),
+                            operateResult.getError().getErrorMsg(), new BruceDialog.OnAlertDialogListener() {
+                                @Override
+                                public void onSelect(boolean confirm) {
+
+                                }
+                            });
                 }
                 if (pullToRefreshListView.isPullToRefreshing()) {
                     pullToRefreshListView.refreshFinish();
@@ -248,9 +255,9 @@ public class ScoreRecordActivity extends BaseActivity implements View.OnClickLis
      * 重置查询条件
      */
     private void resetQueryCondition() {
+        this.viewModel.resetQueryCondition();
         this.updateNewGoodsID("");
         this.updateScoreClassId("");
-        this.updateRecordTime("");
-        this.viewModel.resetQueryCondition();
+        this.updateRecordTime(this.viewModel.getRecordTime().replace("~", "\u3000~\u3000"));
     }
 }

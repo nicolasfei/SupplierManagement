@@ -4,38 +4,43 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.SearchView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.core.view.GravityCompat;
-import androidx.core.view.MenuItemCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.nicolas.printerlibraryforufovo.PrinterManager;
+import com.nicolas.supplier.data.OrderDataHolder;
+import com.nicolas.supplier.data.OrderDistribution;
 import com.nicolas.supplier.data.OrderInformation;
-import com.nicolas.toollibrary.Utils;
+import com.nicolas.supplier.ui.device.printer.PrintContent;
 import com.nicolas.supplier.R;
 import com.nicolas.supplier.common.OperateResult;
 import com.nicolas.supplier.supplier.SupplierKeeper;
 import com.nicolas.supplier.ui.BaseActivity;
 import com.nicolas.supplier.ui.device.printer.PrinterActivity;
 import com.nicolas.supplier.data.OrderPrintAdapter;
+import com.nicolas.supplier.ui.home.goods.GoodsQueryActivity;
+import com.nicolas.toollibrary.BruceDialog;
+
+import java.io.IOException;
+import java.util.ArrayList;
+
+import static com.nicolas.printerlibraryforufovo.PrinterDevice.LINK_TYPE_BLUETOOTH;
 
 /**
  * 订单打印条码页面--single
  */
-public class OrderPrintActivity extends BaseActivity {
+public class OrderPrintActivity extends BaseActivity implements View.OnClickListener {
     private static final String TAG = "OrderPrintActivity";
     private OrderPrintViewModel viewModel;
 
@@ -45,10 +50,11 @@ public class OrderPrintActivity extends BaseActivity {
         setContentView(R.layout.activity_order_print);
         this.viewModel = new ViewModelProvider(this).get(OrderPrintViewModel.class);
 
-        Intent intent = getIntent();
-        if (intent != null) {
-            this.viewModel.setOrders(intent.<OrderInformation>getParcelableArrayListExtra("orders"));
-        }
+        //this.viewModel.setOrders(intent.getParcelableArrayListExtra("orders"), intent.getParcelableArrayListExtra("distributions"));
+        ArrayList<OrderInformation> orders = (ArrayList<OrderInformation>) OrderDataHolder.getInstance().getData("orders");
+        ArrayList<OrderDistribution> distributions = (ArrayList<OrderDistribution>) OrderDataHolder.getInstance().getData("distributions");
+        this.viewModel.setOrders(orders, distributions);
+
         //供应商
         String supplierCode = getString(R.string.supplier) + "\u3000\u3000\u3000" + SupplierKeeper.getInstance().getOnDutySupplier().name;
         TextView supplier = findViewById(R.id.supplier);
@@ -62,11 +68,20 @@ public class OrderPrintActivity extends BaseActivity {
         String totalValue = getString(R.string.total) + getString(R.string.colon) + this.viewModel.getTotalString();
         total.setText(Html.fromHtml(totalValue, Html.FROM_HTML_MODE_COMPACT));
         //打印
-        Button print = findViewById(R.id.button2);
-        print.setOnClickListener(new View.OnClickListener() {
+        Button print = findClickView(R.id.button2);
+
+        //打印测试
+        Button button = findViewById(R.id.button4);
+        button.setVisibility(View.GONE);
+        button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                printOrder();
+                OrderInformation order = new OrderInformation();
+                try {
+                    PrinterManager.getInstance().printLabel(PrintContent.getOrderReceipt(order, 0), LINK_TYPE_BLUETOOTH);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -77,12 +92,18 @@ public class OrderPrintActivity extends BaseActivity {
             @Override
             public void onChanged(OperateResult operateResult) {
                 if (operateResult.getSuccess() != null) {
+//                    Utils.toast(OrderPrintActivity.this, getString(R.string.order_print_success));
                     OrderPrintActivity.this.setResult(1);
-                    showPrintSuccessDialog();
+                    OrderPrintActivity.this.finish();
                 }
                 if (operateResult.getError() != null) {
-                    Utils.toast(OrderPrintActivity.this, operateResult.getError().getErrorMsg());
-                    jump2PrinterActivity();
+                    BruceDialog.showAlertDialog(OrderPrintActivity.this, getString(R.string.failed),
+                            operateResult.getError().getErrorMsg(), new BruceDialog.OnAlertDialogListener() {
+                                @Override
+                                public void onSelect(boolean confirm) {
+                                    jump2PrinterActivity();
+                                }
+                            });
                 }
             }
         });
@@ -112,7 +133,12 @@ public class OrderPrintActivity extends BaseActivity {
             if (PrinterManager.getInstance().isLinkedPrinter()) {
                 this.viewModel.printOrder();
             } else {
-                Utils.toast(this, getString(R.string.printer_no_link));
+                BruceDialog.showAlertDialog(OrderPrintActivity.this, getString(R.string.failed),
+                        getString(R.string.printer_no_link), new BruceDialog.OnAlertDialogListener() {
+                            @Override
+                            public void onSelect(boolean confirm) {
+                            }
+                        });
             }
         }
     }
@@ -150,5 +176,16 @@ public class OrderPrintActivity extends BaseActivity {
                 break;
         }
         return true;
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.button2:
+                printOrder();
+                break;
+            default:
+                break;
+        }
     }
 }

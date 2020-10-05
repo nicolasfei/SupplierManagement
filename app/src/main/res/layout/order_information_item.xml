@@ -8,13 +8,24 @@
     <ImageView
         android:id="@+id/photo"
         android:layout_width="0dp"
-        android:layout_height="240dp"
+        android:layout_height="190dp"
+        android:layout_marginTop="20dp"
         android:paddingStart="16dp"
         android:paddingEnd="0dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_percent="0.25"
-        app:srcCompat="@mipmap/ic_launcher_foreground" />
+        app:srcCompat="@mipmap/ico_big_decolor" />
+
+    <TextView
+        android:id="@+id/pos"
+        style="@style/TextViewStyleItem"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:textSize="16sp"
+        android:text="编号：1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/warehouse"
@@ -32,19 +43,32 @@
         style="@style/TextViewStyleItem"
         android:layout_height="80dp"
         android:background="@android:color/holo_red_dark"
-        android:drawableEnd="@drawable/ic_sr_blue"
         android:gravity="center"
         android:text="供货商待接单"
         app:layout_constraintStart_toEndOf="@+id/warehouse"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_percent="0.3" />
+        app:layout_constraintWidth_percent="0.25" />
+
+    <TextView
+        android:id="@+id/orderClass"
+        style="@style/TextViewStyleItem"
+        android:layout_height="40dp"
+        android:gravity="start|center"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/black"
+        android:text="通下"
+        app:layout_constraintStart_toEndOf="@+id/orderStatus"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <CheckBox
         android:id="@+id/checkBox"
         style="@style/TextViewStyleItem"
         android:gravity="center"
+        android:layout_marginStart="12dp"
         app:layout_constraintStart_toEndOf="@+id/orderStatus"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/orderClass"
         app:layout_constraintWidth_percent="0.1" />
 
     <View
@@ -116,10 +140,11 @@
             android:text="原来货号：3096" />
 
         <TextView
-            android:id="@+id/orderClass"
+            android:id="@+id/amount"
             style="@style/TextViewStyleItem"
             android:layout_weight="0.8"
-            android:text="下单类型：统下单" />
+            android:paddingEnd="5dp"
+            android:text="发货数量：999" />
     </LinearLayout>
 
     <View
@@ -137,6 +162,7 @@
         android:layout_width="0dp"
         android:layout_height="@dimen/text_view_item_height"
         android:orientation="horizontal"
+        android:visibility="gone"
         app:layout_constraintStart_toEndOf="@+id/photo"
         app:layout_constraintTop_toBottomOf="@+id/divider22"
         app:layout_constraintWidth_percent="0.75">
@@ -154,10 +180,14 @@
             android:text="订货价：￥50.00" />
 
         <TextView
-            android:id="@+id/amount"
+            android:id="@+id/sendAmountP"
             style="@style/TextViewStyleItem"
             android:layout_weight="0.8"
-            android:text="订单数量：1000" />
+            android:background="@drawable/shape_rectangle_blue"
+            android:drawableEnd="@drawable/ic_sj_down"
+            android:paddingEnd="5dp"
+            android:text="发货数量：999" />
+
     </LinearLayout>
 
     <View
@@ -197,8 +227,7 @@
             android:layout_weight="0.8"
             android:background="@drawable/shape_rectangle_blue"
             android:drawableEnd="@drawable/ic_sj_down"
-            android:paddingEnd="5dp"
-            android:text="发货数量：999" />
+            android:text="订单数量：1000" />
     </LinearLayout>
 
     <View

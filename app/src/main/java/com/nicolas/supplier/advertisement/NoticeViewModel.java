@@ -6,6 +6,9 @@ import android.graphics.BitmapFactory;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.nicolas.advertnoticelibrary.AdvertData;
+import com.nicolas.advertnoticelibrary.DataLocalManagement;
+import com.nicolas.advertnoticelibrary.NoticeData;
 import com.nicolas.supplier.R;
 import com.nicolas.supplier.app.SupplierApp;
 import com.nicolas.supplier.common.OperateInUserView;
@@ -15,7 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class NoticeViewModel extends ViewModel {
-    private static final String TAG = "NoticeViewModel";
     private MutableLiveData<OperateResult> noticeGetResult;
     private MutableLiveData<OperateResult> advertGetResult;
     private MutableLiveData<OperateResult> initResult;
@@ -107,5 +109,12 @@ public class NoticeViewModel extends ViewModel {
      */
     public void queryNotice() {
 
+    }
+
+    /**
+     * 重置广告加载状态
+     */
+    public void resetAdvertNotice() {
+        DataLocalManagement.getInstance().resetInitStatus();
     }
 }

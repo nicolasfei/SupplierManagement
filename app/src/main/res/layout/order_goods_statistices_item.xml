@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/goodsClassId"
+        style="@style/TextViewStyleItem"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.5" />
+
+    <TextView
+        android:id="@+id/goodsClassName"
+        style="@style/TextViewStyleItem"
+        app:layout_constraintStart_toEndOf="@+id/goodsClassId"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.5" />
+
+    <View
+        android:id="@+id/divider0"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/goodsClassId" />
+
+    <TextView
+        android:id="@+id/goodsID"
+        style="@style/TextViewStyleItem"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider0"
+        app:layout_constraintWidth_percent="0.5" />
+
+    <TextView
+        android:id="@+id/oldGoodsID"
+        style="@style/TextViewStyleItem"
+        app:layout_constraintStart_toEndOf="@+id/goodsID"
+        app:layout_constraintTop_toBottomOf="@+id/divider0"
+        app:layout_constraintWidth_percent="0.5" />
+
+    <View
+        android:id="@+id/divider1"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/goodsID" />
+
+    <TextView
+        android:id="@+id/colorSize"
+        style="@style/TextViewStyleItem"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider1"
+        app:layout_constraintWidth_percent="0.5" />
+
+    <TextView
+        android:id="@+id/num"
+        style="@style/TextViewStyleItem"
+        app:layout_constraintStart_toEndOf="@+id/colorSize"
+        app:layout_constraintTop_toBottomOf="@+id/divider1"
+        app:layout_constraintWidth_percent="0.5" />
+</androidx.constraintlayout.widget.ConstraintLayout>

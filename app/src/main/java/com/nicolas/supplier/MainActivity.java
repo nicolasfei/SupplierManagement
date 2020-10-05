@@ -1,9 +1,12 @@
 package com.nicolas.supplier;
 
 import android.content.DialogInterface;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.nicolas.printerlibraryforufovo.PrinterManager;
+import com.nicolas.supplier.app.SupplierApp;
 import com.nicolas.toollibrary.AppActivityManager;
 import com.nicolas.toollibrary.HttpHandler;
 import com.nicolas.toollibrary.Utils;
@@ -13,6 +16,7 @@ import com.nicolas.supplier.server.CommandVo;
 import com.nicolas.supplier.server.Invoker;
 import com.nicolas.supplier.server.login.LoginInterface;
 import com.nicolas.supplier.supplier.SupplierKeeper;
+import com.nicolas.toollibrary.imageload.ImageLoadClass;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -41,8 +45,15 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
 
+        //--------------初始化全局类-------------------//
+        //开启打印机连接任务
+        PrinterManager.getInstance().init(SupplierApp.getInstance());
         //开启SupplierKeeper定时查询任务
         SupplierKeeper.getInstance().startTimerTask();
+        //初始化url图片缓存
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inSampleSize = 2;
+        ImageLoadClass.getInstance().init(BitmapFactory.decodeResource(getResources(), R.mipmap.ico_big_decolor, options));
     }
 
     @Override
@@ -98,6 +109,10 @@ public class MainActivity extends AppCompatActivity {
         AppActivityManager.getInstance().removeActivity(this);
         //关闭定时查询任务
         SupplierKeeper.getInstance().cancelTimerTask();
+        //打印机模块注销
+        PrinterManager.getInstance().unManager();
+        //释放
+        ImageLoadClass.getInstance().release();
         super.onDestroy();
     }
 }

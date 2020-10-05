@@ -52,7 +52,6 @@ public class Invoker {
     public String synchronousExec(CommandVo vo) {
         for (Command c : commandList) {
             if (c.getCommandType() == vo.typeEnum) {
-                Log.d("TaskThread", "run: execute " + vo.url);
                 return c.execute(vo);
             }
         }

@@ -21,13 +21,11 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.nicolas.datetimepickerlibrary.DateTimePickerDialog;
-import com.nicolas.multileveltreelibrary.TreeNode;
-import com.nicolas.multileveltreelibrary.TreeNodeViewDialog;
-import com.nicolas.pullrefreshlibrary.PullRefreshListView;
-import com.nicolas.supplier.ui.home.returngoods.ReturnGoodsQueryActivity;
+import com.nicolas.componentlibrary.datetimepicker.DateTimePickerDialog;
+import com.nicolas.componentlibrary.multileveltree.TreeNode;
+import com.nicolas.componentlibrary.multileveltree.TreeNodeViewDialog;
+import com.nicolas.componentlibrary.pullrefresh.PullRefreshListView;
 import com.nicolas.toollibrary.BruceDialog;
-import com.nicolas.toollibrary.Utils;
 import com.nicolas.supplier.R;
 import com.nicolas.supplier.common.OperateResult;
 import com.nicolas.supplier.data.GoodsCodeAdapter;
@@ -48,18 +46,21 @@ public class GoodsQueryActivity extends BaseActivity implements View.OnClickList
     private GoodsQueryViewModel viewModel;
     private DrawerLayout drawerLayout;
     private TextView staff;
+    private TextView detailed;          //明细
+    //条件查询
     private TextView goodsClassId;              //货物类别ID
     private TextView goodsId;                   //货号
     private TextView oldGoodsId;                //旧货号
     private RadioGroup goodsTypeGroup;          //货号类型(normal正常/attempt试卖/replace代卖/special特殊需求)
-    //private RadioButton normal, attempt, replace, special;
+
     private TextView createTime;                //创建时间
     private RadioGroup isStockGroup;            //允许下单
-    //private RadioButton allow, forbid;
-
 
     private PullRefreshListView pullToRefreshListView;
     private GoodsCodeAdapter adapter;
+
+    private boolean isClearGoodsType = false;   //是否手动清除-货号类型
+    private boolean isClearStockStatus = false; //是否手动清除-货号类型
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -91,26 +92,29 @@ public class GoodsQueryActivity extends BaseActivity implements View.OnClickList
         });
 
         this.staff = findViewById(R.id.staff);
-        this.staff.setOnClickListener(this);
-        this.staff.setClickable(true);
+//        this.staff.setOnClickListener(this);
+//        this.staff.setClickable(true);
+        this.detailed = findClickView(R.id.detailed);
         this.updateStaff(SupplierKeeper.getInstance().getOnDutySupplier().name);
 
-        this.goodsClassId = findViewById(R.id.goodsClassId);
-        this.goodsClassId.setOnClickListener(this);
+        //---------------------条件查询----------------------//
+        this.goodsClassId = findClickView(R.id.goodsClassId);
         this.goodsClassId.setClickable(true);
 
-        this.goodsId = findViewById(R.id.goodsId);
-        this.goodsId.setOnClickListener(this);
+        this.goodsId = findClickView(R.id.goodsId);
         this.goodsId.setClickable(true);
 
-        this.oldGoodsId = findViewById(R.id.oldGoodsId);
-        this.oldGoodsId.setOnClickListener(this);
+        this.oldGoodsId = findClickView(R.id.oldGoodsId);
         this.oldGoodsId.setClickable(true);
 
         this.goodsTypeGroup = findViewById(R.id.goodsTypeGroup);
         this.goodsTypeGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
+                if (isClearGoodsType) {
+                    isClearGoodsType = false;
+                    return;
+                }
                 switch (checkedId) {
                     case R.id.normal:
                         viewModel.queryCondition.setGoodsType(GoodsCodeClass.Normal);
@@ -130,14 +134,18 @@ public class GoodsQueryActivity extends BaseActivity implements View.OnClickList
             }
         });
 
-        this.createTime = findViewById(R.id.createTime);
-        this.createTime.setOnClickListener(this);
+        this.createTime = findClickView(R.id.createTime);
         this.createTime.setClickable(true);
+        this.updateCreateTime(viewModel.queryCondition.getCreateTime().replace("~", "\u3000~\u3000"));
 
         this.isStockGroup = findViewById(R.id.isStockGroup);
         this.isStockGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
+                if (isClearStockStatus) {
+                    isClearStockStatus = false;
+                    return;
+                }
                 switch (checkedId) {
                     case R.id.allow:
                         viewModel.queryCondition.setIsStock(GoodsOrderStatus.Allow);
@@ -156,13 +164,20 @@ public class GoodsQueryActivity extends BaseActivity implements View.OnClickList
         this.adapter.setOnGoodsCodeStatusChangeListener(new GoodsCodeAdapter.OnGoodsCodeStatusChangeListener() {
             @Override
             public void OnGoodsCodeStockChange(String goodsCodeID, String goodsCodePropertyID, boolean isStock) {
-                BruceDialog.showProgressDialog(GoodsQueryActivity.this, getString(R.string.querying));
+                BruceDialog.showProgressDialog(GoodsQueryActivity.this, getString(R.string.GoodsStatusUpdate));
                 String stock = isStock ? GoodsOrderStatus.Allow : GoodsOrderStatus.Forbid;
                 if (TextUtils.isEmpty(goodsCodePropertyID)) {
                     viewModel.updateGoodsStatus(goodsCodeID, stock);
                 } else {
                     viewModel.updateGoodsPropertyStatus(goodsCodeID, goodsCodePropertyID, stock);
                 }
+            }
+
+            @Override
+            public void OnGoodsCodePropertyQuery(String goodsCodeID) {
+                //查询货号属性
+                BruceDialog.showProgressDialog(GoodsQueryActivity.this, getString(R.string.GoodsPropertyQuery));
+                viewModel.queryGoodsCodeProperty(goodsCodeID);
             }
         });
         this.pullToRefreshListView.setAdapter(adapter);
@@ -178,29 +193,58 @@ public class GoodsQueryActivity extends BaseActivity implements View.OnClickList
                 viewModel.loadMoreData();
             }
         });
+//        this.pullToRefreshListView.setOnScrollListener(new AbsListView.OnScrollListener() {
+//            @Override
+//            public void onScrollStateChanged(AbsListView view, int scrollState) {
+//                switch (scrollState) {
+//                    case SCROLL_STATE_IDLE:             //是当屏幕停止滚动时
+//                        adapter.setIsBusy(false);
+//                        break;
+//                    case SCROLL_STATE_TOUCH_SCROLL:     //是当用户在以触屏方式滚动屏幕并且手指仍然还在屏幕上时
+//                        break;
+//                    case SCROLL_STATE_FLING:            //是当用户由于之前划动屏幕并抬起手指，屏幕产生惯性滑动时--这个时候默认图片只在缓存中加载，如果缓存没有，这不下载
+//                        adapter.setIsBusy(true);
+//                        break;
+//                    default:
+//                        break;
+//                }
+//            }
+//
+//            @Override
+//            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+//
+//            }
+//        });
 
-        Button reset = findViewById(R.id.reset);
-        reset.setOnClickListener(this);
+        Button reset = findClickView(R.id.reset);
+        Button submit = findClickView(R.id.submit);
 
-        Button submit = findViewById(R.id.submit);
-        submit.setOnClickListener(this);
-
-        /**
-         * 监听货号查询结果
-         */
+        //监听货号查询结果
         this.viewModel.getQueryGoodsIDResult().observe(this, new Observer<OperateResult>() {
             @Override
             public void onChanged(OperateResult operateResult) {
-                BruceDialog.dismissProgressDialog();
                 if (operateResult.getSuccess() != null) {
                     adapter.notifyDataSetChanged();
                     Message msg = operateResult.getSuccess().getMessage();
                     if (msg != null) {
-                        Utils.toast(GoodsQueryActivity.this, (String) msg.obj);
+                        BruceDialog.showAlertDialog(GoodsQueryActivity.this, getString(R.string.success),
+                                (String) msg.obj, new BruceDialog.OnAlertDialogListener() {
+                                    @Override
+                                    public void onSelect(boolean confirm) {
+
+                                    }
+                                });
                     }
+                    updateDetailed();           //更新订单明细
                 }
                 if (operateResult.getError() != null) {
-                    Utils.toast(GoodsQueryActivity.this, operateResult.getError().getErrorMsg());
+                    BruceDialog.showAlertDialog(GoodsQueryActivity.this, getString(R.string.failed),
+                            operateResult.getError().getErrorMsg(), new BruceDialog.OnAlertDialogListener() {
+                                @Override
+                                public void onSelect(boolean confirm) {
+
+                                }
+                            });
                 }
                 if (pullToRefreshListView.isPushLoadingMore()) {
                     pullToRefreshListView.loadMoreFinish();
@@ -215,23 +259,64 @@ public class GoodsQueryActivity extends BaseActivity implements View.OnClickList
                     queryDate = nowDate + "~" + nowDate;
                 }
                 pullToRefreshListView.updateContentDate(queryDate);
+                BruceDialog.dismissProgressDialog();
             }
         });
 
-        /**
-         * 监听货号下单状态更新
-         */
+        //监听货号属性查询结果
+        this.viewModel.getQueryGoodsPropertyResult().observe(this, new Observer<OperateResult>() {
+            @Override
+            public void onChanged(OperateResult operateResult) {
+                if (operateResult.getSuccess() != null) {
+                    Message msg = operateResult.getSuccess().getMessage();
+                    if (msg != null) {
+                        BruceDialog.showAlertDialog(GoodsQueryActivity.this, getString(R.string.success),
+                                (String) msg.obj, new BruceDialog.OnAlertDialogListener() {
+                                    @Override
+                                    public void onSelect(boolean confirm) {
+
+                                    }
+                                });
+                    }
+                    adapter.notifyDataSetChanged();
+                }
+                if (operateResult.getError() != null) {
+                    BruceDialog.showAlertDialog(GoodsQueryActivity.this, getString(R.string.failed),
+                            operateResult.getError().getErrorMsg(), new BruceDialog.OnAlertDialogListener() {
+                                @Override
+                                public void onSelect(boolean confirm) {
+
+                                }
+                            });
+                }
+                BruceDialog.dismissProgressDialog();
+            }
+        });
+
+        //监听货号下单状态更新
         this.viewModel.getUpdateGoodsStatusResult().observe(this, new Observer<OperateResult>() {
             @Override
             public void onChanged(OperateResult operateResult) {
-                BruceDialog.dismissProgressDialog();
                 adapter.notifyDataSetChanged();
                 if (operateResult.getSuccess() != null) {
-                    Utils.toast(GoodsQueryActivity.this, R.string.setSuccess);
+                    BruceDialog.showAlertDialog(GoodsQueryActivity.this, getString(R.string.success),
+                            getString(R.string.setSuccess), new BruceDialog.OnAlertDialogListener() {
+                                @Override
+                                public void onSelect(boolean confirm) {
+
+                                }
+                            });
                 }
                 if (operateResult.getError() != null) {
-                    Utils.toast(GoodsQueryActivity.this, operateResult.getError().getErrorMsg());
+                    BruceDialog.showAlertDialog(GoodsQueryActivity.this, getString(R.string.failed),
+                            operateResult.getError().getErrorMsg(), new BruceDialog.OnAlertDialogListener() {
+                                @Override
+                                public void onSelect(boolean confirm) {
+
+                                }
+                            });
                 }
+                BruceDialog.dismissProgressDialog();
             }
         });
 
@@ -282,7 +367,7 @@ public class GoodsQueryActivity extends BaseActivity implements View.OnClickList
                     @Override
                     public void onInputFinish(String itemName) {
                         if (!TextUtils.isEmpty(itemName)) {
-                            viewModel.queryCondition.setGoodsClassId(itemName);
+                            viewModel.queryCondition.setGoodsId(itemName);
                             updateGoodsID(itemName);
                         }
                     }
@@ -304,13 +389,12 @@ public class GoodsQueryActivity extends BaseActivity implements View.OnClickList
                     @Override
                     public void OnDateTimeSlotPick(String start, String end) {
                         if (!TextUtils.isEmpty(start) && !TextUtils.isEmpty(end)) {
-                            viewModel.queryCondition.setOldGoodsId((start + "~" + end));
+                            viewModel.queryCondition.setCreateTime((start + "~" + end));
                             updateCreateTime(start + "\u3000~\u3000" + end);
                         }
                     }
                 });
                 break;
-
             case R.id.reset:
                 queryConditionReset();
                 break;
@@ -362,16 +446,34 @@ public class GoodsQueryActivity extends BaseActivity implements View.OnClickList
     }
 
     /**
+     * 更新明细
+     */
+    private void updateDetailed() {
+        String value = getString(R.string.detailed) + "\u3000\u3000" + getString(R.string.goodsCodeTotal) + getString(R.string.colon) + "<font color=\"black\">" +
+                this.viewModel.getGoodsCodeTotal() + "</font>";
+        this.detailed.setText(Html.fromHtml(value, Html.FROM_HTML_MODE_COMPACT));
+    }
+
+    /**
      * 重置所有查询条件
      */
     private void queryConditionReset() {
+        this.viewModel.queryCondition.clear();
+
         this.updateGoodsClassId("");
         this.updateGoodsID("");
         this.updateOldGoodsID("");
+        this.isClearGoodsType = true;       //先置位条件
         this.goodsTypeGroup.clearCheck();
-        this.updateCreateTime("");
+        this.updateCreateTime(this.viewModel.queryCondition.getCreateTime());
+        this.isClearStockStatus = true;
         this.isStockGroup.clearCheck();
-        this.viewModel.queryCondition.clear();
+
         SupplierKeeper.getInstance().clearGoodsClassSelect();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 }

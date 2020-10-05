@@ -42,13 +42,16 @@ public class MyFragment extends Fragment implements ModuleNavigationAdapter.OnIt
         View root = inflater.inflate(R.layout.fragment_my, container, false);
         mRecyclerView = root.findViewById(R.id.recyclerView);
         mySelf = root.findViewById(R.id.my);
-        String value = SupplierKeeper.getInstance().getSupplierAccount().supplierName+"\n"+
+        String value = SupplierKeeper.getInstance().getSupplierAccount().supplierName + "\n" +
                 SupplierKeeper.getInstance().getSupplierAccount().name;
         mySelf.setText(value);
         mySelf.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                jumpToMyInformationActivity();
+                if (System.currentTimeMillis() - lastClickTime > INTERVAL_TIME) {
+                    jumpToMyInformationActivity();
+                    lastClickTime = System.currentTimeMillis();
+                }
             }
         });
         mySelf.setClickable(true);
@@ -91,14 +94,21 @@ public class MyFragment extends Fragment implements ModuleNavigationAdapter.OnIt
         });
     }
 
+    //上一次点击时间
+    private static long lastClickTime = 0;
+    private static final int INTERVAL_TIME = 1000;
+
     @Override
     public void onItemClick(int position) {
-        ModuleNavigation navigation = viewModel.getModuleNavigationList().get(position);
-        if (navigation.isTitle || navigation.navActivity == null) {
-            return;
+        if (System.currentTimeMillis() - lastClickTime > INTERVAL_TIME) {
+            ModuleNavigation navigation = viewModel.getModuleNavigationList().get(position);
+            if (navigation.isTitle || navigation.navActivity == null) {
+                return;
+            }
+            Intent intent = new Intent(context, navigation.navActivity);
+            startActivity(intent);
+            lastClickTime = System.currentTimeMillis();
         }
-        Intent intent = new Intent(context, navigation.navActivity);
-        startActivity(intent);
     }
 
     private void jumpToMyInformationActivity() {

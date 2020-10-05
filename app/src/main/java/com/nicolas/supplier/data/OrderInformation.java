@@ -2,7 +2,7 @@ package com.nicolas.supplier.data;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
+import android.text.TextUtils;
 
 import com.nicolas.supplier.R;
 import com.nicolas.supplier.app.SupplierApp;
@@ -74,12 +74,13 @@ public class OrderInformation implements Parcelable {
     public static final String sort_order_num_drop = SupplierApp.getInstance().getString(R.string.sort_order_num_drop);
 
 
-    public boolean canChecked;       //是否显示可选择checkbox
-    public boolean checked;         //是否被选中
+    public boolean canSelect = true;//是否显示可选择checkbox--默认可见
+    public boolean select = false;  //是否被选中--默认不选中
     public boolean expansion;       //是否展开显示细节
 
     public String id;               //ID
     public String gId;              //货号ID
+    public String fId;              //分店ID
     public String supplierId;       //供货商主键编号
     public String supplierName;     //供货商名称
     public String goodsClassId;     //货物类别编号
@@ -103,18 +104,22 @@ public class OrderInformation implements Parcelable {
     public String inValidTime;      //订单过期时间--"2020-07-16",
     public PrintStatus isPrint;     //已打印/未打印--"未打印",
     public String printTime;        //打印时间--"1900-01-01 00:00",
-    public String inState;          //"供货商待接单",
+    public OrderStatus inState;     //"供货商待接单", ---订单状态
     public String roomSendTime;     //库房收货时间---"1900-01-01",
     public String branchReceiveTime;//分店接收时间---"1900-01-01",
     public String sendId;           //"",
     public String remark;           //备注"",
     public String valid;            //"启用",
-    public String img;              //图片
+    public String isUrgent;         //加急(加急/普通)
+    public String img;              //图片url
     public List<OrderPropertyRecord> propertyRecords;
 
+    public boolean showProperties = false;      //是否显示属性
+    public boolean hasQueryProperties = false;  //是否已经查询过属性了
 
     public OrderInformation() {
         this.id = "0123456";               //ID
+        this.fId = "G562";
         this.gId = "0123456";              //货号ID
         this.supplierId = "0123456";       //供货商主键编号
         this.supplierName = "0123456";     //供货商名称
@@ -139,22 +144,22 @@ public class OrderInformation implements Parcelable {
         this.inValidTime = "2020-07-16";      //订单过期时间--"2020-07-16",
         this.isPrint = new PrintStatus("未打印");     //已打印/未打印--"未打印",
         this.printTime = "2020-07-12 11:50";        //打印时间--"1900-01-01 00:00",
-        this.inState = "供货商待接单";          //"供货商待接单",
+        this.inState = new OrderStatus("供货商待接单");          //"供货商待接单",
         this.roomSendTime = "2020-07-16";     //库房收货时间---"1900-01-01",
         this.branchReceiveTime = "2020-07-16";//分店接收时间---"1900-01-01",
         this.sendId = "123456";           //"",
-        this.remark = "123456";           //备注"",
-        this.valid = "启用";            //"启用",
+        this.remark = "测试备注测试备注测试备注测试备注测试备注测试备注测试备注测试备注测试备注测试备注";           //备注"",
+        this.valid = "正常";            //"启用",
         this.img = "123456";              //图片
+        this.isUrgent = "普通";
         this.propertyRecords = new ArrayList<>();
-        this.propertyRecords.add(new OrderPropertyRecord());
-        this.propertyRecords.add(new OrderPropertyRecord());
-        this.propertyRecords.add(new OrderPropertyRecord());
-        this.propertyRecords.add(new OrderPropertyRecord());
+        for (int i = 0; i < 70; i++) {
+            this.propertyRecords.add(new OrderPropertyRecord());
+        }
+
     }
 
     public OrderInformation(String json) {
-        Log.d("tag", "OrderInformation: "+json);
         try {
             JSONObject object = new JSONObject(json);
             this.id = object.getString("id");
@@ -165,6 +170,7 @@ public class OrderInformation implements Parcelable {
             this.goodsClassName = object.getString("goodsClassName");
             this.branchId = object.getString("branchId");
             this.branchName = object.getString("branchName");
+            this.fId = object.getString("fId");
             this.storeRoomId = object.getString("storeRoomId");
             this.storeRoomName = object.getString("storeRoomName");
             this.dearClassId = object.getString("dearClassId");
@@ -179,20 +185,59 @@ public class OrderInformation implements Parcelable {
             this.salePrice = object.getString("salePrice");
             this.img = object.getString("img");
             this.orderType = new OrderClass(object.getString("orderType"));
-            this.createTime = object.getString("createTime");
+            if (object.has("createTime")) {
+                String createTime = object.getString("createTime");
+                if (!TextUtils.isEmpty(createTime) && createTime.length() > 6) {
+                    this.createTime = createTime.substring(0, createTime.length() - 3);
+                }
+            }
             this.inValidTime = object.getString("inValidTime");
             this.isPrint = new PrintStatus(object.getString("isPrint"));
-            this.printTime = object.getString("printTime")+":00";
-            this.inState = object.getString("inState");
+            if (object.has("printTime")) {
+                String printTime = object.getString("printTime");                   //"2020-08-28 13:07:39"
+                if (!TextUtils.isEmpty(printTime) && printTime.length() > 6) {
+                    this.printTime = printTime.substring(0, printTime.length() - 3);        //默认去除秒，只显示到分
+                }
+            }
+            this.inState = new OrderStatus(object.getString("inState"));
             this.roomSendTime = object.getString("roomSendTime");
             this.branchReceiveTime = object.getString("branchReceiveTime");
             this.sendId = object.getString("sendId");
             this.remark = object.getString("remark");
             this.valid = object.getString("valid");
+            this.isUrgent = object.getString("isUrgent");
             this.propertyRecords = new ArrayList<>();
-            JSONArray array = new JSONArray(object.getString("propertyRecord"));
+            if (object.has("propertyRecord")) {
+                String property = object.getString("propertyRecord");
+                if (!TextUtils.isEmpty(property)) {
+                    JSONArray array = new JSONArray(object.getString("propertyRecord"));
+                    for (int i = 0; i < array.length(); i++) {
+                        this.propertyRecords.add(new OrderPropertyRecord(array.getString(i)));
+                    }
+                    this.hasQueryProperties = true;       //表示订单属性已经加载完成
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void setPropertyRecords(String propertyRecords) {
+        try {
+            JSONArray array = new JSONArray(propertyRecords);
             for (int i = 0; i < array.length(); i++) {
-                this.propertyRecords.add(new OrderPropertyRecord(array.getString(i)));
+                OrderPropertyRecord record = new OrderPropertyRecord(array.getString(i));
+                //加一个重复检测
+                boolean isAdd = false;
+                for (OrderPropertyRecord r : this.propertyRecords) {
+                    if (r.id.equals(record.id)) {
+                        isAdd = true;
+                        break;
+                    }
+                }
+                if (!isAdd) {
+                    this.propertyRecords.add(record);
+                }
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -200,11 +245,12 @@ public class OrderInformation implements Parcelable {
     }
 
     protected OrderInformation(Parcel in) {
-        canChecked = in.readByte() != 0;
-        checked = in.readByte() != 0;
+        canSelect = in.readByte() != 0;
+        select = in.readByte() != 0;
         expansion = in.readByte() != 0;
         id = in.readString();
         gId = in.readString();
+        fId = in.readString();
         supplierId = in.readString();
         supplierName = in.readString();
         goodsClassId = in.readString();
@@ -228,7 +274,7 @@ public class OrderInformation implements Parcelable {
         inValidTime = in.readString();
         isPrint = in.readParcelable(PrintStatus.class.getClassLoader());
         printTime = in.readString();
-        inState = in.readString();
+        inState = in.readParcelable(OrderStatus.class.getClassLoader());
         roomSendTime = in.readString();
         branchReceiveTime = in.readString();
         sendId = in.readString();
@@ -236,15 +282,18 @@ public class OrderInformation implements Parcelable {
         valid = in.readString();
         img = in.readString();
         propertyRecords = in.createTypedArrayList(OrderPropertyRecord.CREATOR);
+        showProperties = in.readByte() != 0;
+        hasQueryProperties = in.readByte() != 0;
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeByte((byte) (canChecked ? 1 : 0));
-        dest.writeByte((byte) (checked ? 1 : 0));
+        dest.writeByte((byte) (canSelect ? 1 : 0));
+        dest.writeByte((byte) (select ? 1 : 0));
         dest.writeByte((byte) (expansion ? 1 : 0));
         dest.writeString(id);
         dest.writeString(gId);
+        dest.writeString(fId);
         dest.writeString(supplierId);
         dest.writeString(supplierName);
         dest.writeString(goodsClassId);
@@ -268,7 +317,7 @@ public class OrderInformation implements Parcelable {
         dest.writeString(inValidTime);
         dest.writeParcelable(isPrint, flags);
         dest.writeString(printTime);
-        dest.writeString(inState);
+        dest.writeParcelable(inState, flags);
         dest.writeString(roomSendTime);
         dest.writeString(branchReceiveTime);
         dest.writeString(sendId);
@@ -276,6 +325,8 @@ public class OrderInformation implements Parcelable {
         dest.writeString(valid);
         dest.writeString(img);
         dest.writeTypedList(propertyRecords);
+        dest.writeByte((byte) (showProperties ? 1 : 0));
+        dest.writeByte((byte) (hasQueryProperties ? 1 : 0));
     }
 
     @Override
@@ -294,4 +345,28 @@ public class OrderInformation implements Parcelable {
             return new OrderInformation[size];
         }
     };
+
+    public String getGoodsId() {
+        return goodsId;
+    }
+
+    public String getStoreRoomId() {
+        return storeRoomId;
+    }
+
+    public String getStoreRoomName() {
+        return storeRoomName;
+    }
+
+    public int getSendAmount() {
+        return sendAmount;
+    }
+
+    public int getInState() {
+        return inState.getStatusID();
+    }
+
+    public String getIsUrgent() {
+        return isUrgent;
+    }
 }

@@ -1,21 +1,18 @@
 rootProject.name='SupplierManagement'
 include ':app'
-//下拉刷新
-include ':pullrefreshlibrary'
-project(':pullrefreshlibrary').projectDir = new File(settingsDir, '../PullrefreshListView/app/pullrefreshlibrary')
 
 //打印机--优博讯
 include ':printerlibraryforufovo'
 project(':printerlibraryforufovo').projectDir = new File(settingsDir, '../PrinterForUfovo/app/printerlibraryforufovo')
 
-//时间日期选择器
-include ':datetimepickerlibrary'
-project(':datetimepickerlibrary').projectDir = new File(settingsDir, '../DateTimePicker/app/datetimepickerlibrary')
-
-//树形属性选择器
-include ':multileveltreelibrary'
-project(':multileveltreelibrary').projectDir = new File(settingsDir, '../MultiLevelTreeView/app/multileveltreelibrary')
+//组件库
+include ':componentlibrary'
+project(':componentlibrary').projectDir = new File(settingsDir, '../NicComponent/app/componentlibrary')
 
 //工具库
 include ':toollibrary'
 project(':toollibrary').projectDir = new File(settingsDir, '../Tool/app/toollibrary')
+
+//广告通知管理
+include ':advertnoticelibrary'
+project(':advertnoticelibrary').projectDir = new File(settingsDir, '../AdvertNotice/app/advertnoticelibrary')

@@ -98,6 +98,30 @@
         app:layout_constraintTop_toBottomOf="@+id/goodsId" />
 
     <TextView
+        android:id="@+id/barcodeId"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:drawableEnd="@drawable/ic_sr_blue"
+        android:gravity="start|center"
+        android:paddingStart="@dimen/drawer_margin"
+        android:paddingEnd="0dp"
+        android:text="@string/barcodeId"
+        android:textSize="@dimen/text_size"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="@dimen/view_height_percent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider4" />
+
+    <View
+        android:id="@+id/divider41"
+        android:layout_width="0dp"
+        android:layout_height="2dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/barcodeId" />
+
+    <TextView
         android:id="@+id/checkTimeShow"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -108,7 +132,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="0.03"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider4" />
+        app:layout_constraintTop_toBottomOf="@+id/divider41" />
 
     <TextView
         android:id="@+id/checkTime"
@@ -133,7 +157,7 @@
         android:background="?android:attr/listDivider"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/auditTime" />
+        app:layout_constraintTop_toBottomOf="@+id/checkTime" />
 
     <Button
         android:id="@+id/reset"

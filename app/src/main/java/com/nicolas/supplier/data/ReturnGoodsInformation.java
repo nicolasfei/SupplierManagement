@@ -1,5 +1,7 @@
 package com.nicolas.supplier.data;
 
+import android.graphics.Bitmap;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -8,7 +9,8 @@
         android:id="@+id/staff"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginStart="16dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="0dp"
         android:gravity="start|center"
         android:text="@string/staff"
         android:textSize="@dimen/text_size"
@@ -30,21 +32,45 @@
         android:id="@+id/detailed"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="16dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="0dp"
         android:gravity="start|center"
         android:text="@string/detailed"
         app:layout_constraintHeight_percent="0.03"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/divider"
-        app:layout_constraintWidth_percent="0.8" />
+        app:layout_constraintWidth_percent="0.6" />
 
     <View
         android:id="@+id/divider01"
         android:layout_width="1dp"
         android:layout_height="0dp"
+        android:visibility="invisible"
         android:background="?android:attr/listDivider"
         app:layout_constraintHeight_percent="0.03"
         app:layout_constraintStart_toEndOf="@+id/detailed"
+        app:layout_constraintTop_toBottomOf="@+id/divider" />
+
+    <Button
+        android:id="@+id/loadAll"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:text="@string/loadAllOrder"
+        android:visibility="invisible"
+        android:textSize="12sp"
+        app:layout_constraintHeight_percent="0.03"
+        app:layout_constraintStart_toEndOf="@+id/detailed"
+        app:layout_constraintTop_toBottomOf="@+id/divider"
+        app:layout_constraintWidth_percent="0.2" />
+
+    <View
+        android:id="@+id/divider011"
+        android:layout_width="1dp"
+        android:layout_height="0dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintHeight_percent="0.03"
+        app:layout_constraintStart_toEndOf="@+id/loadAll"
         app:layout_constraintTop_toBottomOf="@+id/divider" />
 
     <CheckBox
@@ -53,9 +79,8 @@
         android:layout_height="0dp"
         android:gravity="center"
         android:text="@string/all_choice"
-        android:visibility="invisible"
         app:layout_constraintHeight_percent="0.03"
-        app:layout_constraintStart_toEndOf="@+id/divider01"
+        app:layout_constraintStart_toEndOf="@+id/divider011"
         app:layout_constraintTop_toBottomOf="@+id/divider"
         app:layout_constraintWidth_percent="0.2" />
 
@@ -68,7 +93,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/detailed" />
 
-    <com.nicolas.pullrefreshlibrary.PullRefreshListView
+    <com.nicolas.componentlibrary.pullrefreshswipemenu.PullRefreshSwipeMenuListView
         android:id="@+id/pullToRefreshListView"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -97,7 +122,30 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHeight_percent="@dimen/view_height_percent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintWidth_percent="0.7" />
+        app:layout_constraintWidth_percent="0.6" />
+
+
+    <Button
+        android:id="@+id/batchVoid"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:text="@string/batchVoid"
+        android:background="@drawable/shape_rectangle_grey"
+        android:textSize="@dimen/text_size"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHeight_percent="@dimen/view_height_percent"
+        app:layout_constraintStart_toEndOf="@+id/total"
+        app:layout_constraintWidth_percent="0.19" />
+
+    <View
+        android:id="@+id/divider8"
+        android:layout_width="1dp"
+        android:layout_height="0dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHeight_percent="@dimen/view_height_percent"
+        app:layout_constraintStart_toEndOf="@+id/batchVoid" />
 
     <Button
         android:id="@+id/submit"
@@ -110,19 +158,7 @@
         android:textSize="@dimen/text_size"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHeight_percent="@dimen/view_height_percent"
-        app:layout_constraintStart_toEndOf="@+id/total"
-        app:layout_constraintWidth_percent="0.3" />
-
-
-    <Button
-        android:id="@+id/button3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Button"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toEndOf="@+id/divider8"
+        app:layout_constraintWidth_percent="0.19" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,6 +1,7 @@
 package com.nicolas.supplier.ui.device.printer;
 
 import android.os.Message;
+import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -15,7 +16,7 @@ import com.nicolas.supplier.common.OperateResult;
 import java.util.List;
 
 public class PrinterViewModel extends ViewModel {
-
+    private final static String TAG = "PrinterViewModel";
     private List<PrinterDeviceGroup> printerDeviceGroups;
     private boolean isSelfOpenOrCloseBluetooth = false;      //是否自己关闭或打开蓝牙
     private boolean isSelfStopScan = false;                  //是否自己停止蓝牙搜索
@@ -109,6 +110,8 @@ public class PrinterViewModel extends ViewModel {
          */
         @Override
         public void printerStatusUpdate(int groupPosition, int childPosition, int statusType, boolean change) {
+            Log.d(TAG, "printerStatusUpdate: groupPosition-->" + groupPosition + " ,childPosition-->" + childPosition +
+                    " ,statusType-->" + statusType + " ,change-->" + change);
             Message msg = new Message();
             msg.what = statusType;
             msg.arg1 = groupPosition;
@@ -125,6 +128,8 @@ public class PrinterViewModel extends ViewModel {
          */
         @Override
         public void printerGroupStatusUpdate(int groupPosition, int statusType, boolean change) {
+            Log.d(TAG, "printerGroupStatusUpdate: groupPosition-->" + groupPosition +
+                    " ,statusType-->" + statusType + " ,change-->" + change);
             /**
              * msg.arg1 打印机组ID
              * msg.what 组的某个变量的状态

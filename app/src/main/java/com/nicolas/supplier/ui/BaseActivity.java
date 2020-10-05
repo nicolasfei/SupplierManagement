@@ -2,6 +2,7 @@ package com.nicolas.supplier.ui;
 
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -9,6 +10,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.nicolas.toollibrary.AppActivityManager;
+import com.nicolas.toollibrary.shakeproof.EventListener;
 
 public class BaseActivity extends AppCompatActivity {
 
@@ -40,5 +42,14 @@ public class BaseActivity extends AppCompatActivity {
     protected void onDestroy() {
         AppActivityManager.getInstance().removeActivity(this);
         super.onDestroy();
+    }
+
+    /**
+     * Find出来的View，自带防抖功能
+     */
+    public <T extends View> T findClickView(int id) {
+        T view = (T) findViewById(id);
+        view.setOnClickListener(new EventListener(this));
+        return view;
     }
 }

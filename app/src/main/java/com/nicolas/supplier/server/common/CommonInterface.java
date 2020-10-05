@@ -9,4 +9,7 @@ public abstract class CommonInterface extends AbstractInterface {
     public final static String BranchQuery = AbstractInterface.COMMAND_URL + "Supplier/Branch";
     //查询库房信息
     public final static String StorehouseQuery = AbstractInterface.COMMAND_URL + "Supplier/StoreRoom";
+
+    //版本监测
+    public final static String VersionCheck = AbstractInterface.COMMAND_URL + "v.json";
 }

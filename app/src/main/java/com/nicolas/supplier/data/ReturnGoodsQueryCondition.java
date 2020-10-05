@@ -1,15 +1,13 @@
 package com.nicolas.supplier.data;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
+import com.nicolas.toollibrary.Tool;
 
 public class ReturnGoodsQueryCondition {
     public String goodsClassId;
     public String oldGoodsId;
     public String fId;
     public String goodsId;
+    public String barcodeID;        //选填    条码
     public String checkTime;        //默认查询近三天的
 
     public ReturnGoodsQueryCondition() {
@@ -17,11 +15,8 @@ public class ReturnGoodsQueryCondition {
         this.oldGoodsId = "";
         this.fId = "";
         this.goodsId = "";
-        Calendar calendar = Calendar.getInstance(Locale.CHINA);
-        calendar.set(Calendar.DATE, calendar.get(Calendar.DATE) - 3);
-        String beforeData = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA).format(calendar.getTime());
-        String nowData = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA).format(new Date());
-        this.checkTime = beforeData + "~" + nowData;
+        this.barcodeID = "";
+        this.checkTime = Tool.getNearlyThreeDaysDateSlot();
     }
 
     public void clear() {
@@ -29,10 +24,7 @@ public class ReturnGoodsQueryCondition {
         this.oldGoodsId = "";
         this.fId = "";
         this.goodsId = "";
-        Calendar calendar = Calendar.getInstance(Locale.CHINA);
-        calendar.set(Calendar.DATE, calendar.get(Calendar.DATE) - 3);
-        String beforeData = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA).format(calendar.getTime());
-        String nowData = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA).format(new Date());
-        this.checkTime = beforeData + "~" + nowData;
+        this.barcodeID = "";
+        this.checkTime = Tool.getNearlyThreeDaysDateSlot();
     }
 }

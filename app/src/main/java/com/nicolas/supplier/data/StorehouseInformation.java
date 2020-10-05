@@ -1,6 +1,7 @@
 package com.nicolas.supplier.data;
 
-import com.nicolas.multileveltreelibrary.TreeNode;
+import com.nicolas.componentlibrary.multileveltree.TreeNode;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 

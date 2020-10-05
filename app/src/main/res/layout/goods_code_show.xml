@@ -26,13 +26,33 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/staff" />
 
+    <TextView
+        android:id="@+id/detailed"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="16dp"
+        android:gravity="start|center"
+        android:text="@string/detailed"
+        app:layout_constraintHeight_percent="0.03"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider"
+        app:layout_constraintWidth_percent="0.8" />
 
-    <com.nicolas.pullrefreshlibrary.PullRefreshListView
+    <View
+        android:id="@+id/divider01"
+        android:layout_width="1dp"
+        android:layout_height="0dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintHeight_percent="0.03"
+        app:layout_constraintStart_toEndOf="@+id/detailed"
+        app:layout_constraintTop_toBottomOf="@+id/divider" />
+
+    <com.nicolas.componentlibrary.pullrefresh.PullRefreshListView
         android:id="@+id/pullToRefreshListView"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider" />
+        app:layout_constraintTop_toBottomOf="@+id/divider01" />
 </androidx.constraintlayout.widget.ConstraintLayout>

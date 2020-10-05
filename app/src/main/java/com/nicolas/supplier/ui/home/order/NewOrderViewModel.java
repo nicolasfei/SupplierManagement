@@ -1,6 +1,8 @@
 package com.nicolas.supplier.ui.home.order;
 
+import android.os.Handler;
 import android.os.Message;
+import android.os.Parcelable;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -9,13 +11,16 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.nicolas.supplier.R;
+import com.nicolas.supplier.data.OrderDistribution;
+import com.nicolas.supplier.data.OrderStatistics;
+import com.nicolas.supplier.data.OrderStatisticsProperty;
+import com.nicolas.supplier.data.OrderValid;
 import com.nicolas.supplier.supplier.SupplierKeeper;
 import com.nicolas.toollibrary.HttpHandler;
 import com.nicolas.supplier.app.SupplierApp;
 import com.nicolas.supplier.common.OperateError;
 import com.nicolas.supplier.common.OperateInUserView;
 import com.nicolas.supplier.common.OperateResult;
-import com.nicolas.supplier.data.OrderClass;
 import com.nicolas.supplier.data.OrderPropertyRecord;
 import com.nicolas.supplier.data.OrderStatus;
 import com.nicolas.supplier.data.PrintStatus;
@@ -27,14 +32,15 @@ import com.nicolas.supplier.server.order.OrderInterface;
 import com.nicolas.supplier.data.OrderInformation;
 import com.nicolas.supplier.data.OrderQueryCondition;
 import com.nicolas.supplier.data.OrderSort;
+import com.nicolas.toollibrary.Tool;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.Collator;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -49,6 +55,9 @@ public class NewOrderViewModel extends ViewModel {
     private static final String TAG = "TAG";
     private List<OrderSort> sortList;               //排序选项
     private List<OrderInformation> orderList;       //订单列表
+    private List<OrderStatistics> orderStatisticList;           //订单统计
+    private ArrayList<OrderDistribution> orderDistributionList;      //订单配送顺序
+    private ArrayList<OrderInformation> printOrderList;              //待打印的订单
     private int totalOrderNum;               //被选中的订单数统计
     private float totalOrderPrice;           //被选中的订单价格统计
 
@@ -56,20 +65,31 @@ public class NewOrderViewModel extends ViewModel {
 
     private String orderPropertyID;         //更新的订单属性ID
     private int orderPropertyNum;           //更新的订单属性的数量
-    private boolean isItemCanCheck = false;     //是否在每个Item显示可以勾选的框
+    private boolean isOrderCanSelect = true;    //是否在每个Item显示可以勾选的框--默认可以勾选
+    private boolean isOrdersAllSelect = false;  //用户选择了的全部订单的选中状态，如果用户新加载了更多的数据，新加载的数据也是要处于这个状态
 
+    private final int defaultPageSize = 10000;
     private int currentPage = 1;
-    private int pageSize = 16;
+    private int pageSize = defaultPageSize;
     private int pageCount = 0;       //分页查询记录
 
-    private MutableLiveData<OperateResult> orderMultipleChoiceOperateResult = new MutableLiveData<>();     //多选操作结果
-    private MutableLiveData<OperateResult> orderQueryResult = new MutableLiveData<>();              //订单查询结果
+    private MutableLiveData<OperateResult> orderQueryResult = new MutableLiveData<>();              //订单分页查询结果
+    private MutableLiveData<OperateResult> orderInValidResult = new MutableLiveData<>();            //订单作废
     private MutableLiveData<OperateResult> orderSubmitResult = new MutableLiveData<>();             //订单提交结果
     private MutableLiveData<OperateResult> orderSortResult = new MutableLiveData<>();               //订单排序结果
-    private MutableLiveData<OperateResult> orderChoiceStatusChange = new MutableLiveData<>();       //订单选中状态更新结果
-    private MutableLiveData<OperateResult> orderPropertyUpdateResult = new MutableLiveData<>();     //订单属性状态更新
-    private boolean isManualSubmit = false;   //标志是否手动提交 
-    private String manualOrderID;       //手动提交订单ID备份
+    private MutableLiveData<OperateResult> orderPullAllResult = new MutableLiveData<>();            //订单全部拉取结果
+    private MutableLiveData<OperateResult> orderPropertyUpdateResult = new MutableLiveData<>();     //订单属性状态更新--暂时弃用//2020-09-04
+    private MutableLiveData<OperateResult> orderCanSelectResult = new MutableLiveData<>();          //订单可以被选中
+    private MutableLiveData<OperateResult> orderSelectUpdateResult = new MutableLiveData<>();       //订单选中状态更新
+    private MutableLiveData<OperateResult> orderPropertyQueryResult = new MutableLiveData<>();      //订单属性查询结果
+    private MutableLiveData<OperateResult> orderPropertyAllDownResult = new MutableLiveData<>();    //批量下载订单属性结果
+    private MutableLiveData<OperateResult> orderDistributionQueryResult = new MutableLiveData<>();  //配送顺序查询
+
+    private boolean isManualSubmit = false;     //标志是否手动提交
+    private String manualOrderID;               //手动提交订单ID备份
+    private String inValidOrderID;              //作废订单ID备份
+
+    private String propertyQueryOrderID;        //当前查询属性的订单ID
 
     public NewOrderViewModel() {
         this.sortList = new ArrayList<>();
@@ -81,21 +101,14 @@ public class NewOrderViewModel extends ViewModel {
         this.sortList.add(OrderSort.SORT_OrderNumDrop);
 
         this.orderList = new ArrayList<>();
-
+        this.orderStatisticList = new ArrayList<>();
+        this.orderDistributionList = new ArrayList<>();
+        this.printOrderList = new ArrayList<>();
         this.queryCondition = new OrderQueryCondition();
-        //设置默认的查询条件---近3天的统下单
-        this.queryCondition.setOrderType(OrderClass.ALL);         //统下单
-        //下单时间默认为近3天
-        Calendar calendar = Calendar.getInstance(Locale.CHINA);
-        calendar.set(Calendar.DAY_OF_MONTH, calendar.get(Calendar.DAY_OF_MONTH) - 3);
-        String start = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA).format(calendar.getTime());
-        calendar.setTime(new Date());
-        String end = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA).format(calendar.getTime());
-        this.queryCondition.setCreateTime((start + "~" + end));
     }
 
-    LiveData<OperateResult> getOrderMultipleChoiceOperateResult() {
-        return orderMultipleChoiceOperateResult;
+    LiveData<OperateResult> getOrderPropertyAllDownResult() {
+        return orderPropertyAllDownResult;
     }
 
     LiveData<OperateResult> getOrderPropertyUpdateResult() {
@@ -106,6 +119,10 @@ public class NewOrderViewModel extends ViewModel {
         return orderQueryResult;
     }
 
+    LiveData<OperateResult> getOrderDistributionQueryResult() {
+        return orderDistributionQueryResult;
+    }
+
     LiveData<OperateResult> getOrderSortResult() {
         return orderSortResult;
     }
@@ -114,8 +131,24 @@ public class NewOrderViewModel extends ViewModel {
         return orderSubmitResult;
     }
 
-    LiveData<OperateResult> getOrderChoiceStatusChange() {
-        return orderChoiceStatusChange;
+    LiveData<OperateResult> getOrderPullAllResult() {
+        return orderPullAllResult;
+    }
+
+    LiveData<OperateResult> getOrderCanSelectResult() {
+        return orderCanSelectResult;
+    }
+
+    LiveData<OperateResult> getOrderInValidResult() {
+        return orderInValidResult;
+    }
+
+    LiveData<OperateResult> getOrderSelectUpdateResult() {
+        return orderSelectUpdateResult;
+    }
+
+    LiveData<OperateResult> getOrderPropertyQueryResult() {
+        return orderPropertyQueryResult;
     }
 
     List<String> getSortList() {
@@ -128,6 +161,15 @@ public class NewOrderViewModel extends ViewModel {
         sList.add(OrderSort.SORT_OrderNumRise.getRule());
         sList.add(OrderSort.SORT_OrderNumDrop.getRule());
         return sList;
+    }
+
+    /**
+     * 获取订单统计数量
+     *
+     * @return 订单统计数量
+     */
+    public List<OrderStatistics> getOrderStatisticList() {
+        return orderStatisticList;
     }
 
     /**
@@ -155,7 +197,7 @@ public class NewOrderViewModel extends ViewModel {
     float getTotalPrice() {
         this.totalOrderPrice = 0;
         for (OrderInformation order : this.orderList) {
-            if (order.checked) {
+            if (order.select) {
                 this.totalOrderPrice += order.orderPrice * order.sendAmount;
             }
         }
@@ -170,7 +212,7 @@ public class NewOrderViewModel extends ViewModel {
     int getTotalNum() {
         this.totalOrderNum = 0;
         for (OrderInformation order : this.orderList) {
-            if (order.checked) {
+            if (order.select) {
                 this.totalOrderNum++;
             }
         }
@@ -182,7 +224,7 @@ public class NewOrderViewModel extends ViewModel {
      */
     void queryOrder() {
         this.currentPage = 1;
-        this.pageSize = 16;     //每一页16条记录
+        this.pageSize = defaultPageSize;     //每一页1000条记录
         this.pageCount = 0;     //一共多少也，默认为0
         this.query();
     }
@@ -190,7 +232,7 @@ public class NewOrderViewModel extends ViewModel {
     /**
      * 加载更多订单
      */
-    public void loadMoreOrders() {
+    void loadMoreOrders() {
         if (this.currentPage >= (this.pageCount % this.pageSize == 0 ? this.pageCount / this.pageSize : this.pageCount / this.pageSize + 1)) {
             orderQueryResult.setValue(new OperateResult(new OperateError(1, SupplierApp.getInstance().getString(R.string.no_more_load), null)));
             return;
@@ -202,8 +244,18 @@ public class NewOrderViewModel extends ViewModel {
     /**
      * 刷新订单
      */
-    public void refreshOrders() {
+    void refreshOrders() {
         queryOrder();
+    }
+
+    /**
+     * 查询全部订单--最大10000条
+     */
+    void queryAllOrder() {
+        this.currentPage = 1;
+        this.pageSize = 10000;     //每一页64条记录
+        this.pageCount = 0;     //一共多少也，默认为0
+        this.query();
     }
 
     /**
@@ -238,17 +290,50 @@ public class NewOrderViewModel extends ViewModel {
             parameters.put("inState", queryCondition.getInState());
         }
         if (!TextUtils.isEmpty(queryCondition.getCreateTime())) {
-            parameters.put("createTime", queryCondition.getCreateTime());
+            //查询日期加一天，以配合服务器
+            String newDate = Tool.endDateAddOneDay(queryCondition.getCreateTime());
+            parameters.put("createTime", newDate);
         }
         if (!TextUtils.isEmpty(queryCondition.getRoomReceiveTime())) {
             parameters.put("roomReceiveTime", queryCondition.getRoomReceiveTime());
         }
         if (!TextUtils.isEmpty(queryCondition.getBranchID())) {
-            parameters.put("branchId", queryCondition.getBranchID());
+            String branchId = SupplierKeeper.getInstance().getBranchID(queryCondition.getBranchID());
+            if (!TextUtils.isEmpty(branchId)) {
+                parameters.put("branchId", branchId);
+            }
         }
         if (!TextUtils.isEmpty(queryCondition.getStoreRoomID())) {
             parameters.put("storeRoomId", queryCondition.getStoreRoomID());
         }
+        if (!TextUtils.isEmpty(queryCondition.getValid())) {
+            parameters.put("valid", queryCondition.getValid());
+        }
+        if (!TextUtils.isEmpty(queryCondition.getOrderID())) {
+            parameters.put("id", queryCondition.getOrderID());
+        }
+        if (!TextUtils.isEmpty(queryCondition.getIsUrgent())) {
+            parameters.put("isUrgent", queryCondition.getIsUrgent());
+        }
+        vo.parameters = parameters;
+        Invoker.getInstance().setOnEchoResultCallback(this.callback);
+        Invoker.getInstance().exec(vo);
+    }
+
+    /**
+     * 查询订单属性
+     *
+     * @param orderID 订单ID
+     */
+    public void queryOrderProperty(String orderID) {
+        this.propertyQueryOrderID = orderID;
+        CommandVo vo = new CommandVo();
+        vo.typeEnum = CommandTypeEnum.COMMAND_SUPPLIER_ORDER;
+        vo.url = OrderInterface.GoodsPropertyOrder;
+        vo.contentType = HttpHandler.ContentType_APP;
+        vo.requestMode = HttpHandler.RequestMode_POST;
+        Map<String, String> parameters = new HashMap<>();
+        parameters.put("id", orderID);
         vo.parameters = parameters;
         Invoker.getInstance().setOnEchoResultCallback(this.callback);
         Invoker.getInstance().exec(vo);
@@ -260,7 +345,7 @@ public class NewOrderViewModel extends ViewModel {
      * @param propertyRecordID 订单属性
      * @param num              数量
      */
-    public void updateOrderGoodsNum(String propertyRecordID, int num) {
+    public void updateOrderGoodsNum(String orderID, String propertyRecordID, int num) {
         this.orderPropertyID = propertyRecordID;
         this.orderPropertyNum = num;
         CommandVo vo = new CommandVo();
@@ -269,6 +354,7 @@ public class NewOrderViewModel extends ViewModel {
         vo.contentType = HttpHandler.ContentType_APP;
         vo.requestMode = HttpHandler.RequestMode_POST;
         Map<String, String> parameters = new HashMap<>();
+        parameters.put("orderId", orderID);
         parameters.put("id", propertyRecordID);
         parameters.put("val", String.valueOf(num));
         vo.parameters = parameters;
@@ -281,14 +367,18 @@ public class NewOrderViewModel extends ViewModel {
      */
     void submitOrders() {
         StringBuilder builder = new StringBuilder();
-        for (OrderInformation order : orderList) {
-            if (order.checked && order.inState.equals(OrderStatus.SWAIT)) {
+        for (OrderInformation order : printOrderList) {
+            if (order.inState.getStatus().equals(OrderStatus.SWAIT)) {
                 builder.append(order.id).append(",");
+            } else {
+                order.select = false;       //默认打印后取消选中状态
             }
         }
         String ids = builder.toString();
         if (TextUtils.isEmpty(ids)) {
-            orderSubmitResult.setValue(new OperateResult(new OperateError(-1, SupplierApp.getInstance().getString(R.string.no_order_submit), null)));
+            Message msg = new Message();
+            msg.obj = SupplierApp.getInstance().getString(R.string.no_order_submit);
+            orderSubmitResult.setValue(new OperateResult(new OperateInUserView(msg)));
             return;
         }
 
@@ -298,7 +388,7 @@ public class NewOrderViewModel extends ViewModel {
         vo.contentType = HttpHandler.ContentType_APP;
         vo.requestMode = HttpHandler.RequestMode_POST;
         Map<String, String> parameters = new HashMap<>();
-        parameters.put("idList", builder.toString());
+        parameters.put("idList", ids.substring(0, ids.length() - 1));
         vo.parameters = parameters;
         Invoker.getInstance().setOnEchoResultCallback(this.callback);
         Invoker.getInstance().exec(vo);
@@ -326,20 +416,234 @@ public class NewOrderViewModel extends ViewModel {
     }
 
     /**
+     * 订单作废
+     *
+     * @param orderID orderID
+     */
+    public void orderInValid(String orderID) {
+        CommandVo vo = new CommandVo();
+        vo.typeEnum = CommandTypeEnum.COMMAND_SUPPLIER_ORDER;
+        vo.url = OrderInterface.GoodsOrderInValid;
+        vo.contentType = HttpHandler.ContentType_APP;
+        vo.requestMode = HttpHandler.RequestMode_POST;
+        Map<String, String> parameters = new HashMap<>();
+        this.inValidOrderID = orderID;
+        parameters.put("idList", this.inValidOrderID);
+        vo.parameters = parameters;
+        Invoker.getInstance().setOnEchoResultCallback(this.callback);
+        Invoker.getInstance().exec(vo);
+    }
+
+    /**
+     * 批量作废
+     */
+    public void orderBatchInValid() {
+        CommandVo vo = new CommandVo();
+        vo.typeEnum = CommandTypeEnum.COMMAND_SUPPLIER_ORDER;
+        vo.url = OrderInterface.GoodsOrderInValid;
+        vo.contentType = HttpHandler.ContentType_APP;
+        vo.requestMode = HttpHandler.RequestMode_POST;
+        Map<String, String> parameters = new HashMap<>();
+        StringBuilder builder = new StringBuilder();
+        for (OrderInformation order : this.orderList) {
+            if (order.select) {
+                builder.append(order.id).append(",");
+            }
+        }
+        String invalids = builder.toString();
+        this.inValidOrderID = invalids.substring(0, invalids.length() - 1);
+        parameters.put("idList", this.inValidOrderID);
+        vo.parameters = parameters;
+        Invoker.getInstance().setOnEchoResultCallback(this.callback);
+        Invoker.getInstance().exec(vo);
+    }
+
+    /**
      * 按订单状态排序，订单状态相同时按订单打印时间排序
      */
     private void sortForInStateAndPrintTime() {
-        //排序，已经接单排在最后面
-        Collections.sort(orderList, new Comparator<OrderInformation>() {
-            @Override
-            public int compare(OrderInformation o1, OrderInformation o2) {
-                if (o1.inState.equals(o2.inState)) {
-                    return o2.printTime.compareTo(o1.printTime);
-                } else {
-                    return (o2.inState.equals(OrderStatus.SWAIT)) ? 1 : (o1.inState.equals(OrderStatus.SWAIT) ? -1 : 0);
+        //供应商未接单
+        Comparator<OrderInformation> byInState = Comparator.comparing(OrderInformation::getInState);
+        //加急订单
+        Comparator<OrderInformation> byIsUrgent = Comparator.comparing(OrderInformation::getIsUrgent);
+        //先按货号排序
+        Comparator<OrderInformation> byGoodsID = Comparator.comparing(OrderInformation::getGoodsId);
+        //库房排序
+        Comparator<OrderInformation> byStoreRoom = Comparator.comparing(OrderInformation::getStoreRoomName);
+        //发货数量排序--升序
+        Comparator<OrderInformation> bySendAmount = Comparator.comparing(OrderInformation::getSendAmount);
+        orderList.sort(byInState.thenComparing(byGoodsID).thenComparing(byStoreRoom).thenComparing(bySendAmount).thenComparing(byIsUrgent));
+    }
+
+    /**
+     * 查询订单配送顺序
+     */
+    public void queryOrderDistribution() {
+        if (currentPage == 1) {        //判断是刷新还是加载更多
+            orderDistributionList.clear();
+        }
+        if (orderStatisticList.size() == 0) {
+            Message msg = new Message();
+            msg.obj = SupplierApp.getInstance().getString(R.string.noOrder);
+            orderDistributionQueryResult.setValue(new OperateResult(new OperateInUserView(msg)));
+            return;
+        }
+        new BatchQueryOrderDistribution().start();
+    }
+
+    /**
+     * 批量查询订单配送
+     */
+    private class BatchQueryOrderDistribution extends Thread {
+        @Override
+        public void run() {
+            boolean querySuccess = true;
+            String error = "";
+            for (OrderStatistics statistics : orderStatisticList) {
+                CommandVo vo = new CommandVo();
+                vo.typeEnum = CommandTypeEnum.COMMAND_SUPPLIER_ORDER;
+                vo.url = OrderInterface.GoodsOrderDistribution;
+                vo.contentType = HttpHandler.ContentType_APP;
+                vo.requestMode = HttpHandler.RequestMode_POST;
+                Map<String, String> parameters = new HashMap<>();
+                parameters.put("goodsId", statistics.goodsID);
+                vo.parameters = parameters;
+                String result = Invoker.getInstance().synchronousExec(vo);
+                try {
+                    JSONObject json = new JSONObject(result);
+                    Log.d(TAG, "BatchQueryOrderDistribution--->: result:" + result);
+                    if (json.getBoolean("success")) {
+                        String dis = "", gId = "";
+                        if (json.has("data")) {
+                            dis = json.getString("data");
+                        }
+                        if (json.has("goodsId")) {
+                            gId = json.getString("goodsId");
+                        }
+                        if (!TextUtils.isEmpty(dis) && !TextUtils.isEmpty(gId)) {
+                            OrderDistribution distribution = new OrderDistribution(dis, gId);
+                            orderDistributionList.add(distribution);
+                        }
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    querySuccess = false;
+                    error = result;
+                    break;
                 }
             }
-        });
+
+            if (querySuccess) {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        orderDistributionQueryResult.setValue(new OperateResult(new OperateInUserView(null)));
+                    }
+                });
+            } else {
+                String finalError = error;
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        orderDistributionQueryResult.setValue(new OperateResult(new OperateError(-1, finalError, null)));
+                    }
+                });
+            }
+        }
+    }
+
+    /**
+     * 统计订单信息
+     *
+     * @param item 订单信息
+     */
+    private void statisticsOrderInformation(OrderInformation item) {
+        //统计订单，并添加到统计list
+        boolean findStatistics = false;
+        for (OrderStatistics statistics : orderStatisticList) {
+            //根据货号来，确实此订单的货号是否已经在统计数据中
+            if (statistics.goodsID.equals(item.goodsId)) {
+                List<OrderPropertyRecord> records = item.propertyRecords;
+                List<OrderStatisticsProperty> properties = statistics.properties;
+                boolean findRecords = false;
+                //在属性统计中，查找OrderPropertyRecord
+                for (OrderPropertyRecord r : records) {
+                    for (OrderStatisticsProperty p : properties) {
+                        //此订单属性，已经存在于统计数据中，这里更新统计数据
+                        if (r.color.equals(p.color) && r.size.equals(p.size)) {
+                            p.num += r.actualNum;
+                            findRecords = true;
+                            break;
+                        }
+                    }
+                    //此订单属性，没在统计数据中，添加新的统计数据
+                    if (!findRecords) {
+                        properties.add(new OrderStatisticsProperty(r.color, r.size, r.actualNum));
+                    }
+                }
+
+                findStatistics = true;
+                break;
+            }
+        }
+        //此订单的货号好没有加入统计数据中
+        if (!findStatistics) {
+            OrderStatistics statistics = new OrderStatistics(item.goodsId, item.oldGoodsId);
+            for (OrderPropertyRecord record : item.propertyRecords) {
+                statistics.properties.add(new OrderStatisticsProperty(record.color, record.size, record.actualNum));
+            }
+            orderStatisticList.add(statistics);
+        }
+    }
+
+    /**
+     * 更新统计数据--重新统计所有订单中新货号=goodsID，并且颜色尺码=record的属性数据
+     *
+     * @param orderGoodsID 订单新货号
+     * @param record       属性--颜色，尺码，数量
+     */
+    private void updateStatisticsOrderInformation(String orderGoodsID, OrderPropertyRecord record) {
+        for (OrderStatistics statistics : orderStatisticList) {
+            if (statistics.goodsID.equals(orderGoodsID)) {
+                for (OrderStatisticsProperty property : statistics.properties) {
+                    if (property.color.equals(record.color) && property.size.equals(record.size)) {
+                        //先清零统计数据
+                        property.num = 0;
+                        //开始重新统计所有订单中货号=statistics.goodsID，且OrderPropertyRecord中的颜色尺码与property中的颜色尺码相同的货号属性的数量
+                        for (OrderInformation order : orderList) {
+                            if (order.goodsId.equals(orderGoodsID)) {
+                                for (OrderPropertyRecord r : order.propertyRecords) {
+                                    if (r.color.equals(record.color) && r.size.equals(record.size)) {
+                                        property.num += r.actualNum;        //累加统计数据
+                                    }
+                                }
+                            }
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * 订单作废后，在统计数据中减去作废的订单数据统计
+     *
+     * @param order 作废的订单
+     */
+    private void updateStatisticsForInValidOrderInformation(OrderInformation order) {
+        for (OrderStatistics statistics : orderStatisticList) {
+            if (order.goodsId.equals(statistics.goodsID)) {
+                for (OrderPropertyRecord record : order.propertyRecords) {
+                    for (OrderStatisticsProperty property : statistics.properties) {
+                        if (record.color.equals(property.color) && record.size.equals(property.size)) {
+                            property.num -= record.actualNum;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -352,25 +656,35 @@ public class NewOrderViewModel extends ViewModel {
                 case OrderInterface.GoodsOrder:         //订单查询
                     if (result.success) {
                         try {
-                            if (currentPage == 1) {     //这个是新的查询，所以要清空之前的数据
+                            if (currentPage == 1) {                 //这个是新的查询，所以要清空之前的数据
                                 orderList.clear();
+                                orderStatisticList.clear();
+                                orderDistributionList.clear();
                             }
-                            pageCount = result.total;       //更新总页数
+                            pageCount = result.total;               //更新总页数
                             //更新数据
                             JSONArray array = new JSONArray(result.data);
+                            Message msg = new Message();
                             if (array.length() == 0) {
-                                Message msg = new Message();
                                 msg.obj = SupplierApp.getInstance().getString(R.string.noOrder);
                                 orderQueryResult.setValue(new OperateResult(new OperateInUserView(msg)));
                             } else {
                                 for (int i = 0; i < array.length(); i++) {
+                                    //添加订单
                                     OrderInformation item = new OrderInformation(array.getString(i));
-                                    item.canChecked = isItemCanCheck;       //设置每个项可否被勾选
+                                    item.canSelect = isOrderCanSelect;          //设置每个项可否被勾选
+                                    item.select = isOrdersAllSelect;            //设置每个项的勾选状态
                                     orderList.add(item);
+                                    statisticsOrderInformation(item);           //统计订单数据到统计list
                                 }
                                 //排序，按订单状态排序，订单状态相同时按订单打印时间排序
                                 sortForInStateAndPrintTime();
-                                orderQueryResult.setValue(new OperateResult(new OperateInUserView(null)));
+                                msg.obj = SupplierApp.getInstance().getString(R.string.querySuccess);
+                                orderQueryResult.setValue(new OperateResult(new OperateInUserView(msg)));
+                            }
+                            //添加订单商品统计
+                            if (!TextUtils.isEmpty(result.sta)) {
+//                                addOrderStatistics(result.sta);     //添加统计
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -389,23 +703,26 @@ public class NewOrderViewModel extends ViewModel {
                                 if (order.id.equals(manualOrderID)) {
                                     order.isPrint.updateStatus(PrintStatus.PRINT);
                                     order.printTime = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.CHINA).format(new Date());
-                                    order.inState = OrderStatus.SWAITED;  //供货商已接单
+                                    order.inState.updateStatus(OrderStatus.SWAITED);  //供货商已接单
                                     break;
                                 }
                             }
                         } else {
                             //更新订单状态
                             for (OrderInformation order : orderList) {
-                                if (order.checked && order.inState.equals(OrderStatus.SWAIT)) {
+                                if (order.select && order.inState.getStatus().equals(OrderStatus.SWAIT)) {
                                     order.isPrint.updateStatus(PrintStatus.PRINT);
                                     order.printTime = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.CHINA).format(new Date());
-                                    order.inState = OrderStatus.SWAITED;  //供货商已接单
+                                    order.inState.updateStatus(OrderStatus.SWAITED);  //供货商已接单
+                                    order.select = false;
                                 }
                             }
                         }
                         //排序，按订单状态排序，订单状态相同时按订单打印时间排序
                         sortForInStateAndPrintTime();
-                        orderSubmitResult.setValue(new OperateResult(new OperateInUserView(null)));
+                        Message msg = new Message();
+                        msg.obj = result.msg;
+                        orderSubmitResult.setValue(new OperateResult(new OperateInUserView(msg)));
                     } else {
                         orderSubmitResult.setValue(new OperateResult(new OperateError(result.code, result.msg, null)));
                     }
@@ -418,6 +735,7 @@ public class NewOrderViewModel extends ViewModel {
                             for (OrderPropertyRecord record : order.propertyRecords) {
                                 if (record.id.equals(orderPropertyID)) {
                                     record.actualNum = orderPropertyNum;
+                                    updateStatisticsOrderInformation(order.goodsId, record);     //更新统计数据
                                     find = true;
                                     break;
                                 }
@@ -437,27 +755,67 @@ public class NewOrderViewModel extends ViewModel {
                         orderPropertyUpdateResult.setValue(new OperateResult(new OperateError(result.code, result.msg, null)));
                     }
                     break;
+                case OrderInterface.GoodsPropertyOrder:
+                    if (result.success) {
+                        if (TextUtils.isEmpty(result.data) || result.data.length() < 5) {
+                            Message msg = new Message();
+                            msg.obj = SupplierApp.getInstance().getString(R.string.noData);
+                            orderPropertyQueryResult.setValue(new OperateResult(new OperateInUserView(msg)));
+                        } else {
+                            for (OrderInformation order : orderList) {
+                                if (order.id.equals(propertyQueryOrderID)) {
+                                    if (!order.hasQueryProperties) {
+                                        order.setPropertyRecords(result.data);
+                                        order.hasQueryProperties = true;    //标记该货号的属性已经查询过了
+                                        order.expansion = true;             //数据加载完成，可以显示了
+                                        statisticsOrderInformation(order);
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+                        orderPropertyQueryResult.setValue(new OperateResult(new OperateInUserView(null)));
+                    } else {
+                        orderPropertyQueryResult.setValue(new OperateResult(new OperateError(result.code, result.msg, null)));
+                    }
+                    break;
+                case OrderInterface.GoodsOrderInValid:
+                    if (result.success) {
+                        //订单作废成功，在列表中更新状态
+                        String[] invalids = inValidOrderID.split(",");
+                        for (String invalidID : invalids) {
+                            for (OrderInformation order : orderList) {
+                                if (order.id.equals(invalidID)) {
+                                    order.valid = OrderValid.INVALID;
+                                    order.select = false;
+                                    updateStatisticsForInValidOrderInformation(order);      //订单作废后，更新统计数据
+                                    break;
+                                }
+                            }
+                        }
+                        //排序，按订单状态排序，订单状态相同时按订单打印时间排序
+                        sortForInStateAndPrintTime();
+                        orderInValidResult.setValue(new OperateResult(new OperateInUserView(null)));
+                    } else {
+                        orderInValidResult.setValue(new OperateResult(new OperateError(result.code, result.msg, null)));
+                    }
+                    break;
                 default:
                     break;
             }
         }
     };
 
+
     /**
-     * 设置订单可多选
+     * 设置订单可被选中
      */
-    void setOrderMultipleChoice(boolean openOrClose) {
+    void setOrderCanSelect(boolean openOrClose) {
         for (OrderInformation information : this.orderList) {
-            information.canChecked = openOrClose;
-            if (!openOrClose) {              //关闭了可以多选，则之前的选择作废
-                information.checked = false;
-            }
+            information.canSelect = openOrClose;
         }
-        this.isItemCanCheck = openOrClose;
-        orderMultipleChoiceOperateResult.setValue(new OperateResult(new OperateInUserView(null)));
-        if (!openOrClose) {
-            this.orderChoiceStatusChange.setValue(new OperateResult(new OperateInUserView(null)));       //选中订单状态改变
-        }
+        this.isOrderCanSelect = openOrClose;
+        orderCanSelectResult.setValue(new OperateResult(new OperateInUserView(null)));
     }
 
     /**
@@ -476,16 +834,66 @@ public class NewOrderViewModel extends ViewModel {
 
     }
 
+
     /**
-     * 设置是否全部选中订单
+     * 是否订单全部选中
      *
-     * @param isChecked true/false
+     * @return 选中
      */
-    void setOrdersAllChoice(boolean isChecked) {
-        for (OrderInformation order : this.orderList) {
-            order.checked = isChecked;
+    public boolean isOrdersAllChoice() {
+        return isOrdersAllSelect;
+    }
+
+    /**
+     * 批量下载订单属性
+     */
+    public void batchDownloadOrderProperty(boolean isSelect) {
+        new DownOrderPropertyRecords(isSelect).start();
+    }
+
+    private static Handler handler = new Handler();
+
+    /**
+     * 同步批量下载订单属性--被选中的订单
+     */
+    private class DownOrderPropertyRecords extends Thread {
+        private boolean isSelect = false;
+
+        private DownOrderPropertyRecords(boolean isSelect) {
+            this.isSelect = isSelect;
         }
-        this.orderChoiceStatusChange.setValue(new OperateResult(new OperateInUserView(null)));
+
+        @Override
+        public void run() {
+            for (OrderInformation order : orderList) {
+                if (!order.hasQueryProperties && (!isSelect || order.select)) {
+                    CommandVo vo = new CommandVo();
+                    vo.typeEnum = CommandTypeEnum.COMMAND_SUPPLIER_ORDER;
+                    vo.url = OrderInterface.GoodsPropertyOrder;
+                    vo.contentType = HttpHandler.ContentType_APP;
+                    vo.requestMode = HttpHandler.RequestMode_POST;
+                    Map<String, String> parameters = new HashMap<>();
+                    parameters.put("id", order.id);
+                    vo.parameters = parameters;
+                    String property = Invoker.getInstance().synchronousExec(vo);
+                    CommandResponse result = new CommandResponse(property, OrderInterface.GoodsPropertyOrder);
+                    if (result.success) {
+                        if (!TextUtils.isEmpty(result.data) || result.data.length() > 5) {
+                            order.setPropertyRecords(result.data);
+                            order.hasQueryProperties = true;    //标记该货号的属性已经查询过了
+                            statisticsOrderInformation(order);      //添加货号统计
+                        }
+                    }
+                }
+            }
+            //属性下载完成，通知主线程
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    orderPropertyAllDownResult.setValue(new OperateResult(new OperateInUserView(null)));
+                }
+            });
+        }
     }
 
     /**
@@ -573,12 +981,58 @@ public class NewOrderViewModel extends ViewModel {
      * @return 选中的订单
      */
     ArrayList<OrderInformation> getCheckedOrders() {
-        ArrayList<OrderInformation> checkedOrders = new ArrayList<>();
+        printOrderList.clear();
         for (OrderInformation order : this.orderList) {
-            if (order.checked) {
-                checkedOrders.add(order);
+            if (order.select) {
+                //添加订单
+                printOrderList.add(order);
             }
         }
-        return checkedOrders;
+        return printOrderList;
+    }
+
+    /**
+     * 配送顺序
+     *
+     * @return 配送顺序
+     */
+    ArrayList<OrderDistribution> getOrderDistributionList() {
+        return orderDistributionList;
+    }
+
+    /**
+     * 通过goodsID来获取所有货号等于goodsID的订单和对应的配送顺序表
+     *
+     * @param goodsID goodsID
+     * @return printOrderList
+     */
+    ArrayList<OrderInformation> getOrdersFormGoodsID(String goodsID) {
+        printOrderList.clear();
+        for (OrderInformation order : this.orderList) {
+            if (order.goodsId.equals(goodsID)) {
+                printOrderList.add(order);
+            }
+        }
+        return printOrderList;
+    }
+
+    /**
+     * 获取当前查询条件下的总订单数
+     *
+     * @return 总订单数
+     */
+    int getOrderTotal() {
+        return this.pageCount;
+    }
+
+    /**
+     * 设置全部订单的选中状态
+     */
+    void setOrderAllSelectStatus(boolean select) {
+        isOrdersAllSelect = select;
+        for (OrderInformation order : orderList) {
+            order.select = select;
+        }
+        orderSelectUpdateResult.setValue(new OperateResult(new OperateInUserView(null)));
     }
 }

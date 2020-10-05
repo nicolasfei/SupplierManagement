@@ -13,6 +13,8 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.nicolas.advertnoticelibrary.AdvertViewHolderCreator;
+import com.nicolas.advertnoticelibrary.NoticeData;
 import com.nicolas.supplier.R;
 import com.nicolas.supplier.common.OperateResult;
 import com.youth.banner.Banner;
@@ -47,9 +49,8 @@ public class NoticeFragment extends Fragment {
     public void onStart() {
         super.onStart();
         noticeViewModel = ViewModelProviders.of(requireActivity()).get(NoticeViewModel.class);
-        /**
-         * 广告通知加载完成
-         */
+
+        //广告通知加载完成
         noticeViewModel.getInitResult().observe(requireActivity(), new Observer<OperateResult>() {
             @Override
             public void onChanged(OperateResult queryResult) {
@@ -73,5 +74,11 @@ public class NoticeFragment extends Fragment {
         });
         //本地数据初始化
         noticeViewModel.advertNoticeLocalInit();
+    }
+
+    @Override
+    public void onDestroyView() {
+        noticeViewModel.resetAdvertNotice();
+        super.onDestroyView();
     }
 }

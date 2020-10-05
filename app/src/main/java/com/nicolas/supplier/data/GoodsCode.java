@@ -1,6 +1,9 @@
 package com.nicolas.supplier.data;
 
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.text.TextUtils;
+import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -110,7 +113,8 @@ import java.util.List;
  * }
  */
 public class GoodsCode {
-    //    public Drawable photo;
+    private static String TAG = "GoodsCode";
+
     public String id;                   //"2007101",
     public String supplierId;           //"9527",
     public String supplierName;         //null,
@@ -150,6 +154,9 @@ public class GoodsCode {
     public int sort;                    //100,
     public String valid;                //"启用",
     public List<Property> properties;
+
+    public boolean showProperties = false;      //是否显示属性
+    public boolean hasQueryProperties = false;  //是否已经查询过属性了
 
     public GoodsCode(String json) {
         try {
@@ -199,9 +206,41 @@ public class GoodsCode {
             this.valid = object.getString("valid");
 
             this.properties = new ArrayList<>();
-            JSONArray array = new JSONArray(object.getJSONArray("property"));
+            if (object.has("property")) {
+                String property = object.getString("property");
+                if (!TextUtils.isEmpty(property) && property.length() > 6) {
+                    JSONArray array = new JSONArray(property);
+                    for (int i = 0; i < array.length(); i++) {
+                        this.properties.add(new Property(array.getString(i)));
+                    }
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 设置属性
+     *
+     * @param properties 属性
+     */
+    public void setProperties(String properties) {
+        try {
+            JSONArray array = new JSONArray(properties);
             for (int i = 0; i < array.length(); i++) {
-                this.properties.add(new Property(array.getString(i)));
+                Property property = new Property(array.getString(i));
+                //加一个重复检测
+                boolean isAdd = false;
+                for (Property p : this.properties) {
+                    if (p.id.equals(property.id)) {
+                        isAdd = true;
+                        break;
+                    }
+                }
+                if (!isAdd) {
+                    this.properties.add(property);
+                }
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -211,7 +250,7 @@ public class GoodsCode {
     /**
      * {
      * * "id;//"2007116",
-     * * "gId;//"2007116",
+     * * "b_g_GoodsId_Id;//"2007116",
      * * "color;//"红色",
      * * "size;//"XXL",
      * * "isStock;//"允许",
@@ -232,7 +271,7 @@ public class GoodsCode {
             try {
                 JSONObject object = new JSONObject(json);
                 this.id = object.getString("id");
-                this.gId = object.getString("gId");
+                this.gId = object.getString("b_g_GoodsId_Id");
                 this.color = object.getString("color");
                 this.size = object.getString("size");
                 this.isStock = object.getString("isStock");
