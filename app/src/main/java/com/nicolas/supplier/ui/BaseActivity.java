@@ -1,6 +1,8 @@
 package com.nicolas.supplier.ui;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -9,6 +11,9 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.nicolas.supplier.R;
+import com.nicolas.supplier.app.LoginManager;
+import com.nicolas.supplier.supplier.SupplierKeeper;
 import com.nicolas.toollibrary.AppActivityManager;
 import com.nicolas.toollibrary.shakeproof.EventListener;
 
@@ -23,6 +28,12 @@ public class BaseActivity extends AppCompatActivity {
             bar.setDisplayHomeAsUpEnabled(true);
             bar.setHomeButtonEnabled(true);
             bar.setDisplayShowHomeEnabled(true);
+        }
+
+        //由于长时间被至于后台，系统回收了activity
+        if (TextUtils.isEmpty(SupplierKeeper.getInstance().getOnDutySupplier().sid)){
+            LoginManager.getInstance().loginExpire(getString(R.string.loginTimeOut));
+            finish();
         }
     }
 
@@ -42,6 +53,32 @@ public class BaseActivity extends AppCompatActivity {
     protected void onDestroy() {
         AppActivityManager.getInstance().removeActivity(this);
         super.onDestroy();
+    }
+
+    private ProgressDialog dialog;
+
+    /**
+     * Progress 对话框
+     *
+     * @param progressString progressString
+     */
+    public void showProgressDialog(String progressString) {
+        if (dialog == null) {
+            dialog = new ProgressDialog(this);
+            dialog.setCancelable(false);
+            dialog.create();
+        }
+        dialog.setMessage(progressString);
+        dialog.show();
+    }
+
+    /**
+     * 取消对话框
+     */
+    public void dismissProgressDialog() {
+        if (dialog != null && dialog.isShowing()) {
+            dialog.dismiss();
+        }
     }
 
     /**

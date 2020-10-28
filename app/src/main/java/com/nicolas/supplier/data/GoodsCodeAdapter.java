@@ -1,9 +1,7 @@
 package com.nicolas.supplier.data;
 
 import android.content.Context;
-import android.graphics.BitmapFactory;
 import android.text.Html;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +10,6 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.nicolas.toollibrary.imageload.ImageLoadClass;
@@ -92,15 +89,21 @@ public class GoodsCodeAdapter extends BaseAdapter {
             }
         });
 
-        String describeValue = "<font color=\"blue\"><big>" + goodsCode.supplierId + "/" + goodsCode.goodsClassName + "/" + goodsCode.createTime + "</big></font>";
+        String describeValue = "<font color=\"blue\"><big>" + mContext.getString(R.string.createTime) + mContext.getString(R.string.colon) + goodsCode.createTime + "</big></font>";
         holder.describe.setText(Html.fromHtml(describeValue, Html.FROM_HTML_MODE_COMPACT));
 
         String seasonNameValue = mContext.getString(R.string.seasonName) + mContext.getString(R.string.colon) + "<font color=\"black\"><big>" + goodsCode.seasonName + "</big></font>";
         holder.seasonName.setText(Html.fromHtml(seasonNameValue, Html.FROM_HTML_MODE_COMPACT));
 
-        String customerValue = mContext.getString(R.string.customer) + mContext.getString(R.string.colon) + "<font color=\"black\"><big>" + goodsCode.customer + "</big></font>";
+        String customerValue = mContext.getString(R.string.goodsClass) + mContext.getString(R.string.colon) + "<font color=\"black\"><big>" + goodsCode.goodsClassName + "</big></font>";
         holder.customer.setText(Html.fromHtml(customerValue, Html.FROM_HTML_MODE_COMPACT));
-        holder.customer.setOnClickListener(new View.OnClickListener() {
+
+        String oldGoodsIdValue = mContext.getString(R.string.oldGoodsId) + mContext.getString(R.string.colon) + "<font color=\"black\"><big>" + goodsCode.oldGoodsId + "</big></font>";
+        holder.oldGoodsId.setText(Html.fromHtml(oldGoodsIdValue, Html.FROM_HTML_MODE_COMPACT));
+
+        String goodsIdValue = mContext.getString(R.string.goodsId) + mContext.getString(R.string.colon) + "<font color=\"black\"><big>" + goodsCode.goodsId + "</big></font>";
+        holder.goodsId.setText(Html.fromHtml(goodsIdValue, Html.FROM_HTML_MODE_COMPACT));
+        holder.goodsId.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (System.currentTimeMillis() - lastClickTime > INTERVAL_TIME) {
@@ -108,11 +111,11 @@ public class GoodsCodeAdapter extends BaseAdapter {
                         if (!goodsCode.showProperties) {
                             goodsCode.showProperties = true;
                             holder.property.setVisibility(View.VISIBLE);
-                            holder.customer.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, mContext.getDrawable(R.drawable.ic_sj_up), null);
+                            holder.goodsId.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, mContext.getDrawable(R.drawable.ic_sj_up), null);
                         } else {
                             goodsCode.showProperties = false;
                             holder.property.setVisibility(View.GONE);
-                            holder.customer.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, mContext.getDrawable(R.drawable.ic_sj_down), null);
+                            holder.goodsId.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, mContext.getDrawable(R.drawable.ic_sj_down), null);
                         }
                     } else {
                         if (listener != null) {
@@ -123,16 +126,10 @@ public class GoodsCodeAdapter extends BaseAdapter {
                 }
             }
         });
-        holder.customer.setClickable(true);
+        holder.goodsId.setClickable(true);
 
-        String oldGoodsIdValue = mContext.getString(R.string.oldGoodsId) + mContext.getString(R.string.colon) + "<font color=\"black\"><big>" + goodsCode.oldGoodsId + "</big></font>";
-        holder.oldGoodsId.setText(Html.fromHtml(oldGoodsIdValue, Html.FROM_HTML_MODE_COMPACT));
-
-        String goodsIdValue = mContext.getString(R.string.goodsId) + mContext.getString(R.string.colon) + "<font color=\"black\"><big>" + goodsCode.goodsId + "</big></font>";
-        holder.goodsId.setText(Html.fromHtml(goodsIdValue, Html.FROM_HTML_MODE_COMPACT));
-
-        String inPriceValue = mContext.getString(R.string.bid) + mContext.getString(R.string.colon) + "<font color=\"red\"><big>" + mContext.getString(R.string.money) + goodsCode.inPrice + "</big></font>";
-        holder.inPrice.setText(Html.fromHtml(inPriceValue, Html.FROM_HTML_MODE_COMPACT));
+//        String inPriceValue = mContext.getString(R.string.bid) + mContext.getString(R.string.colon) + "<font color=\"red\"><big>" + mContext.getString(R.string.money) + goodsCode.inPrice + "</big></font>";
+//        holder.inPrice.setText(Html.fromHtml(inPriceValue, Html.FROM_HTML_MODE_COMPACT));
 
         String originalPriceValue = mContext.getString(R.string.originalPrice) + mContext.getString(R.string.colon) + "<font color=\"green\"><big>" + mContext.getString(R.string.money) + goodsCode.originalPrice + "</big></font>";
         holder.originalPrice.setText(Html.fromHtml(originalPriceValue, Html.FROM_HTML_MODE_COMPACT));
@@ -187,10 +184,10 @@ public class GoodsCodeAdapter extends BaseAdapter {
         //根据showProperties来决定是否显示property
         if (goodsCode.showProperties) {
             holder.property.setVisibility(View.VISIBLE);
-            holder.customer.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, mContext.getDrawable(R.drawable.ic_sj_up), null);
+            holder.goodsId.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, mContext.getDrawable(R.drawable.ic_sj_up), null);
         } else {
             holder.property.setVisibility(View.GONE);
-            holder.customer.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, mContext.getDrawable(R.drawable.ic_sj_down), null);
+            holder.goodsId.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, mContext.getDrawable(R.drawable.ic_sj_down), null);
         }
 
         return convertView;
@@ -219,7 +216,7 @@ public class GoodsCodeAdapter extends BaseAdapter {
         private TextView oldGoodsId;        //旧货号
         private TextView goodsId;           //新货号
 
-        private TextView inPrice;           //进价
+//        private TextView inPrice;           //进价
         private TextView originalPrice;     //原进价
         private TextView orderPrice;        //订货价
         private TextView deliveryDate;      //交货天数
@@ -239,7 +236,7 @@ public class GoodsCodeAdapter extends BaseAdapter {
             this.customer = root.findViewById(R.id.customer);
             this.oldGoodsId = root.findViewById(R.id.oldGoodsId);
             this.goodsId = root.findViewById(R.id.goodsId);
-            this.inPrice = root.findViewById(R.id.inPrice);
+//            this.inPrice = root.findViewById(R.id.inPrice);
             this.originalPrice = root.findViewById(R.id.originalPrice);
             this.orderPrice = root.findViewById(R.id.orderPrice);
             this.deliveryDate = root.findViewById(R.id.deliveryDate);

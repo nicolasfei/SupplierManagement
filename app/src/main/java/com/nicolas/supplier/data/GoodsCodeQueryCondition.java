@@ -21,7 +21,7 @@ public class GoodsCodeQueryCondition {
         this.goodsType = "";
 
         this.isStock = "";
-        this.createTime = Tool.getNearlyThreeMonthDateSlot();        //默认查询近三天的货号
+        this.createTime = Tool.getNearlyThreeMonthDateSlot();        //默认查询近三月的货号
         this.goodsId = "";
     }
 

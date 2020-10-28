@@ -11,5 +11,5 @@ public abstract class CommonInterface extends AbstractInterface {
     public final static String StorehouseQuery = AbstractInterface.COMMAND_URL + "Supplier/StoreRoom";
 
     //版本监测
-    public final static String VersionCheck = AbstractInterface.COMMAND_URL + "v.json";
+    public final static String VersionCheck = "http://updatesupplier.scdawn.com/v.json";
 }

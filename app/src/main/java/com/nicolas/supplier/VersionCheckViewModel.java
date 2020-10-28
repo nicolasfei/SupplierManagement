@@ -25,7 +25,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class VersionCheckViewModel extends ViewModel {
-
     private String appCurrentVersion;       //app当前版本
     private String appLastVersion;          //app最新版本
 
@@ -71,7 +70,7 @@ public class VersionCheckViewModel extends ViewModel {
      * 下载新版本App
      */
     public void downNewVersionApp(String url) {
-        new ApkDownClass(url, new ApkDownClass.OnApkDownListener() {
+        new ApkDownClass(SupplierApp.getInstance(), url, SupplierApp.getInstance().getApkSavePath(), new ApkDownClass.OnApkDownListener() {
             @Override
             public void downFinish(String apkPath) {
                 if (TextUtils.isEmpty(apkPath)) {

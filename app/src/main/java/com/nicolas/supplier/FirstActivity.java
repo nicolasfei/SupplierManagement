@@ -15,6 +15,7 @@ import com.nicolas.supplier.server.CommandResponse;
 import com.nicolas.supplier.server.CommandTypeEnum;
 import com.nicolas.supplier.server.CommandVo;
 import com.nicolas.supplier.server.Invoker;
+import com.nicolas.supplier.server.common.VersionCheck;
 import com.nicolas.supplier.server.login.LoginInterface;
 import com.nicolas.supplier.ui.login.LoginActivity;
 import com.nicolas.toollibrary.HttpHandler;
@@ -114,7 +115,7 @@ public class FirstActivity extends AppCompatActivity {
     }
 
     private void jumpToLoginActivity() {
-        Intent intent = new Intent(this, LoginActivity.class);
+        Intent intent = new Intent(this, VersionCheckActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         startActivity(intent);
         this.finish();

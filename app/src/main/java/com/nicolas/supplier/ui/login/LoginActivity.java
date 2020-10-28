@@ -1,6 +1,9 @@
 package com.nicolas.supplier.ui.login;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -21,8 +24,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.nicolas.supplier.app.SupplierApp;
 import com.nicolas.toollibrary.AppActivityManager;
-import com.nicolas.toollibrary.BruceDialog;
 import com.nicolas.toollibrary.LoginAutoMatch;
 import com.nicolas.supplier.R;
 import com.nicolas.supplier.MainActivity;
@@ -84,19 +87,20 @@ public class LoginActivity extends AppCompatActivity {
         loginViewModel.getLoginResult().observe(this, new Observer<OperateResult>() {
             @Override
             public void onChanged(@Nullable OperateResult loginResult) {
-                BruceDialog.dismissProgressDialog();
                 if (loginResult == null) {
+                    dismissProgressDialog();
                     Utils.toast(LoginActivity.this, R.string.login_failed);
                     loginIng = false;
                     return;
                 }
                 if (loginResult.getError() != null) {
+                    dismissProgressDialog();
                     Utils.toast(LoginActivity.this, loginResult.getError().getErrorMsg());
                     loginIng = false;
                 }
                 //登陆成功，获取供应商信息
                 if (loginResult.getSuccess() != null) {
-                    BruceDialog.showProgressDialog(LoginActivity.this, getString(R.string.get_supplier_msg));
+                    showProgressDialog(getString(R.string.get_supplier_msg));
                     loginViewModel.getUserInformation();
                 }
             }
@@ -106,12 +110,12 @@ public class LoginActivity extends AppCompatActivity {
         loginViewModel.getUserInformationResult().observe(this, new Observer<OperateResult>() {
             @Override
             public void onChanged(OperateResult operateResult) {
-                BruceDialog.dismissProgressDialog();
                 if (operateResult.getSuccess() != null) {
-                    BruceDialog.showProgressDialog(LoginActivity.this, getString(R.string.get_supplier_account_msg));
+                    showProgressDialog(getString(R.string.get_supplier_account_msg));
                     loginViewModel.getUserAccountInformation();
                 }
                 if (operateResult.getError() != null) {
+                    dismissProgressDialog();
                     Utils.toast(LoginActivity.this, getString(R.string.get_supplier_failed) + getString(R.string.colon) + operateResult.getError().getErrorMsg());
                     loginIng = false;
                 }
@@ -122,7 +126,6 @@ public class LoginActivity extends AppCompatActivity {
         loginViewModel.getUserAccountInformationResult().observe(this, new Observer<OperateResult>() {
             @Override
             public void onChanged(OperateResult operateResult) {
-                BruceDialog.dismissProgressDialog();
                 if (operateResult.getSuccess() != null) {
                     updateUiWithUser();
                 }
@@ -130,6 +133,7 @@ public class LoginActivity extends AppCompatActivity {
                     Utils.toast(LoginActivity.this, getString(R.string.get_supplier_account_failed) + getString(R.string.colon) + operateResult.getError().getErrorMsg());
                     loginIng = false;
                 }
+                dismissProgressDialog();
             }
         });
 
@@ -158,7 +162,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    BruceDialog.showProgressDialog(LoginActivity.this, getString(R.string.login_ing));
+                    showProgressDialog(getString(R.string.login_ing));
                     String userName = usernameEditText.getText().toString();
                     String password = passwordEditText.getText().toString();
                     loginViewModel.login(userName, password);
@@ -172,13 +176,30 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (!loginIng) {
                     loginIng = true;
-                    BruceDialog.showProgressDialog(LoginActivity.this, getString(R.string.login_ing));
+                    showProgressDialog(getString(R.string.login_ing));
                     String userName = usernameEditText.getText().toString();
                     String password = passwordEditText.getText().toString();
                     loginViewModel.login(userName, password);
                 }
             }
         });
+
+
+        //获取app当前版本
+        String appCurrentVersion = "";
+        PackageManager manager = SupplierApp.getInstance().getPackageManager();
+        try {
+            PackageInfo info = manager.getPackageInfo(SupplierApp.getInstance().getPackageName(), 0);
+            appCurrentVersion = info.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        String value = "版本号：v" + appCurrentVersion + "\n" +
+                "系统名称：DAWN BUSINESS IT SYSTEM \n" +
+                "版权信息：Copyright  2009-2020 By Si Chuan Province Dawn Business CO.,Ltd.All rights Reserved.";
+        TextView about = findViewById(R.id.about);
+        about.setText(value);
     }
 
     @Override
@@ -187,17 +208,43 @@ public class LoginActivity extends AppCompatActivity {
         if (requestCode == 1) {
             loginIng = false;
         }
+        AppActivityManager.getInstance().printActivity();
     }
 
     private void updateUiWithUser() {
         String welcome = getString(R.string.welcome) + SupplierKeeper.getInstance().getOnDutySupplier().name;
-        // TODO : initiate successful logged in experience
         Toast.makeText(getApplicationContext(), welcome, Toast.LENGTH_LONG).show();
         //添加登陆用户
         LoginAutoMatch.getInstance().addLoginUser(SupplierKeeper.getInstance().getOnDutySupplier().userName, SupplierKeeper.getInstance().getOnDutySupplier().passWord);
         //跳转到主页面
         Intent intent = new Intent(this, MainActivity.class);
         startActivityForResult(intent, 1);
+    }
+
+    private ProgressDialog dialog;
+
+    /**
+     * Progress 对话框
+     *
+     * @param progressString progressString
+     */
+    public void showProgressDialog(String progressString) {
+        if (dialog == null) {
+            dialog = new ProgressDialog(this);
+            dialog.setCancelable(false);
+            dialog.create();
+        }
+        dialog.setMessage(progressString);
+        dialog.show();
+    }
+
+    /**
+     * 取消对话框
+     */
+    public void dismissProgressDialog() {
+        if (dialog != null && dialog.isShowing()) {
+            dialog.dismiss();
+        }
     }
 
     @Override

@@ -22,5 +22,7 @@ public abstract class ManagementInterface extends AbstractInterface {
     //用户管理-登陆记录查询
     public final static String SupplierLoginQuery = AbstractInterface.COMMAND_URL + "Supplier/SupplierAccountLoginRecord";
     //用户管理-供应商密码修改
-    public final static String SupplierPassModify = AbstractInterface.COMMAND_URL + "Supplier/SupplierAccountByResetPWD";
+    public final static String SupplierPassModify = AbstractInterface.COMMAND_URL + "Supplier/EditPassword";
+    //用户管理-供应商密码修改--获取验证码
+    public final static String SupplierGetVerificationCode = AbstractInterface.COMMAND_URL + "Supplier/SendSms";
 }

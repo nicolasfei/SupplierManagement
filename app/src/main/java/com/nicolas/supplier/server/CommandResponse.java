@@ -1,15 +1,12 @@
 package com.nicolas.supplier.server;
 
 import android.text.TextUtils;
-import android.util.Log;
-
-import com.nicolas.supplier.app.LoginManager;
+import com.nicolas.toollibrary.Tool;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class CommandResponse {
-    private static final String TAG = "CommandResponse";
     public boolean success = false;
     public String msg = "";
     public int code = 0;
@@ -19,9 +16,18 @@ public class CommandResponse {
     public int total;
     public CommandTypeEnum typeEnum;
     public String url;
+    public boolean reLogin = false;     //重新登陆
+
+    public static boolean setTest = false;
 
     public CommandResponse(String response, String requestUrl) {
-        Log.i(TAG, "CommandResponse: " + response + " requestUrl is " + requestUrl);
+        Tool.longPrint("CommandResponse: " + response + " requestUrl is " + requestUrl);
+        this.url = requestUrl;
+        if (setTest){
+            setTest=false;
+            reLogin = true;
+            return;
+        }
         if (!TextUtils.isEmpty(response)) {
             try {
                 JSONObject rep = new JSONObject(response);
@@ -29,8 +35,7 @@ public class CommandResponse {
                 if (rep.has("msg")) {
                     this.msg = rep.getString("msg");
                     if (this.msg.equals("请重新登录")) {
-                        LoginManager.getInstance().loginExpire(this.msg);
-                        return;
+                        reLogin = true;
                     }
                 }
                 if (rep.has("data")) {
@@ -60,6 +65,5 @@ public class CommandResponse {
                 }
             }
         }
-        this.url = requestUrl;
     }
 }

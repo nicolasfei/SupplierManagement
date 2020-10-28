@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.nicolas.supplier.supplier.SupplierKeeper;
 import com.nicolas.toollibrary.HttpHandler;
 import com.nicolas.supplier.common.OperateError;
 import com.nicolas.supplier.common.OperateInUserView;
@@ -52,7 +53,7 @@ public class UserViewModel extends ViewModel {
                     if (!result.success) {
                         modifyPassResult.setValue(new OperateResult(new OperateError(-1, result.msg, null)));
                     } else {
-                        //SupplierKeeper.getInstance().getSupplierAccount().password = newPass;
+                        SupplierKeeper.getInstance().getSupplierAccount().password = newPass;
                         modifyPassResult.setValue(new OperateResult(new OperateInUserView(null)));
                     }
                     break;

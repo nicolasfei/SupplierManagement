@@ -2,6 +2,7 @@ package com.nicolas.supplier.data;
 
 import android.content.Context;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,12 +10,9 @@ import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.lifecycle.ViewModel;
-
 import com.nicolas.supplier.R;
 
 import java.util.List;
-import java.util.Map;
 
 public class OrderGoodsCountAdapter extends BaseAdapter {
 

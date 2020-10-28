@@ -25,12 +25,12 @@ import com.nicolas.componentlibrary.multileveltree.TreeNode;
 import com.nicolas.componentlibrary.multileveltree.TreeNodeViewDialog;
 import com.nicolas.componentlibrary.pullrefresh.PullRefreshListView;
 import com.nicolas.supplier.data.ReturnGoodsInformationAdapter;
-import com.nicolas.supplier.ui.home.goods.GoodsQueryActivity;
 import com.nicolas.toollibrary.BruceDialog;
 import com.nicolas.supplier.R;
 import com.nicolas.supplier.common.OperateResult;
 import com.nicolas.supplier.supplier.SupplierKeeper;
 import com.nicolas.supplier.ui.BaseActivity;
+import com.nicolas.toollibrary.Tool;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -41,7 +41,7 @@ public class ReturnGoodsQueryActivity extends BaseActivity implements View.OnCli
 
     private ReturnGoodsQueryViewModel viewModel;
     private DrawerLayout drawerLayout;
-    private TextView staff;
+    private TextView staff, detailed;
     //查询条件
     private TextView goodsClassId;
     private TextView fId;
@@ -119,14 +119,22 @@ public class ReturnGoodsQueryActivity extends BaseActivity implements View.OnCli
             }
         });
 
-        Button button = findClickView(R.id.query);
-        Button button1 = findClickView(R.id.reset);
+        this.detailed = findClickView(R.id.detailed);
+
+        findClickView(R.id.checkTimeClear);
+        findClickView(R.id.goodsClassIdClear);
+        findClickView(R.id.fIdClear);
+        findClickView(R.id.oldGoodsIdClear);
+        findClickView(R.id.goodsIdClear);
+        findClickView(R.id.barcodeIdClear);
+        findClickView(R.id.query);
+        findClickView(R.id.reset);
 
         //监听查询结果
         this.viewModel.getReturnGoodsQueryResult().observe(this, new Observer<OperateResult>() {
             @Override
             public void onChanged(OperateResult operateResult) {
-                BruceDialog.dismissProgressDialog();
+                dismissProgressDialog();
                 if (operateResult.getSuccess() != null) {
                     adapter.notifyDataSetChanged();
                     Message msg = operateResult.getSuccess().getMessage();
@@ -139,6 +147,7 @@ public class ReturnGoodsQueryActivity extends BaseActivity implements View.OnCli
                                     }
                                 });
                     }
+                    updateDetailed();
                 }
                 if (operateResult.getError() != null) {
                     BruceDialog.showAlertDialog(ReturnGoodsQueryActivity.this, getString(R.string.failed),
@@ -166,7 +175,7 @@ public class ReturnGoodsQueryActivity extends BaseActivity implements View.OnCli
         });
 
         //查询返货
-        BruceDialog.showProgressDialog(this, getString(R.string.querying));
+        showProgressDialog(getString(R.string.querying));
         viewModel.queryReturnGoods();
     }
 
@@ -241,7 +250,17 @@ public class ReturnGoodsQueryActivity extends BaseActivity implements View.OnCli
                 });
                 break;
             case R.id.checkTime:
-                DateTimePickerDialog.showDateSlotPickerDialog(this, new DateTimePickerDialog.OnDateTimeSlotPickListener() {
+                String checkTime = viewModel.queryCondition.checkTime;
+                String start = "";
+                String end = "";
+                if (!TextUtils.isEmpty(checkTime)) {
+                    String[] times = checkTime.split("~");
+                    if (times.length >= 2) {
+                        start = times[0];
+                        end = times[1];
+                    }
+                }
+                DateTimePickerDialog.showDateSlotPickerDialog(this, start, end, new DateTimePickerDialog.OnDateTimeSlotPickListener() {
                     @Override
                     public void OnDateTimeSlotPick(String start, String end) {
                         if (!TextUtils.isEmpty(start)) {
@@ -262,8 +281,27 @@ public class ReturnGoodsQueryActivity extends BaseActivity implements View.OnCli
                     }
                 });
                 break;
+
+            case R.id.checkTimeClear:
+                checkTimeClear();
+                break;
+            case R.id.goodsClassIdClear:
+                goodsClassIdClear();
+                break;
+            case R.id.fIdClear:
+                fIdClear();
+                break;
+            case R.id.oldGoodsIdClear:
+                oldGoodsIdClear();
+                break;
+            case R.id.goodsIdClear:
+                goodsIdClear();
+                break;
+            case R.id.barcodeIdClear:
+                barcodeIdClear();
+                break;
             case R.id.query:
-                BruceDialog.showProgressDialog(this, getString(R.string.querying));
+                showProgressDialog(getString(R.string.querying));
                 drawerLayout.closeDrawer(Gravity.RIGHT, true);
                 viewModel.queryReturnGoods();
                 break;
@@ -273,6 +311,37 @@ public class ReturnGoodsQueryActivity extends BaseActivity implements View.OnCli
             default:
                 break;
         }
+    }
+
+    private void barcodeIdClear() {
+        this.viewModel.queryCondition.barcodeID = "";
+        this.updateBarcodeId("");
+    }
+
+    private void goodsIdClear() {
+        this.viewModel.queryCondition.goodsId = "";
+        this.updateGoodsId("");
+    }
+
+    private void oldGoodsIdClear() {
+        this.viewModel.queryCondition.oldGoodsId = "";
+        this.updateOldGoodsId("");
+    }
+
+    private void fIdClear() {
+        this.viewModel.queryCondition.fId = "";
+        this.updateBranchID("");
+    }
+
+    private void goodsClassIdClear() {
+        this.viewModel.queryCondition.goodsClassId = "";
+        this.updateGoodsClassId("");
+        SupplierKeeper.getInstance().clearGoodsClassSelect();
+    }
+
+    private void checkTimeClear() {
+        this.viewModel.queryCondition.checkTime = Tool.getNearlyThreeDaysDateSlot();
+        this.updateCheckTime(this.viewModel.queryCondition.checkTime.replace("~", "\u3000~\u3000"));
     }
 
     private void updateStaff(String staff) {
@@ -321,6 +390,15 @@ public class ReturnGoodsQueryActivity extends BaseActivity implements View.OnCli
         this.updateGoodsId("");
         this.updateBarcodeId("");
         this.updateCheckTime(this.viewModel.queryCondition.checkTime.replace("~", "\u3000~\u3000"));
+    }
+
+    /**
+     * 更新明细
+     */
+    private void updateDetailed() {
+        String value = getString(R.string.detailed) + "\u3000\u3000" + getString(R.string.returnGoodsCodeTotal) + getString(R.string.colon) + "<font color=\"black\">" +
+                this.viewModel.getReturnGoodsCodeTotal() + "</font>";
+        this.detailed.setText(Html.fromHtml(value, Html.FROM_HTML_MODE_COMPACT));
     }
 
     @Override

@@ -10,6 +10,7 @@ import com.nicolas.supplier.common.ModuleNavigation;
 import com.nicolas.supplier.common.OperateInUserView;
 import com.nicolas.supplier.common.OperateResult;
 import com.nicolas.supplier.ui.my.loginrecord.LoginRecordActivity;
+import com.nicolas.supplier.ui.my.user.AboutActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +25,7 @@ public class MyViewModel extends ViewModel {
         //content.add(new ModuleNavigation(true, getString(R.string.nav_cashier_title), 0, null));
 //        content.add(new ModuleNavigation(false, SupplierApp.getInstance().getString(R.string.nav_order_account), R.drawable.ic_account, UserActivity.class));
         content.add(new ModuleNavigation(false, SupplierApp.getInstance().getString(R.string.nav_order_recode), R.drawable.ic_recode, LoginRecordActivity.class));
+//        content.add(new ModuleNavigation(false, SupplierApp.getInstance().getString(R.string.nav_about), R.drawable.ic_about, AboutActivity.class));
     }
 
     public LiveData<OperateResult> getUpdateNavNumResult() {

@@ -25,6 +25,7 @@ import com.nicolas.componentlibrary.datetimepicker.DateTimePickerDialog;
 import com.nicolas.componentlibrary.multileveltree.TreeNode;
 import com.nicolas.componentlibrary.multileveltree.TreeNodeViewDialog;
 import com.nicolas.componentlibrary.pullrefresh.PullRefreshListView;
+import com.nicolas.supplier.data.GoodsCodeQueryCondition;
 import com.nicolas.toollibrary.BruceDialog;
 import com.nicolas.supplier.R;
 import com.nicolas.supplier.common.OperateResult;
@@ -33,6 +34,7 @@ import com.nicolas.supplier.data.GoodsCodeClass;
 import com.nicolas.supplier.data.GoodsOrderStatus;
 import com.nicolas.supplier.supplier.SupplierKeeper;
 import com.nicolas.supplier.ui.BaseActivity;
+import com.nicolas.toollibrary.Tool;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -40,8 +42,6 @@ import java.util.List;
 import java.util.Locale;
 
 public class GoodsQueryActivity extends BaseActivity implements View.OnClickListener {
-
-    private static final String TAG = "GoodsQueryActivity";
 
     private GoodsQueryViewModel viewModel;
     private DrawerLayout drawerLayout;
@@ -164,7 +164,7 @@ public class GoodsQueryActivity extends BaseActivity implements View.OnClickList
         this.adapter.setOnGoodsCodeStatusChangeListener(new GoodsCodeAdapter.OnGoodsCodeStatusChangeListener() {
             @Override
             public void OnGoodsCodeStockChange(String goodsCodeID, String goodsCodePropertyID, boolean isStock) {
-                BruceDialog.showProgressDialog(GoodsQueryActivity.this, getString(R.string.GoodsStatusUpdate));
+                showProgressDialog( getString(R.string.GoodsStatusUpdate));
                 String stock = isStock ? GoodsOrderStatus.Allow : GoodsOrderStatus.Forbid;
                 if (TextUtils.isEmpty(goodsCodePropertyID)) {
                     viewModel.updateGoodsStatus(goodsCodeID, stock);
@@ -176,7 +176,7 @@ public class GoodsQueryActivity extends BaseActivity implements View.OnClickList
             @Override
             public void OnGoodsCodePropertyQuery(String goodsCodeID) {
                 //查询货号属性
-                BruceDialog.showProgressDialog(GoodsQueryActivity.this, getString(R.string.GoodsPropertyQuery));
+                showProgressDialog( getString(R.string.GoodsPropertyQuery));
                 viewModel.queryGoodsCodeProperty(goodsCodeID);
             }
         });
@@ -216,8 +216,14 @@ public class GoodsQueryActivity extends BaseActivity implements View.OnClickList
 //            }
 //        });
 
-        Button reset = findClickView(R.id.reset);
-        Button submit = findClickView(R.id.submit);
+        findClickView(R.id.createTimeClear);
+        findClickView(R.id.goodsClassIdClear);
+        findClickView(R.id.goodsIdClear);
+        findClickView(R.id.oldGoodsIdClear);
+        findClickView(R.id.goodsTypeClear);
+        findClickView(R.id.isStockClear);
+        findClickView(R.id.reset);
+        findClickView(R.id.submit);
 
         //监听货号查询结果
         this.viewModel.getQueryGoodsIDResult().observe(this, new Observer<OperateResult>() {
@@ -227,24 +233,14 @@ public class GoodsQueryActivity extends BaseActivity implements View.OnClickList
                     adapter.notifyDataSetChanged();
                     Message msg = operateResult.getSuccess().getMessage();
                     if (msg != null) {
-                        BruceDialog.showAlertDialog(GoodsQueryActivity.this, getString(R.string.success),
-                                (String) msg.obj, new BruceDialog.OnAlertDialogListener() {
-                                    @Override
-                                    public void onSelect(boolean confirm) {
-
-                                    }
-                                });
+                        BruceDialog.showPromptDialog(GoodsQueryActivity.this,
+                                (String) msg.obj);
                     }
                     updateDetailed();           //更新订单明细
                 }
                 if (operateResult.getError() != null) {
-                    BruceDialog.showAlertDialog(GoodsQueryActivity.this, getString(R.string.failed),
-                            operateResult.getError().getErrorMsg(), new BruceDialog.OnAlertDialogListener() {
-                                @Override
-                                public void onSelect(boolean confirm) {
-
-                                }
-                            });
+                    BruceDialog.showPromptDialog(GoodsQueryActivity.this,
+                            operateResult.getError().getErrorMsg());
                 }
                 if (pullToRefreshListView.isPushLoadingMore()) {
                     pullToRefreshListView.loadMoreFinish();
@@ -259,7 +255,7 @@ public class GoodsQueryActivity extends BaseActivity implements View.OnClickList
                     queryDate = nowDate + "~" + nowDate;
                 }
                 pullToRefreshListView.updateContentDate(queryDate);
-                BruceDialog.dismissProgressDialog();
+                dismissProgressDialog();
             }
         });
 
@@ -270,26 +266,16 @@ public class GoodsQueryActivity extends BaseActivity implements View.OnClickList
                 if (operateResult.getSuccess() != null) {
                     Message msg = operateResult.getSuccess().getMessage();
                     if (msg != null) {
-                        BruceDialog.showAlertDialog(GoodsQueryActivity.this, getString(R.string.success),
-                                (String) msg.obj, new BruceDialog.OnAlertDialogListener() {
-                                    @Override
-                                    public void onSelect(boolean confirm) {
-
-                                    }
-                                });
+                        BruceDialog.showPromptDialog(GoodsQueryActivity.this,
+                                (String) msg.obj);
                     }
                     adapter.notifyDataSetChanged();
                 }
                 if (operateResult.getError() != null) {
-                    BruceDialog.showAlertDialog(GoodsQueryActivity.this, getString(R.string.failed),
-                            operateResult.getError().getErrorMsg(), new BruceDialog.OnAlertDialogListener() {
-                                @Override
-                                public void onSelect(boolean confirm) {
-
-                                }
-                            });
+                    BruceDialog.showPromptDialog(GoodsQueryActivity.this,
+                            operateResult.getError().getErrorMsg());
                 }
-                BruceDialog.dismissProgressDialog();
+                dismissProgressDialog();
             }
         });
 
@@ -299,29 +285,19 @@ public class GoodsQueryActivity extends BaseActivity implements View.OnClickList
             public void onChanged(OperateResult operateResult) {
                 adapter.notifyDataSetChanged();
                 if (operateResult.getSuccess() != null) {
-                    BruceDialog.showAlertDialog(GoodsQueryActivity.this, getString(R.string.success),
-                            getString(R.string.setSuccess), new BruceDialog.OnAlertDialogListener() {
-                                @Override
-                                public void onSelect(boolean confirm) {
-
-                                }
-                            });
+                    BruceDialog.showPromptDialog(GoodsQueryActivity.this,
+                            getString(R.string.setSuccess));
                 }
                 if (operateResult.getError() != null) {
-                    BruceDialog.showAlertDialog(GoodsQueryActivity.this, getString(R.string.failed),
-                            operateResult.getError().getErrorMsg(), new BruceDialog.OnAlertDialogListener() {
-                                @Override
-                                public void onSelect(boolean confirm) {
-
-                                }
-                            });
+                    BruceDialog.showPromptDialog(GoodsQueryActivity.this,
+                            operateResult.getError().getErrorMsg());
                 }
-                BruceDialog.dismissProgressDialog();
+                dismissProgressDialog();
             }
         });
 
         //默认查询
-        BruceDialog.showProgressDialog(this, getString(R.string.querying));
+        showProgressDialog( getString(R.string.querying));
         this.viewModel.queryGoodsID();
     }
 
@@ -385,7 +361,18 @@ public class GoodsQueryActivity extends BaseActivity implements View.OnClickList
                 });
                 break;
             case R.id.createTime:
-                DateTimePickerDialog.showDateSlotPickerDialog(this, new DateTimePickerDialog.OnDateTimeSlotPickListener() {
+                GoodsCodeQueryCondition condition = viewModel.queryCondition;
+                String createTime = condition.getCreateTime();
+                String start = "";
+                String end = "";
+                if (!TextUtils.isEmpty(createTime)) {
+                    String[] times = createTime.split("~");
+                    if (times.length >= 2) {
+                        start = times[0];
+                        end = times[1];
+                    }
+                }
+                DateTimePickerDialog.showDateSlotPickerDialog(this, start, end, new DateTimePickerDialog.OnDateTimeSlotPickListener() {
                     @Override
                     public void OnDateTimeSlotPick(String start, String end) {
                         if (!TextUtils.isEmpty(start) && !TextUtils.isEmpty(end)) {
@@ -395,15 +382,75 @@ public class GoodsQueryActivity extends BaseActivity implements View.OnClickList
                     }
                 });
                 break;
+            case R.id.createTimeClear:
+                createTimeReset();
+                break;
+            case R.id.goodsClassIdClear:
+                goodsClassIdClear();
+                break;
+            case R.id.goodsIdClear:
+                goodsIdClear();
+                break;
+            case R.id.oldGoodsIdClear:
+                oldGoodsIdClear();
+                break;
+            case R.id.goodsTypeClear:
+                goodsTypeClear();
+                break;
+            case R.id.isStockClear:
+                isStockClear();
+                break;
             case R.id.reset:
                 queryConditionReset();
                 break;
             case R.id.submit:
-                this.goodsConditionQuery();
+                goodsConditionQuery();
                 break;
             default:
                 break;
         }
+    }
+
+    private void isStockClear() {
+        this.viewModel.queryCondition.setIsStock("");
+        this.isClearStockStatus = true;
+        this.isStockGroup.clearCheck();
+    }
+
+    private void goodsTypeClear() {
+        this.viewModel.queryCondition.setGoodsType("");
+        this.isClearGoodsType = true;       //先置位条件
+        this.goodsTypeGroup.clearCheck();
+    }
+
+    private void oldGoodsIdClear() {
+        this.viewModel.queryCondition.setOldGoodsId("");
+        this.updateOldGoodsID("");
+    }
+
+    /**
+     * 清空新货号
+     */
+    private void goodsIdClear() {
+        this.viewModel.queryCondition.setGoodsId("");
+        this.updateGoodsID("");
+    }
+
+    /**
+     * 清空货物类型
+     */
+    private void goodsClassIdClear() {
+        this.viewModel.queryCondition.setGoodsClassId("");
+        this.updateGoodsClassId("");
+        SupplierKeeper.getInstance().clearGoodsClassSelect();
+    }
+
+    /**
+     * 重置创建时间
+     */
+    private void createTimeReset() {
+        this.viewModel.queryCondition.setCreateTime(Tool.getNearlyThreeMonthDateSlot());
+        this.updateCreateTime(this.viewModel.queryCondition.getCreateTime().replace("~", "\u3000~\u3000"));
     }
 
     /**
@@ -414,7 +461,7 @@ public class GoodsQueryActivity extends BaseActivity implements View.OnClickList
             drawerLayout.closeDrawer(Gravity.RIGHT, true);
         }
         if (viewModel.queryCondition.isQueryConditionUpdate()) {
-            BruceDialog.showProgressDialog(this, getString(R.string.querying));
+            showProgressDialog( getString(R.string.querying));
             viewModel.queryGoodsID();
             viewModel.queryCondition.resetQueryConditionUpdateStatus();
         }

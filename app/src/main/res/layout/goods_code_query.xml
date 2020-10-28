@@ -7,8 +7,60 @@
     android:background="@android:color/white">
 
     <TextView
+        android:id="@+id/createTimeText"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="start|center"
+        android:paddingStart="@dimen/drawer_margin"
+        android:paddingEnd="@dimen/drawer_margin"
+        android:text="@string/codeCreateTime"
+        android:textSize="@dimen/drawer_text_size"
+        app:layout_constraintHeight_percent="0.05"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.27" />
+
+    <TextView
+        android:id="@+id/createTime"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/shape_rectangle_black"
+        android:drawableEnd="@drawable/ic_calendar"
+        android:gravity="start|center"
+        android:hint="@string/choice_date"
+        android:paddingStart="@dimen/drawer_margin"
+        android:paddingEnd="@dimen/drawer_margin"
+        android:textSize="@dimen/text_size"
+        app:layout_constraintHeight_percent="@dimen/view_height_percent"
+        app:layout_constraintStart_toEndOf="@+id/createTimeText"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.58" />
+
+    <Button
+        android:id="@+id/createTimeClear"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:padding="0dp"
+        android:text="@string/reset"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.05"
+        app:layout_constraintStart_toEndOf="@+id/createTime"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.15" />
+
+    <View
+        android:id="@+id/divider0"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/createTime" />
+
+    <TextView
         android:id="@+id/goodsClassId"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
         android:drawableEnd="@drawable/ic_sr_blue"
         android:gravity="start|center"
@@ -16,15 +68,26 @@
         android:paddingEnd="0dp"
         android:text="@string/goodsClass"
         android:textSize="@dimen/text_size"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="@dimen/view_height_percent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/divider0"
+        app:layout_constraintWidth_percent="0.85" />
+
+    <Button
+        android:id="@+id/goodsClassIdClear"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:text="@string/clear"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="@dimen/view_height_percent"
+        app:layout_constraintStart_toEndOf="@+id/goodsClassId"
+        app:layout_constraintTop_toBottomOf="@+id/divider0"
+        app:layout_constraintWidth_percent="0.15" />
 
     <View
         android:id="@+id/divider1"
         android:layout_width="0dp"
-        android:layout_height="2dp"
+        android:layout_height="1dp"
         android:background="?android:attr/listDivider"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -32,7 +95,7 @@
 
     <TextView
         android:id="@+id/goodsId"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
         android:drawableEnd="@drawable/ic_sr_blue"
         android:gravity="start|center"
@@ -40,15 +103,26 @@
         android:paddingEnd="0dp"
         android:text="@string/goodsID"
         android:textSize="@dimen/text_size"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="@dimen/view_height_percent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider1" />
+        app:layout_constraintTop_toBottomOf="@+id/divider1"
+        app:layout_constraintWidth_percent="0.85" />
+
+    <Button
+        android:id="@+id/goodsIdClear"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:text="@string/clear"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="@dimen/view_height_percent"
+        app:layout_constraintStart_toEndOf="@+id/goodsClassId"
+        app:layout_constraintTop_toBottomOf="@+id/divider1"
+        app:layout_constraintWidth_percent="0.15" />
 
     <View
         android:id="@+id/divider2"
         android:layout_width="0dp"
-        android:layout_height="2dp"
+        android:layout_height="1dp"
         android:background="?android:attr/listDivider"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -56,7 +130,7 @@
 
     <TextView
         android:id="@+id/oldGoodsId"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
         android:drawableEnd="@drawable/ic_sr_blue"
         android:gravity="start|center"
@@ -64,15 +138,26 @@
         android:paddingEnd="0dp"
         android:text="@string/oldGoodsId"
         android:textSize="@dimen/text_size"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="@dimen/view_height_percent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider2" />
+        app:layout_constraintTop_toBottomOf="@+id/divider2"
+        app:layout_constraintWidth_percent="0.85" />
+
+    <Button
+        android:id="@+id/oldGoodsIdClear"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:text="@string/clear"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="@dimen/view_height_percent"
+        app:layout_constraintStart_toEndOf="@+id/oldGoodsId"
+        app:layout_constraintTop_toBottomOf="@+id/divider2"
+        app:layout_constraintWidth_percent="0.15" />
 
     <View
         android:id="@+id/divider3"
         android:layout_width="0dp"
-        android:layout_height="2dp"
+        android:layout_height="1dp"
         android:background="?android:attr/listDivider"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -80,7 +165,7 @@
 
     <TextView
         android:id="@+id/goodsType"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
         android:gravity="start|center"
         android:paddingStart="@dimen/drawer_margin"
@@ -88,26 +173,26 @@
         android:text="@string/goodsIDType"
         android:textColor="@color/disable_gray"
         android:textSize="@dimen/text_size"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="0.03"
+        app:layout_constraintHeight_percent="0.05"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider3" />
+        app:layout_constraintTop_toBottomOf="@+id/divider3"
+        app:layout_constraintWidth_percent="0.20" />
 
     <RadioGroup
         android:id="@+id/goodsTypeGroup"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
         android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="@dimen/view_height_percent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/goodsType">
+        app:layout_constraintStart_toEndOf="@+id/goodsType"
+        app:layout_constraintTop_toBottomOf="@+id/divider3"
+        app:layout_constraintWidth_percent="0.65">
 
         <RadioButton
             android:id="@+id/normal"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
             android:layout_marginStart="@dimen/drawer_margin"
+            android:layout_height="match_parent"
             android:layout_weight="0.25"
             android:text="@string/normal" />
 
@@ -133,56 +218,29 @@
             android:text="@string/special" />
     </RadioGroup>
 
-    <View
-        android:id="@+id/divider4"
+    <Button
+        android:id="@+id/goodsTypeClear"
         android:layout_width="0dp"
-        android:layout_height="2dp"
+        android:layout_height="0dp"
+        android:text="@string/clear"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="@dimen/view_height_percent"
+        app:layout_constraintStart_toEndOf="@+id/oldGoodsId"
+        app:layout_constraintTop_toBottomOf="@+id/divider3"
+        app:layout_constraintWidth_percent="0.15" />
+
+    <View
+        android:id="@+id/divider5"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
         android:background="?android:attr/listDivider"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/goodsTypeGroup" />
 
     <TextView
-        android:id="@+id/createTimeText"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:gravity="start|center"
-        android:paddingStart="@dimen/drawer_margin"
-        android:paddingEnd="@dimen/drawer_margin"
-        android:text="@string/codeCreateTime"
-        android:textSize="@dimen/drawer_text_size"
-        app:layout_constraintHeight_percent="0.03"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider4" />
-
-    <TextView
-        android:id="@+id/createTime"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:background="@drawable/shape_rectangle_black"
-        android:drawableEnd="@drawable/ic_calendar"
-        android:gravity="start|center"
-        android:hint="@string/choice_date"
-        android:paddingStart="@dimen/drawer_margin"
-        android:paddingEnd="@dimen/drawer_margin"
-        android:textSize="@dimen/text_size"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="@dimen/view_height_percent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/createTimeText" />
-
-    <View
-        android:id="@+id/divider5"
-        android:layout_width="0dp"
-        android:layout_height="2dp"
-        android:background="?android:attr/listDivider"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/createTime" />
-
-    <TextView
         android:id="@+id/isStock"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
         android:gravity="start|center"
         android:paddingStart="@dimen/drawer_margin"
@@ -190,20 +248,20 @@
         android:text="@string/allowOrder"
         android:textColor="@color/disable_gray"
         android:textSize="@dimen/text_size"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="0.03"
+        app:layout_constraintHeight_percent="0.05"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider5" />
+        app:layout_constraintTop_toBottomOf="@+id/divider5"
+        app:layout_constraintWidth_percent="0.20" />
 
     <RadioGroup
         android:id="@+id/isStockGroup"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
         android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="@dimen/view_height_percent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/isStock">
+        app:layout_constraintStart_toEndOf="@+id/isStock"
+        app:layout_constraintTop_toBottomOf="@+id/divider5"
+        app:layout_constraintWidth_percent="0.65">
 
         <RadioButton
             android:id="@+id/allow"
@@ -221,10 +279,21 @@
             android:text="@string/forbid" />
     </RadioGroup>
 
+    <Button
+        android:id="@+id/isStockClear"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:text="@string/clear"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="@dimen/view_height_percent"
+        app:layout_constraintStart_toEndOf="@+id/isStockGroup"
+        app:layout_constraintTop_toBottomOf="@+id/divider5"
+        app:layout_constraintWidth_percent="0.15" />
+
     <View
         android:id="@+id/divider6"
         android:layout_width="0dp"
-        android:layout_height="2dp"
+        android:layout_height="1dp"
         android:background="?android:attr/listDivider"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -236,9 +305,9 @@
         android:layout_height="0dp"
         android:text="@string/reset"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintWidth_percent="0.5"
         app:layout_constraintHeight_percent="@dimen/view_height_percent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintWidth_percent="0.5" />
 
     <Button
         android:id="@+id/submit"
@@ -247,8 +316,8 @@
         android:text="@string/query"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintWidth_percent="0.5"
         app:layout_constraintHeight_percent="@dimen/view_height_percent"
-        app:layout_constraintStart_toEndOf="@+id/reset" />
+        app:layout_constraintStart_toEndOf="@+id/reset"
+        app:layout_constraintWidth_percent="0.5" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

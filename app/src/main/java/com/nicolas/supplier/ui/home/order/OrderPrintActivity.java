@@ -29,8 +29,8 @@ import com.nicolas.supplier.supplier.SupplierKeeper;
 import com.nicolas.supplier.ui.BaseActivity;
 import com.nicolas.supplier.ui.device.printer.PrinterActivity;
 import com.nicolas.supplier.data.OrderPrintAdapter;
-import com.nicolas.supplier.ui.home.goods.GoodsQueryActivity;
 import com.nicolas.toollibrary.BruceDialog;
+import com.nicolas.toollibrary.Utils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -41,8 +41,11 @@ import static com.nicolas.printerlibraryforufovo.PrinterDevice.LINK_TYPE_BLUETOO
  * 订单打印条码页面--single
  */
 public class OrderPrintActivity extends BaseActivity implements View.OnClickListener {
-    private static final String TAG = "OrderPrintActivity";
     private OrderPrintViewModel viewModel;
+
+    //打印机页面请求码
+    private static final int LINK_PRINTER = 1;
+    private static final int SET_PRINTER = 2;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -68,7 +71,7 @@ public class OrderPrintActivity extends BaseActivity implements View.OnClickList
         String totalValue = getString(R.string.total) + getString(R.string.colon) + this.viewModel.getTotalString();
         total.setText(Html.fromHtml(totalValue, Html.FROM_HTML_MODE_COMPACT));
         //打印
-        Button print = findClickView(R.id.button2);
+        findClickView(R.id.button2);
 
         //打印测试
         Button button = findViewById(R.id.button4);
@@ -91,19 +94,15 @@ public class OrderPrintActivity extends BaseActivity implements View.OnClickList
         this.viewModel.getPrintOrderResult().observe(this, new Observer<OperateResult>() {
             @Override
             public void onChanged(OperateResult operateResult) {
+                dismissProgressDialog();
                 if (operateResult.getSuccess() != null) {
-//                    Utils.toast(OrderPrintActivity.this, getString(R.string.order_print_success));
+                    Utils.toast(OrderPrintActivity.this, getString(R.string.order_print_success));
                     OrderPrintActivity.this.setResult(1);
                     OrderPrintActivity.this.finish();
                 }
                 if (operateResult.getError() != null) {
-                    BruceDialog.showAlertDialog(OrderPrintActivity.this, getString(R.string.failed),
-                            operateResult.getError().getErrorMsg(), new BruceDialog.OnAlertDialogListener() {
-                                @Override
-                                public void onSelect(boolean confirm) {
-                                    jump2PrinterActivity();
-                                }
-                            });
+                    BruceDialog.showAlertDialog(OrderPrintActivity.this, getString(R.string.print_failed),
+                            operateResult.getError().getErrorMsg(), null);
                 }
             }
         });
@@ -129,33 +128,36 @@ public class OrderPrintActivity extends BaseActivity implements View.OnClickList
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1) {
-            if (PrinterManager.getInstance().isLinkedPrinter()) {
-                this.viewModel.printOrder();
-            } else {
-                BruceDialog.showAlertDialog(OrderPrintActivity.this, getString(R.string.failed),
-                        getString(R.string.printer_no_link), new BruceDialog.OnAlertDialogListener() {
-                            @Override
-                            public void onSelect(boolean confirm) {
-                            }
-                        });
-            }
+        switch (requestCode) {
+            case SET_PRINTER:
+                break;
+            case LINK_PRINTER:
+                printOrder();
+                break;
+            default:
+                break;
         }
     }
 
     /**
      * 跳转到打印机设置页面
      */
-    private void jump2PrinterActivity() {
+    private void jump2PrinterActivity(int requestCode) {
         Intent intent = new Intent(this, PrinterActivity.class);
-        startActivityForResult(intent, 1);
+        startActivityForResult(intent, requestCode);
     }
 
     /**
      * 打印订单
      */
     private void printOrder() {
-        this.viewModel.printOrder();
+        if (PrinterManager.getInstance().isLinkedPrinter()) {
+            super.showProgressDialog(getString(R.string.printeing));
+            this.viewModel.printOrderUseBlue();
+        } else {
+            BruceDialog.showAlertDialog(OrderPrintActivity.this, getString(R.string.failed),
+                    getString(R.string.printer_no_link), null);
+        }
     }
 
     @Override
@@ -170,7 +172,7 @@ public class OrderPrintActivity extends BaseActivity implements View.OnClickList
         super.onOptionsItemSelected(item);
         switch (item.getItemId()) {
             case R.id.menu_printer:
-                jump2PrinterActivity();
+                jump2PrinterActivity(SET_PRINTER);
                 break;
             default:
                 break;

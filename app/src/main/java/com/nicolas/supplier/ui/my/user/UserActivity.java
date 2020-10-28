@@ -1,19 +1,14 @@
 package com.nicolas.supplier.ui.my.user;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.nicolas.toollibrary.BruceDialog;
-import com.nicolas.toollibrary.Utils;
 import com.nicolas.supplier.R;
-import com.nicolas.supplier.common.OperateResult;
 import com.nicolas.supplier.supplier.SupplierAccount;
 import com.nicolas.supplier.supplier.SupplierKeeper;
 import com.nicolas.supplier.ui.BaseActivity;
@@ -56,28 +51,7 @@ public class UserActivity extends BaseActivity {
         password.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                BruceDialog.showPasswordModifyDialog(UserActivity.this, new BruceDialog.OnPasswordModifyListener() {
-                    @Override
-                    public void onPasswordModify(String old, String newPass, String newPassAgain) {
-                        if ( TextUtils.isEmpty(newPass) || TextUtils.isEmpty(newPassAgain)) {   //TextUtils.isEmpty(old) ||
-                            Utils.toast(UserActivity.this, R.string.inputNull);
-                            return;
-                        }
-
-//                        if (!(old.equals(account.password))) {
-//                            Utils.toast(UserActivity.this, R.string.oldPassError);
-//                            return;
-//                        }
-
-                        if (!(newPass.equals(newPassAgain))) {
-                            Utils.toast(UserActivity.this, R.string.newPassError);
-                            return;
-                        }
-
-                        BruceDialog.showProgressDialog(UserActivity.this, getString(R.string.modifying));
-                        viewModel.modifyPassword(newPass);
-                    }
-                });
+                jumpToModifyPW();
             }
         });
         password.setClickable(true);
@@ -85,21 +59,10 @@ public class UserActivity extends BaseActivity {
         TextView remark = findViewById(R.id.remark);
         String remarkValue = getString(R.string.remark) + "\u3000\u3000\u3000\u3000\u3000" + account.remark;
         remark.setText(remarkValue);
+    }
 
-        /**
-         * 监听密码修改结果
-         */
-        viewModel.getModifyPassResult().observe(this, new Observer<OperateResult>() {
-            @Override
-            public void onChanged(OperateResult operateResult) {
-                BruceDialog.dismissProgressDialog();
-                if (operateResult.getSuccess() != null) {
-                    Utils.toast(UserActivity.this, R.string.modifyPassSuccess);
-                }
-                if (operateResult.getError() != null) {
-                    Utils.toast(UserActivity.this, operateResult.getError().getErrorMsg());
-                }
-            }
-        });
+    private void jumpToModifyPW() {
+        Intent intent = new Intent(this, ModifyPWActivity.class);
+        startActivity(intent);
     }
 }

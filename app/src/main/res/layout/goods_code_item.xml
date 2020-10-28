@@ -9,8 +9,8 @@
         android:id="@+id/photo"
         android:layout_width="0dp"
         android:layout_height="180dp"
-        android:paddingStart="16dp"
         android:layout_marginTop="20dp"
+        android:paddingStart="16dp"
         android:paddingEnd="0dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -65,20 +65,20 @@
             android:text="货号类型：普通" />
 
         <TextView
-            android:id="@+id/oldGoodsId"
+            android:id="@+id/customer"
             style="@style/TextViewStyleItem"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:singleLine="true"
-            android:text="旧货号：1213" />
+            android:text="顾客群：少女款" />
 
         <TextView
-            android:id="@+id/goodsId"
+            android:id="@+id/seasonName"
             style="@style/TextViewStyleItem"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:singleLine="true"
-            android:text="新货号：200710201" />
+            android:text="季节装：夏装" />
     </LinearLayout>
 
     <LinearLayout
@@ -86,16 +86,16 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintStart_toEndOf="@+id/line1"
+        app:layout_constraintStart_toEndOf="@+id/line3"
         app:layout_constraintTop_toBottomOf="@+id/describe"
         app:layout_constraintWidth_percent="0.25">
 
-        <TextView
-            android:id="@+id/inPrice"
-            style="@style/TextViewStyleItem"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:text="进价：￥30.00" />
+        <!--        <TextView-->
+        <!--            android:id="@+id/inPrice"-->
+        <!--            style="@style/TextViewStyleItem"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="50dp"-->
+        <!--            android:text="进价：￥30.00" />-->
 
         <TextView
             android:id="@+id/originalPrice"
@@ -117,7 +117,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintStart_toEndOf="@+id/line2"
+        app:layout_constraintStart_toEndOf="@+id/line1"
         app:layout_constraintTop_toBottomOf="@+id/isStock"
         app:layout_constraintWidth_percent="0.25">
 
@@ -129,22 +129,22 @@
             android:text="交货天数：1天" />
 
         <TextView
-            android:id="@+id/seasonName"
+            android:id="@+id/oldGoodsId"
             style="@style/TextViewStyleItem"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:singleLine="true"
-            android:text="季节装：夏装" />
+            android:text="旧货号：1213" />
 
         <TextView
-            android:id="@+id/customer"
+            android:id="@+id/goodsId"
             style="@style/TextViewStyleItem"
             android:layout_width="match_parent"
             android:layout_height="50dp"
+            android:background="@color/disable_gray"
             android:drawableEnd="@drawable/ic_sj_down"
             android:singleLine="true"
-            android:background="@color/disable_gray"
-            android:text="顾客群：少女款" />
+            android:text="新货号：200710201" />
 
     </LinearLayout>
 
@@ -152,11 +152,11 @@
         android:id="@+id/property"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/disable_gray"
         android:maxHeight="200dp"
         android:orientation="vertical"
-        android:background="@color/disable_gray"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/line2" />
+        app:layout_constraintTop_toBottomOf="@+id/line3" />
 
     <TextView
         android:id="@+id/remark"

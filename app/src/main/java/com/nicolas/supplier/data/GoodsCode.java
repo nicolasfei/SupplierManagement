@@ -1,9 +1,6 @@
 package com.nicolas.supplier.data;
 
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
-import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -113,7 +110,6 @@ import java.util.List;
  * }
  */
 public class GoodsCode {
-    private static String TAG = "GoodsCode";
 
     public String id;                   //"2007101",
     public String supplierId;           //"9527",

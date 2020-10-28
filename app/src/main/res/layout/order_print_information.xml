@@ -18,6 +18,14 @@
         app:layout_constraintWidth_percent="0.5">
 
         <TextView
+            android:id="@+id/w0"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:gravity="start|center"
+            android:text="&#12288;&#12288;库房&#12288;：JM库房\n&#12288;&#8194;单属性&#8194;：统下" />
+
+
+        <TextView
             android:id="@+id/w1"
             android:layout_width="match_parent"
             android:layout_height="40dp"

@@ -19,13 +19,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.nicolas.supplier.R;
-import com.nicolas.toollibrary.imageload.ImageLoadClass;
-import com.nicolas.toollibrary.Utils;
+import com.nicolas.toollibrary.BruceDialog;
 
 import java.util.List;
 
 public class OrderInformationAdapter extends BaseAdapter {
-    private static final String TAG = "OrderInformationAdapter";
     private List<OrderInformation> informationList;
     private Context context;
     private boolean isBusy = false;               //表示list view是否在快速滑动
@@ -75,17 +73,20 @@ public class OrderInformationAdapter extends BaseAdapter {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
+        if (position > informationList.size() - 1) {
+            return null;
+        }
         final OrderInformation order = informationList.get(position);
 
         //编号
         String posValue = context.getString(R.string.pos) + context.getString(R.string.colon) + (position + 1);
         holder.pos.setText(posValue);
         //加载图片
-        if (!isBusy) {
-            ImageLoadClass.getInstance().displayImage(order.img, holder.photo, false);
-        } else {
-            ImageLoadClass.getInstance().displayImage(order.img, holder.photo, true);
-        }
+//        if (!isBusy) {
+//            ImageLoadClass.getInstance().displayImage(order.img, holder.photo, false);
+//        } else {
+//            ImageLoadClass.getInstance().displayImage(order.img, holder.photo, true);
+//        }
 
         //库房
         String warehouse = "<font color=\"black\"><big>" + order.storeRoomName + "</big></font>";
@@ -205,26 +206,33 @@ public class OrderInformationAdapter extends BaseAdapter {
         String remark = context.getString(R.string.remark) + "：" + order.remark;
         holder.remark.setText(Html.fromHtml(remark, Html.FROM_HTML_MODE_COMPACT));
 
-        holder.choice.setOnCheckedChangeListener(null);
-        holder.choice.setVisibility(order.canSelect ? View.VISIBLE : View.INVISIBLE);
-        holder.choice.setChecked(order.select);
-        holder.choice.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (System.currentTimeMillis() - lastClickTime > INTERVAL_TIME) {
-                    order.select = isChecked;
-                    if (orderChangeListener != null) {
-                        orderChangeListener.orderChoice(order);
-                    }
+
+        //库房已经收货的单子，不能再打印
+        if (order.inState.getStatusID() >= OrderStatus.ROOM_RECEIVE_ID) {
+            holder.choice.setVisibility(View.GONE);
+        } else {
+            holder.choice.setVisibility(View.VISIBLE);
+            holder.choice.setOnCheckedChangeListener(null);
+            holder.choice.setVisibility(order.canSelect ? View.VISIBLE : View.INVISIBLE);
+            holder.choice.setChecked(order.select);
+            holder.choice.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if (System.currentTimeMillis() - lastClickTime > INTERVAL_TIME) {
+                        order.select = isChecked;
+                        if (orderChangeListener != null) {
+                            orderChangeListener.orderChoice(order);
+                        }
 //                    if (!order.hasQueryProperties) {
 //                        if (orderChangeListener != null) {
 //                            orderChangeListener.orderPropertyQuery(order.id);
 //                        }
 //                    }
-                    lastClickTime = System.currentTimeMillis();
+                        lastClickTime = System.currentTimeMillis();
+                    }
                 }
-            }
-        });
+            });
+        }
 
         //添加商品的属性-----颜色,尺码,数量
         if (holder.goodsContent.getChildCount() > 2) {      //先移除之前加载的数据
@@ -262,19 +270,19 @@ public class OrderInformationAdapter extends BaseAdapter {
                                     String value = numT.getText().toString();
                                     if (!TextUtils.isEmpty(value)) {
                                         int newNum = Integer.parseInt(value);
-                                        if (newNum <= 0 || newNum > attr.val) {
-                                            numT.setText(("" + attr.actualNum));
-                                            Utils.toast(context, R.string.inputError_fix_oder_pnum);
+                                        if (newNum < 0 || newNum > attr.orderVal) {
+                                            numT.setText(String.valueOf(attr.actualNum));
+                                            BruceDialog.showAlertDialog(context, context.getString(R.string.inputError), context.getString(R.string.inputError_fix_oder_pnum), null);
                                         } else if (newNum == attr.actualNum) {
-                                            //
+                                            numT.setText(String.valueOf(attr.actualNum));
                                         } else {
                                             if (orderChangeListener != null) {
                                                 orderChangeListener.orderGoodsNumChange(order.id, attr.id, newNum);
                                             }
                                         }
                                     } else {
-                                        numT.setText(("" + attr.actualNum));
-                                        Utils.toast(context, R.string.inputError_fix_oder_pnum);
+                                        numT.setText(String.valueOf(attr.actualNum));
+                                        BruceDialog.showAlertDialog(context, context.getString(R.string.inputError), context.getString(R.string.inputError_fix_oder_pnum), null);
                                     }
                                 }
                                 lastClickTime = System.currentTimeMillis();
@@ -310,7 +318,7 @@ public class OrderInformationAdapter extends BaseAdapter {
                             }
                         }
                     });
-                    if (attr.actualNum == attr.val) {
+                    if (attr.actualNum == attr.orderVal) {
                         add.setImageDrawable(context.getDrawable(R.drawable.ic_add_grey));
                         add.setClickable(false);
                     }

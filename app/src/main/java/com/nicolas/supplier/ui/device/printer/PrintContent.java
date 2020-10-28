@@ -190,8 +190,6 @@ public class PrintContent {
      * @return Vector
      */
     public static Vector<Byte> getOrderReceipt(OrderInformation order, int printID) {
-        Log.d("--------------", "getOrderReceipt: -----------------");
-
         LabelCommand tsc = new LabelCommand();
         /* 设置标签尺寸，按照实际尺寸设置 */
         tsc.addSize(LabelWidth, LabelHeight);
@@ -219,8 +217,8 @@ public class PrintContent {
         tsc.addText(RowStartOffset, RowHeight, LabelCommand.FONTTYPE.SIMPLIFIED_CHINESE,
                 LabelCommand.ROTATION.ROTATION_0, LabelCommand.FONTMUL.MUL_1, LabelCommand.FONTMUL.MUL_2,
                 "分店编号");
-        tsc.addText(RowStartOffset + wordWidth * 5, RowHeight / 2, LabelCommand.FONTTYPE.SIMPLIFIED_CHINESE,
-                LabelCommand.ROTATION.ROTATION_0, LabelCommand.FONTMUL.MUL_4, LabelCommand.FONTMUL.MUL_4,
+        tsc.addText(RowStartOffset + wordWidth * 5, RowHeight / 2 + 10, LabelCommand.FONTTYPE.SIMPLIFIED_CHINESE,
+                LabelCommand.ROTATION.ROTATION_0, LabelCommand.FONTMUL.MUL_3, LabelCommand.FONTMUL.MUL_3,
                 order.fId);
 
         //打印序号
@@ -229,36 +227,36 @@ public class PrintContent {
                 "打印序号:" + printID);
 
         //订单条码
-        tsc.add1DBarcode(RowStartOffset + LabelHalfWidth + wordWidth * 3, RowHeight / 3, LabelCommand.BARCODETYPE.CODE128, 100,
+        tsc.add1DBarcode(RowStartOffset + LabelHalfWidth + wordWidth, RowHeight / 3, LabelCommand.BARCODETYPE.CODE128, 100,
                 LabelCommand.READABEL.EANBEL, LabelCommand.ROTATION.ROTATION_0, order.id);
 
         //下单属性
-        tsc.addText(RowStartOffset + LabelHalfWidth + LabelHalfWidth / 2 + wordWidth * 5, RowHeight, LabelCommand.FONTTYPE.SIMPLIFIED_CHINESE,
+        tsc.addText(RowStartOffset + LabelHalfWidth - wordWidth * 2, RowHeight, LabelCommand.FONTTYPE.SIMPLIFIED_CHINESE,
                 LabelCommand.ROTATION.ROTATION_0, LabelCommand.FONTMUL.MUL_1, LabelCommand.FONTMUL.MUL_2,
                 order.orderType.getType());
-        int contentStartY = 200;
+        int contentStartY = 180;
         //---------------------------第二行-------------------------//
         /* 设置原点坐标 */
         tsc.addReference(0, contentStartY);
 
         //供应商
         tsc.addText(RowStartOffset + wordWidth, 0, LabelCommand.FONTTYPE.SIMPLIFIED_CHINESE,
-                LabelCommand.ROTATION.ROTATION_0, LabelCommand.FONTMUL.MUL_1, LabelCommand.FONTMUL.MUL_2,
+                LabelCommand.ROTATION.ROTATION_0, LabelCommand.FONTMUL.MUL_1, LabelCommand.FONTMUL.MUL_1,
                 "供应商");
         tsc.addText(RowStartOffset + wordWidth * 5, 0, LabelCommand.FONTTYPE.SIMPLIFIED_CHINESE,
-                LabelCommand.ROTATION.ROTATION_0, LabelCommand.FONTMUL.MUL_1, LabelCommand.FONTMUL.MUL_2,
+                LabelCommand.ROTATION.ROTATION_0, LabelCommand.FONTMUL.MUL_1, LabelCommand.FONTMUL.MUL_1,
                 SupplierKeeper.getInstance().getOnDutySupplier().sid);
-        //库房
+        //类别
         tsc.addText(LabelHalfWidth + RowStartOffset + wordWidth * 2, 0, LabelCommand.FONTTYPE.SIMPLIFIED_CHINESE,
-                LabelCommand.ROTATION.ROTATION_0, LabelCommand.FONTMUL.MUL_1, LabelCommand.FONTMUL.MUL_2,
-                "库房");
+                LabelCommand.ROTATION.ROTATION_0, LabelCommand.FONTMUL.MUL_1, LabelCommand.FONTMUL.MUL_1,
+                "类别");
         tsc.addText(LabelHalfWidth + RowStartOffset + wordWidth * 5, 0, LabelCommand.FONTTYPE.SIMPLIFIED_CHINESE,
-                LabelCommand.ROTATION.ROTATION_0, LabelCommand.FONTMUL.MUL_1, LabelCommand.FONTMUL.MUL_2,
-                order.storeRoomName);
+                LabelCommand.ROTATION.ROTATION_0, LabelCommand.FONTMUL.MUL_1, LabelCommand.FONTMUL.MUL_1,
+                order.goodsClassName);
 
         //---------------------------第三行-------------------------//
         /* 设置原点坐标 */
-        tsc.addReference(0, contentStartY + RowHeight);
+        tsc.addReference(0, contentStartY + RowHeight / 2);
 
         //下单属性
 //        tsc.addText(RowStartOffset, 0, LabelCommand.FONTTYPE.SIMPLIFIED_CHINESE,
@@ -267,25 +265,25 @@ public class PrintContent {
 //        tsc.addText(RowStartOffset + wordWidth * 5, 0, LabelCommand.FONTTYPE.SIMPLIFIED_CHINESE,
 //                LabelCommand.ROTATION.ROTATION_0, LabelCommand.FONTMUL.MUL_1, LabelCommand.FONTMUL.MUL_2,
 //                order.orderType.getType());
-        //类别
-        tsc.addText(RowStartOffset + wordWidth * 2, 0, LabelCommand.FONTTYPE.SIMPLIFIED_CHINESE,
-                LabelCommand.ROTATION.ROTATION_0, LabelCommand.FONTMUL.MUL_1, LabelCommand.FONTMUL.MUL_2,
-                "类别");
+        //新货号
+        tsc.addText(RowStartOffset + wordWidth, 0, LabelCommand.FONTTYPE.SIMPLIFIED_CHINESE,
+                LabelCommand.ROTATION.ROTATION_0, LabelCommand.FONTMUL.MUL_1, LabelCommand.FONTMUL.MUL_1,
+                "新货号");
         tsc.addText(RowStartOffset + wordWidth * 5, 0, LabelCommand.FONTTYPE.SIMPLIFIED_CHINESE,
-                LabelCommand.ROTATION.ROTATION_0, LabelCommand.FONTMUL.MUL_1, LabelCommand.FONTMUL.MUL_2,
-                order.goodsClassName);
+                LabelCommand.ROTATION.ROTATION_0, LabelCommand.FONTMUL.MUL_1, LabelCommand.FONTMUL.MUL_1,
+                order.goodsId);
 
         //下单日期
         tsc.addText(LabelHalfWidth + RowStartOffset, 0, LabelCommand.FONTTYPE.SIMPLIFIED_CHINESE,
-                LabelCommand.ROTATION.ROTATION_0, LabelCommand.FONTMUL.MUL_1, LabelCommand.FONTMUL.MUL_2,
+                LabelCommand.ROTATION.ROTATION_0, LabelCommand.FONTMUL.MUL_1, LabelCommand.FONTMUL.MUL_1,
                 "下单日期");
         tsc.addText(LabelHalfWidth + RowStartOffset + wordWidth * 5, 0, LabelCommand.FONTTYPE.SIMPLIFIED_CHINESE,
-                LabelCommand.ROTATION.ROTATION_0, LabelCommand.FONTMUL.MUL_1, LabelCommand.FONTMUL.MUL_2,
+                LabelCommand.ROTATION.ROTATION_0, LabelCommand.FONTMUL.MUL_1, LabelCommand.FONTMUL.MUL_1,
                 order.createTime);
 
         //---------------------------第三行-------------------------//
         /* 设置原点坐标 */
-        tsc.addReference(0, contentStartY + RowHeight * 2);
+        tsc.addReference(0, contentStartY + RowHeight / 2 * 2);
         //旧货号
         tsc.addText(RowStartOffset + wordWidth, 0, LabelCommand.FONTTYPE.SIMPLIFIED_CHINESE,
                 LabelCommand.ROTATION.ROTATION_0, LabelCommand.FONTMUL.MUL_1, LabelCommand.FONTMUL.MUL_2,
@@ -296,40 +294,40 @@ public class PrintContent {
 
         //截止日期
         tsc.addText(LabelHalfWidth + RowStartOffset, 0, LabelCommand.FONTTYPE.SIMPLIFIED_CHINESE,
-                LabelCommand.ROTATION.ROTATION_0, LabelCommand.FONTMUL.MUL_1, LabelCommand.FONTMUL.MUL_2,
+                LabelCommand.ROTATION.ROTATION_0, LabelCommand.FONTMUL.MUL_1, LabelCommand.FONTMUL.MUL_1,
                 "截止日期");
         tsc.addText(LabelHalfWidth + RowStartOffset + wordWidth * 5, 0, LabelCommand.FONTTYPE.SIMPLIFIED_CHINESE,
-                LabelCommand.ROTATION.ROTATION_0, LabelCommand.FONTMUL.MUL_1, LabelCommand.FONTMUL.MUL_2,
+                LabelCommand.ROTATION.ROTATION_0, LabelCommand.FONTMUL.MUL_1, LabelCommand.FONTMUL.MUL_1,
                 order.inValidTime);
 
         //---------------------------第四行-------------------------//
         /* 设置原点坐标 */
-        tsc.addReference(0, contentStartY + RowHeight * 3);
-        //新货号
-        tsc.addText(RowStartOffset + wordWidth, 0, LabelCommand.FONTTYPE.SIMPLIFIED_CHINESE,
+        tsc.addReference(0, contentStartY + RowHeight / 2 * 2 + RowHeight - 10);
+        //库房
+        tsc.addText(RowStartOffset + wordWidth * 2, 0, LabelCommand.FONTTYPE.SIMPLIFIED_CHINESE,
                 LabelCommand.ROTATION.ROTATION_0, LabelCommand.FONTMUL.MUL_1, LabelCommand.FONTMUL.MUL_2,
-                "新货号");
+                "库房");
         tsc.addText(RowStartOffset + wordWidth * 5, 0, LabelCommand.FONTTYPE.SIMPLIFIED_CHINESE,
                 LabelCommand.ROTATION.ROTATION_0, LabelCommand.FONTMUL.MUL_1, LabelCommand.FONTMUL.MUL_2,
-                order.goodsId);
+                order.storeRoomName);
 
         //发货数量
         tsc.addText(LabelHalfWidth + RowStartOffset, 0, LabelCommand.FONTTYPE.SIMPLIFIED_CHINESE,
                 LabelCommand.ROTATION.ROTATION_0, LabelCommand.FONTMUL.MUL_1, LabelCommand.FONTMUL.MUL_2,
-                "订货数量");
-        tsc.addText(LabelHalfWidth + RowStartOffset + wordWidth * 5, 0, LabelCommand.FONTTYPE.SIMPLIFIED_CHINESE,
-                LabelCommand.ROTATION.ROTATION_0, LabelCommand.FONTMUL.MUL_1, LabelCommand.FONTMUL.MUL_2,
-                String.valueOf(order.amount));
+                "发货数量");
+        tsc.addText(LabelHalfWidth + RowStartOffset + wordWidth * 5, -RowHeight / 2 + 10, LabelCommand.FONTTYPE.SIMPLIFIED_CHINESE,
+                LabelCommand.ROTATION.ROTATION_0, LabelCommand.FONTMUL.MUL_4, LabelCommand.FONTMUL.MUL_3,
+                String.valueOf(order.sendAmount));
 
         //---------------------------第5行-------------------------//
         /* 设置原点坐标 */
-        tsc.addReference(0, contentStartY + RowHeight * 4);
+        tsc.addReference(0, contentStartY + RowHeight / 2 * 2 + RowHeight * 2 - 20);
         //备注
         tsc.addText(RowStartOffset + wordWidth * 2, 0, LabelCommand.FONTTYPE.SIMPLIFIED_CHINESE,
                 LabelCommand.ROTATION.ROTATION_0, LabelCommand.FONTMUL.MUL_1, LabelCommand.FONTMUL.MUL_2,
                 "备注");
         //order.remark = "备注测试备注测试备注测试备注测试备注测试备注测试备注测试备注测试备注测试备注测试备注测试备注测试备注测试备注测试备注测试备注测试备注测试备注测试备注测试备注测试";
-        if (order.remark.length() < 30) {
+        if (order.remark.length() <= 30) {
             tsc.addText(RowStartOffset + wordWidth * 5, 0, LabelCommand.FONTTYPE.SIMPLIFIED_CHINESE,
                     LabelCommand.ROTATION.ROTATION_0, LabelCommand.FONTMUL.MUL_1, LabelCommand.FONTMUL.MUL_1,
                     order.remark);
@@ -339,28 +337,33 @@ public class PrintContent {
                     order.remark.substring(0, 30));
             tsc.addText(RowStartOffset + wordWidth * 5, RowHeight / 2, LabelCommand.FONTTYPE.SIMPLIFIED_CHINESE,
                     LabelCommand.ROTATION.ROTATION_0, LabelCommand.FONTMUL.MUL_1, LabelCommand.FONTMUL.MUL_1,
-                    order.remark.substring(30, 60));
+                    order.remark.substring(30, Math.min(order.remark.length(), 60)));
         }
 
         //---------------------------第6行-------------------------//
         /* 设置原点坐标 */
-        tsc.addReference(0, contentStartY + RowHeight * 5);
+        tsc.addReference(10, contentStartY + RowHeight / 2 * 2 + RowHeight * 3 - 30);
         //颜色尺码数量
 //        tsc.addText(LabelHalfWidth + RowStartOffset, RowHeight * 6, LabelCommand.FONTTYPE.SIMPLIFIED_CHINESE,
 //                LabelCommand.ROTATION.ROTATION_0, LabelCommand.FONTMUL.MUL_1, LabelCommand.FONTMUL.MUL_2,
 //                "颜色*尺码*数量：");
-        int count = Math.min(order.propertyRecords.size(), 27);
-        for (int i = 0; i < count; i++) {
+        int count = Math.min(order.propertyRecords.size(), 21);
+        for (int i = 0, j = 0; i < count; i++) {
             OrderPropertyRecord record = order.propertyRecords.get(i);
+            //数量为0的属性不打出来
+            if (record.actualNum == 0) {
+                continue;
+            }
             //一行排4个
 //            tsc.addText(LabelWidth / 4 * (i % 4) + RowStartOffset, (RowHeight / 2) * (i / 4), LabelCommand.FONTTYPE.SIMPLIFIED_CHINESE,
 //                    LabelCommand.ROTATION.ROTATION_0, LabelCommand.FONTMUL.MUL_1, LabelCommand.FONTMUL.MUL_1,
 //                    (record.actualColor + "*" + record.actualSize + "*" + record.actualNum));
 
             //一行排3个
-            tsc.addText(LabelWidth / 3 * (i % 3) + RowStartOffset, (RowHeight / 2) * (i / 3), LabelCommand.FONTTYPE.SIMPLIFIED_CHINESE,
-                    LabelCommand.ROTATION.ROTATION_0, LabelCommand.FONTMUL.MUL_1, LabelCommand.FONTMUL.MUL_1,
+            tsc.addText(LabelWidth / 3 * (j % 3) + RowStartOffset, (RowHeight) * (j / 3) - (10 * (j / 3)), LabelCommand.FONTTYPE.SIMPLIFIED_CHINESE,
+                    LabelCommand.ROTATION.ROTATION_0, LabelCommand.FONTMUL.MUL_1, LabelCommand.FONTMUL.MUL_2,
                     (record.actualColor + "*" + record.actualSize + "*" + record.actualNum));
+            j++;
         }
 
         /* 打印标签 */

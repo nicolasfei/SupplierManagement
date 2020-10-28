@@ -1,6 +1,7 @@
 package com.nicolas.supplier.data;
 
 import android.text.TextUtils;
+
 import com.nicolas.toollibrary.Tool;
 
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ public class OrderQueryCondition {
     private String valid;                //订单状态--正常，作废
     private String orderID;              //订单号
     private String isUrgent;             //加急订单（加急，普通）
+    private String overDue;              //即将过期（1为即将过期，2为非即将过期）
 
     private boolean isQueryConditionUpdate = false; //查询条件是否更新
 
@@ -37,6 +39,7 @@ public class OrderQueryCondition {
         this.valid = OrderValid.NORMAL;
         this.orderID = "";
         this.isUrgent = "";
+        this.overDue = OrderOverdue.NONE;
     }
 
     public void clear() {
@@ -52,6 +55,7 @@ public class OrderQueryCondition {
         setRoomReceiveTime("");
         setValid("");
         setOrderID("");
+        setOverDue(OrderOverdue.NONE);
     }
 
     public void setBranchID(String branchID) {
@@ -228,6 +232,17 @@ public class OrderQueryCondition {
 
     public String getRoomReceiveTime() {
         return roomReceiveTime;
+    }
+
+    public void setOverDue(String overDue) {
+        if (!this.overDue.equals(overDue)) {
+            this.overDue = overDue;
+            this.isQueryConditionUpdate = true;
+        }
+    }
+
+    public String getOverDue() {
+        return overDue;
     }
 
     public boolean isQueryConditionUpdate() {

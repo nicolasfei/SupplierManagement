@@ -166,4 +166,8 @@ public class ReturnGoodsQueryViewModel extends ViewModel {
     public void resetQueryCondition() {
         this.queryCondition.clear();
     }
+
+    public int getReturnGoodsCodeTotal() {
+        return this.pageCount;
+    }
 }

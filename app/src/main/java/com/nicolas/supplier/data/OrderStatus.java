@@ -6,8 +6,6 @@ import android.os.Parcelable;
 import com.nicolas.supplier.R;
 import com.nicolas.supplier.app.SupplierApp;
 
-import java.util.Comparator;
-
 /**
  * 发货状态---库房发货状态(swait供货商待接单/swaited供货商已接单/roomreceive库房已收货/roomsend库房已发货/branchreceive分店已收货)
  */

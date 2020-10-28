@@ -1,28 +1,35 @@
 package com.nicolas.supplier.ui.home.order;
 
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.nicolas.printerlibraryforufovo.PrinterManager;
 import com.nicolas.supplier.R;
+import com.nicolas.supplier.app.LoginManager;
 import com.nicolas.supplier.app.SupplierApp;
 import com.nicolas.supplier.common.OperateError;
 import com.nicolas.supplier.common.OperateInUserView;
 import com.nicolas.supplier.common.OperateResult;
+import com.nicolas.supplier.data.OrderClass;
 import com.nicolas.supplier.data.OrderDistribution;
+import com.nicolas.supplier.server.CommandResponse;
 import com.nicolas.supplier.ui.device.printer.PrintContent;
 import com.nicolas.supplier.data.OrderInformation;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 import static com.nicolas.printerlibraryforufovo.PrinterDevice.LINK_TYPE_BLUETOOTH;
 
 public class OrderPrintViewModel extends ViewModel {
-    private static final String TAG = "OrderPrintViewModel";
     private ArrayList<OrderDistribution> distributions;
     private ArrayList<OrderInformation> orders;
     private ArrayList<Object> printOrders;
@@ -55,26 +62,20 @@ public class OrderPrintViewModel extends ViewModel {
             this.orderTotal++;
             //组合订单和订单配送顺序
             if (lastOrder == null || !(order.goodsId.equals(lastOrder.goodsId))) {
-                //查找此goodsId是否有配送顺序表
-                for (OrderDistribution d : this.distributions) {
-                    if (d.goodsId.equals(order.goodsId)) {
-                        printOrders.add(d);
-                        break;
+                //通下单才打印配送顺序表
+                if (order.orderType.getType().equals(OrderClass.ALL)) {
+                    //查找此goodsId是否有配送顺序表
+                    for (OrderDistribution d : this.distributions) {
+                        if (d.goodsId.equals(order.goodsId)) {
+                            printOrders.add(d);
+                            break;
+                        }
                     }
                 }
             }
             //添加订单
             printOrders.add(order);
             lastOrder = order;
-        }
-
-        for (Object o : printOrders) {
-            if (o instanceof OrderInformation) {
-                Log.d(TAG, "getCheckedOrders: OrderInformation-->" + ((OrderInformation) o).goodsId);
-            }
-            if (o instanceof OrderDistribution) {
-                Log.d(TAG, "getCheckedOrders: OrderDistribution-->" + ((OrderDistribution) o).goodsId);
-            }
         }
     }
 
@@ -93,33 +94,86 @@ public class OrderPrintViewModel extends ViewModel {
      */
     public void printOrder() {
         int i = 1;
+        List<Vector<Byte>> vectors = new ArrayList<>();
         for (Object object : this.printOrders) {
             if (object instanceof OrderInformation) {
+                Log.d("TAG", "printOrder: ---------------------->");
                 OrderInformation order = (OrderInformation) object;
-                try {
-                    PrinterManager.getInstance().printLabel(PrintContent.getOrderReceipt(order, i), LINK_TYPE_BLUETOOTH);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    order.printTime = "";
-                    printOrderResult.setValue(new OperateResult(new OperateError(0, SupplierApp.getInstance().getString(R.string.printer_no_link), null)));
-                    return;
-                }
+//                try {
+//                    PrinterManager.getInstance().printLabel(PrintContent.getOrderReceipt(order, i), LINK_TYPE_BLUETOOTH);
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                    order.printTime = "";
+//                    printOrderResult.setValue(new OperateResult(new OperateError(0, SupplierApp.getInstance().getString(R.string.printer_no_link), null)));
+//                    return;
+//                }
+                vectors.add(PrintContent.getOrderReceipt(order, i));
                 i++;
             }
             if (object instanceof OrderDistribution) {
                 OrderDistribution distribution = (OrderDistribution) object;
-                Log.d(TAG, "printOrder: print OrderDistribution-->" + distribution.goodsId + "-->" + distribution.distribution);
-                try {
-                    PrinterManager.getInstance().printLabel(PrintContent.getDistribution(distribution), LINK_TYPE_BLUETOOTH);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    printOrderResult.setValue(new OperateResult(new OperateError(0, SupplierApp.getInstance().getString(R.string.printer_no_link), null)));
-                    return;
-                }
+//                try {
+//                    PrinterManager.getInstance().printLabel(PrintContent.getDistribution(distribution), LINK_TYPE_BLUETOOTH);
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                    printOrderResult.setValue(new OperateResult(new OperateError(0, SupplierApp.getInstance().getString(R.string.printer_no_link), null)));
+//                    return;
+//                }
+                vectors.add(PrintContent.getDistribution(distribution));
             }
         }
+        try {
+            PrinterManager.getInstance().printLabel(vectors, LINK_TYPE_BLUETOOTH);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+//        PrinterManager.getInstance().printLabel(this.printOrders, LINK_TYPE_BLUETOOTH);
         printOrderResult.setValue(new OperateResult(new OperateInUserView(null)));
     }
+
+    public void printOrderUseBlue() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                int i = 1;
+                try {
+                    for (Object object : printOrders) {
+                        if (object instanceof OrderInformation) {
+                            OrderInformation order = (OrderInformation) object;
+                            if (order.sendAmount > 0) {
+                                PrinterManager.getInstance().printLabelBlue(PrintContent.getOrderReceipt(order, i));
+                                i++;
+                            }
+                        }
+                        if (object instanceof OrderDistribution) {
+                            OrderDistribution distribution = (OrderDistribution) object;
+                            PrinterManager.getInstance().printLabelBlue(PrintContent.getDistribution(distribution));
+                        }
+                    }
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            printOrderResult.setValue(new OperateResult(new OperateInUserView(null)));
+                        }
+                    });
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            printOrderResult.setValue(new OperateResult(new OperateError(-1, e.getMessage(), null)));
+                        }
+                    });
+                }
+            }
+        }).start();
+    }
+
+    /**
+     * handler
+     */
+    private static Handler handler = new Handler();
 
     public String printOrderInformation() {
         StringBuilder builder = new StringBuilder();

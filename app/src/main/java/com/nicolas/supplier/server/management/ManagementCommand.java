@@ -20,22 +20,24 @@ public class ManagementCommand extends Command {
         ManagementInterface supplierAccount = new SupplierAccountInformation();
         ManagementInterface supplierLoginQuery = new SupplierLoginQuery();
         ManagementInterface supplierPassModify = new SupplierPassModify();
+        ManagementInterface supplierGetVerificationCode = new SupplierGetVerificationCode();
 
         //供应商下属员工的增删改查，暂未开放
-        ManagementInterface add = new UserHandlerAdd();
-        ManagementInterface del = new UserHandlerDel();
-        ManagementInterface update = new UserHandlerUpdate();
-        ManagementInterface query = new UserHandlerQuery();
+//        ManagementInterface add = new UserHandlerAdd();
+//        ManagementInterface del = new UserHandlerDel();
+//        ManagementInterface update = new UserHandlerUpdate();
+//        ManagementInterface query = new UserHandlerQuery();
 
         supplierInformation.setNextHandler(supplierAccount);
         supplierAccount.setNextHandler(supplierLoginQuery);
         supplierLoginQuery.setNextHandler(supplierPassModify);
-        supplierPassModify.setNextHandler(add);
+        supplierPassModify.setNextHandler(supplierGetVerificationCode);
+        supplierGetVerificationCode.setNextHandler(null);
 
-        add.setNextHandler(del);
-        del.setNextHandler(update);
-        update.setNextHandler(query);
-        query.setNextHandler(null);
+//        add.setNextHandler(del);
+//        del.setNextHandler(update);
+//        update.setNextHandler(query);
+//        query.setNextHandler(null);
 
         super.firstNode = supplierInformation;
     }

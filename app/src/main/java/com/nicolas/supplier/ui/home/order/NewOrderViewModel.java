@@ -2,15 +2,14 @@ package com.nicolas.supplier.ui.home.order;
 
 import android.os.Handler;
 import android.os.Message;
-import android.os.Parcelable;
 import android.text.TextUtils;
-import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.nicolas.supplier.R;
+import com.nicolas.supplier.data.OrderClass;
 import com.nicolas.supplier.data.OrderDistribution;
 import com.nicolas.supplier.data.OrderStatistics;
 import com.nicolas.supplier.data.OrderStatisticsProperty;
@@ -52,11 +51,11 @@ import java.util.Map;
 import static com.nicolas.toollibrary.Tool.converterToFirstSpell;
 
 public class NewOrderViewModel extends ViewModel {
-    private static final String TAG = "TAG";
     private List<OrderSort> sortList;               //排序选项
     private List<OrderInformation> orderList;       //订单列表
     private List<OrderStatistics> orderStatisticList;           //订单统计
-    private ArrayList<OrderDistribution> orderDistributionList;      //订单配送顺序
+    private List<String> orderDistributionQueryList;            //用于统计那些货号需要下载配送顺序（通下的订单）
+    private ArrayList<OrderDistribution> orderDistributionList;      //订单配送顺序表
     private ArrayList<OrderInformation> printOrderList;              //待打印的订单
     private int totalOrderNum;               //被选中的订单数统计
     private float totalOrderPrice;           //被选中的订单价格统计
@@ -104,6 +103,7 @@ public class NewOrderViewModel extends ViewModel {
         this.orderStatisticList = new ArrayList<>();
         this.orderDistributionList = new ArrayList<>();
         this.printOrderList = new ArrayList<>();
+        this.orderDistributionQueryList = new ArrayList<>();
         this.queryCondition = new OrderQueryCondition();
     }
 
@@ -315,6 +315,9 @@ public class NewOrderViewModel extends ViewModel {
         if (!TextUtils.isEmpty(queryCondition.getIsUrgent())) {
             parameters.put("isUrgent", queryCondition.getIsUrgent());
         }
+        if (!TextUtils.isEmpty(queryCondition.getOverDue())) {
+            parameters.put("inValid", queryCondition.getOverDue());
+        }
         vo.parameters = parameters;
         Invoker.getInstance().setOnEchoResultCallback(this.callback);
         Invoker.getInstance().exec(vo);
@@ -367,18 +370,16 @@ public class NewOrderViewModel extends ViewModel {
      */
     void submitOrders() {
         StringBuilder builder = new StringBuilder();
-        for (OrderInformation order : printOrderList) {
-            if (order.inState.getStatus().equals(OrderStatus.SWAIT)) {
+        for (OrderInformation order : orderList) {
+            if (order.inState.getStatus().equals(OrderStatus.SWAIT) && order.select) {
                 builder.append(order.id).append(",");
-            } else {
-                order.select = false;       //默认打印后取消选中状态
             }
         }
         String ids = builder.toString();
         if (TextUtils.isEmpty(ids)) {
-            Message msg = new Message();
-            msg.obj = SupplierApp.getInstance().getString(R.string.no_order_submit);
-            orderSubmitResult.setValue(new OperateResult(new OperateInUserView(msg)));
+//            Message msg = new Message();
+//            msg.obj = SupplierApp.getInstance().getString(R.string.no_order_submit);
+            orderSubmitResult.setValue(new OperateResult(new OperateInUserView(null)));
             return;
         }
 
@@ -482,13 +483,37 @@ public class NewOrderViewModel extends ViewModel {
         if (currentPage == 1) {        //判断是刷新还是加载更多
             orderDistributionList.clear();
         }
-        if (orderStatisticList.size() == 0) {
-            Message msg = new Message();
-            msg.obj = SupplierApp.getInstance().getString(R.string.noOrder);
-            orderDistributionQueryResult.setValue(new OperateResult(new OperateInUserView(msg)));
+        if (orderDistributionQueryList.size() == 0) {
+            if (orderList.size() == 0) {
+                Message msg = new Message();
+                msg.obj = SupplierApp.getInstance().getString(R.string.noOrder);
+                orderDistributionQueryResult.setValue(new OperateResult(new OperateInUserView(msg)));
+            } else {
+                orderDistributionQueryResult.setValue(new OperateResult(new OperateInUserView(null)));
+            }
             return;
         }
         new BatchQueryOrderDistribution().start();
+    }
+
+    /**
+     * 获取订单是否全部被选中
+     *
+     * @return true/false
+     */
+    public boolean getIsAllOrderChecked() {
+        boolean isCheckAll = true;
+        for (OrderInformation order : orderList) {
+            if (order.inState.getStatusID() < OrderStatus.ROOM_RECEIVE_ID && !order.select) {
+                isCheckAll = false;
+                break;
+            }
+        }
+        return isCheckAll;
+    }
+
+    public void updateOrderAllSelectStatus(boolean select) {
+        isOrdersAllSelect = select;
     }
 
     /**
@@ -499,19 +524,18 @@ public class NewOrderViewModel extends ViewModel {
         public void run() {
             boolean querySuccess = true;
             String error = "";
-            for (OrderStatistics statistics : orderStatisticList) {
+            for (String goodsID : orderDistributionQueryList) {
                 CommandVo vo = new CommandVo();
                 vo.typeEnum = CommandTypeEnum.COMMAND_SUPPLIER_ORDER;
                 vo.url = OrderInterface.GoodsOrderDistribution;
                 vo.contentType = HttpHandler.ContentType_APP;
                 vo.requestMode = HttpHandler.RequestMode_POST;
                 Map<String, String> parameters = new HashMap<>();
-                parameters.put("goodsId", statistics.goodsID);
+                parameters.put("goodsId", goodsID);
                 vo.parameters = parameters;
                 String result = Invoker.getInstance().synchronousExec(vo);
                 try {
                     JSONObject json = new JSONObject(result);
-                    Log.d(TAG, "BatchQueryOrderDistribution--->: result:" + result);
                     if (json.getBoolean("success")) {
                         String dis = "", gId = "";
                         if (json.has("data")) {
@@ -553,6 +577,26 @@ public class NewOrderViewModel extends ViewModel {
     }
 
     /**
+     * 统计那些订单的货号是需要下载配送顺序表的
+     *
+     * @param order 订单
+     */
+    private void addOrderDistributionQuery(OrderInformation order) {
+        boolean isFind = false;
+        if (order.orderType.getType().equals(OrderClass.ALL)) {
+            for (String goodsID : orderDistributionQueryList) {
+                if (order.goodsId.equals(goodsID)) {
+                    isFind = true;
+                    break;
+                }
+            }
+            if (!isFind) {
+                orderDistributionQueryList.add(order.goodsId);
+            }
+        }
+    }
+
+    /**
      * 统计订单信息
      *
      * @param item 订单信息
@@ -565,9 +609,9 @@ public class NewOrderViewModel extends ViewModel {
             if (statistics.goodsID.equals(item.goodsId)) {
                 List<OrderPropertyRecord> records = item.propertyRecords;
                 List<OrderStatisticsProperty> properties = statistics.properties;
-                boolean findRecords = false;
                 //在属性统计中，查找OrderPropertyRecord
                 for (OrderPropertyRecord r : records) {
+                    boolean findRecords = false;
                     for (OrderStatisticsProperty p : properties) {
                         //此订单属性，已经存在于统计数据中，这里更新统计数据
                         if (r.color.equals(p.color) && r.size.equals(p.size)) {
@@ -659,6 +703,7 @@ public class NewOrderViewModel extends ViewModel {
                             if (currentPage == 1) {                 //这个是新的查询，所以要清空之前的数据
                                 orderList.clear();
                                 orderStatisticList.clear();
+                                orderDistributionQueryList.clear();
                                 orderDistributionList.clear();
                             }
                             pageCount = result.total;               //更新总页数
@@ -667,25 +712,30 @@ public class NewOrderViewModel extends ViewModel {
                             Message msg = new Message();
                             if (array.length() == 0) {
                                 msg.obj = SupplierApp.getInstance().getString(R.string.noOrder);
+                                msg.what = 1;       //表示无订单
                                 orderQueryResult.setValue(new OperateResult(new OperateInUserView(msg)));
                             } else {
                                 for (int i = 0; i < array.length(); i++) {
                                     //添加订单
                                     OrderInformation item = new OrderInformation(array.getString(i));
-                                    item.canSelect = isOrderCanSelect;          //设置每个项可否被勾选
-                                    item.select = isOrdersAllSelect;            //设置每个项的勾选状态
+                                    item.canSelect = true;                      //设置每个项可否被勾选
+                                    if (item.inState.getStatusID() < OrderStatus.ROOM_RECEIVE_ID) {
+                                        item.select = isOrdersAllSelect;            //设置每个项的勾选状态
+                                    } else {
+                                        item.select = false;
+                                    }
                                     orderList.add(item);
                                     statisticsOrderInformation(item);           //统计订单数据到统计list
+                                    addOrderDistributionQuery(item);            //统计订单配送顺序list
                                 }
                                 //排序，按订单状态排序，订单状态相同时按订单打印时间排序
                                 sortForInStateAndPrintTime();
-                                msg.obj = SupplierApp.getInstance().getString(R.string.querySuccess);
-                                orderQueryResult.setValue(new OperateResult(new OperateInUserView(msg)));
+                                orderQueryResult.setValue(new OperateResult(new OperateInUserView(null)));
                             }
                             //添加订单商品统计
-                            if (!TextUtils.isEmpty(result.sta)) {
+//                            if (!TextUtils.isEmpty(result.sta)) {
 //                                addOrderStatistics(result.sta);     //添加统计
-                            }
+//                            }
                         } catch (JSONException e) {
                             e.printStackTrace();
                             orderQueryResult.setValue(new OperateResult(new OperateError(-1,
@@ -714,7 +764,7 @@ public class NewOrderViewModel extends ViewModel {
                                     order.isPrint.updateStatus(PrintStatus.PRINT);
                                     order.printTime = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.CHINA).format(new Date());
                                     order.inState.updateStatus(OrderStatus.SWAITED);  //供货商已接单
-                                    order.select = false;
+//                                    order.select = false;
                                 }
                             }
                         }
@@ -769,6 +819,7 @@ public class NewOrderViewModel extends ViewModel {
                                         order.hasQueryProperties = true;    //标记该货号的属性已经查询过了
                                         order.expansion = true;             //数据加载完成，可以显示了
                                         statisticsOrderInformation(order);
+                                        addOrderDistributionQuery(order);            //统计订单配送顺序list
                                     }
                                     break;
                                 }
@@ -882,6 +933,7 @@ public class NewOrderViewModel extends ViewModel {
                             order.setPropertyRecords(result.data);
                             order.hasQueryProperties = true;    //标记该货号的属性已经查询过了
                             statisticsOrderInformation(order);      //添加货号统计
+                            addOrderDistributionQuery(order);            //统计订单配送顺序list
                         }
                     }
                 }
@@ -1031,7 +1083,9 @@ public class NewOrderViewModel extends ViewModel {
     void setOrderAllSelectStatus(boolean select) {
         isOrdersAllSelect = select;
         for (OrderInformation order : orderList) {
-            order.select = select;
+            if (order.inState.getStatusID() < OrderStatus.ROOM_RECEIVE_ID) {        //只有库房未收货的单子才能被选中，进行操作
+                order.select = select;
+            }
         }
         orderSelectUpdateResult.setValue(new OperateResult(new OperateInUserView(null)));
     }

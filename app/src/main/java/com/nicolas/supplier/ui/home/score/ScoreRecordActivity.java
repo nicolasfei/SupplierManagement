@@ -28,14 +28,13 @@ import com.nicolas.supplier.common.OperateResult;
 import com.nicolas.supplier.data.ScoreRecordAdapter;
 import com.nicolas.supplier.supplier.SupplierKeeper;
 import com.nicolas.supplier.ui.BaseActivity;
+import com.nicolas.toollibrary.Tool;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
 public class ScoreRecordActivity extends BaseActivity implements View.OnClickListener {
-
-    private static final String TAG = "ReturnGoodsQueryActivity";
 
     private ScoreRecordViewModel viewModel;
     private DrawerLayout drawerLayout;
@@ -106,8 +105,11 @@ public class ScoreRecordActivity extends BaseActivity implements View.OnClickLis
             }
         });
 
-        Button button = findClickView(R.id.query);
-        Button button1 = findClickView(R.id.reset);
+        findClickView(R.id.recordTimeClear);
+        findClickView(R.id.scoreClassIdClear);
+        findClickView(R.id.newGoodsIDClear);
+        findClickView(R.id.query);
+        findClickView(R.id.reset);
 
         /**
          * 监听查询结果
@@ -115,7 +117,7 @@ public class ScoreRecordActivity extends BaseActivity implements View.OnClickLis
         this.viewModel.getScoreRecordQueryResult().observe(this, new Observer<OperateResult>() {
             @Override
             public void onChanged(OperateResult operateResult) {
-                BruceDialog.dismissProgressDialog();
+                dismissProgressDialog();
                 if (operateResult.getSuccess() != null) {
                     adapter.notifyDataSetChanged();
                     Message msg = operateResult.getSuccess().getMessage();
@@ -155,7 +157,7 @@ public class ScoreRecordActivity extends BaseActivity implements View.OnClickLis
             }
         });
 
-        BruceDialog.showProgressDialog(this, getString(R.string.querying));
+        showProgressDialog(getString(R.string.querying));
         this.viewModel.queryScoreRecord();
     }
 
@@ -185,7 +187,17 @@ public class ScoreRecordActivity extends BaseActivity implements View.OnClickLis
             case R.id.staff:
                 break;
             case R.id.recordTime:
-                DateTimePickerDialog.showDateSlotPickerDialog(this, new DateTimePickerDialog.OnDateTimeSlotPickListener() {
+                String time = viewModel.getRecordTime();
+                String start = "";
+                String end = "";
+                if (!TextUtils.isEmpty(time)) {
+                    String[] times = time.split("~");
+                    if (times.length >= 2) {
+                        start = times[0];
+                        end = times[1];
+                    }
+                }
+                DateTimePickerDialog.showDateSlotPickerDialog(this, start, end, new DateTimePickerDialog.OnDateTimeSlotPickListener() {
                     @Override
                     public void OnDateTimeSlotPick(String start, String end) {
                         if (!TextUtils.isEmpty(start)) {
@@ -218,8 +230,17 @@ public class ScoreRecordActivity extends BaseActivity implements View.OnClickLis
                     }
                 });
                 break;
+            case R.id.recordTimeClear:
+                recordTimeClear();
+                break;
+            case R.id.scoreClassIdClear:
+                scoreClassIdClear();
+                break;
+            case R.id.newGoodsIDClear:
+                newGoodsIDClear();
+                break;
             case R.id.query:
-                BruceDialog.showProgressDialog(this, getString(R.string.querying));
+                showProgressDialog( getString(R.string.querying));
                 drawerLayout.closeDrawer(Gravity.RIGHT, true);
                 viewModel.queryScoreRecord();
                 break;
@@ -229,6 +250,21 @@ public class ScoreRecordActivity extends BaseActivity implements View.OnClickLis
             default:
                 break;
         }
+    }
+
+    private void newGoodsIDClear() {
+        this.viewModel.setGoodsId("");
+        this.updateNewGoodsID("");
+    }
+
+    private void scoreClassIdClear() {
+        this.viewModel.setScoreClassId("");
+        this.updateScoreClassId("");
+    }
+
+    private void recordTimeClear() {
+        this.viewModel.setRecordTime(Tool.getNearlyThreeDaysDateSlot());
+        this.updateRecordTime(this.viewModel.getRecordTime().replace("~", "\u3000~\u3000"));
     }
 
     private void updateStaff(String staff) {

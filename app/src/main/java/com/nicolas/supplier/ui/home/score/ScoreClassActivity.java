@@ -7,7 +7,6 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.nicolas.componentlibrary.pullrefresh.PullRefreshListView;
-import com.nicolas.supplier.ui.home.returngoods.ReturnGoodsQueryActivity;
 import com.nicolas.toollibrary.BruceDialog;
 import com.nicolas.supplier.R;
 import com.nicolas.supplier.common.OperateResult;
@@ -52,7 +51,7 @@ public class ScoreClassActivity extends BaseActivity {
         this.viewModel.getScoreClassQueryResult().observe(this, new Observer<OperateResult>() {
             @Override
             public void onChanged(OperateResult operateResult) {
-                BruceDialog.dismissProgressDialog();
+                dismissProgressDialog();
                 if (operateResult.getSuccess() != null) {
                     adapter.notifyDataSetChanged();
                 }
@@ -78,7 +77,7 @@ public class ScoreClassActivity extends BaseActivity {
             }
         });
 
-        BruceDialog.showProgressDialog(this, getString(R.string.querying));
+        showProgressDialog( getString(R.string.querying));
         this.viewModel.queryScoreClass();       //查询
     }
 }

@@ -7,6 +7,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.nicolas.supplier.app.LoginManager;
 import com.nicolas.supplier.app.SupplierApp;
 import com.nicolas.supplier.server.common.CommonCommand;
 import com.nicolas.supplier.server.goods.GoodsCommand;
@@ -78,7 +79,12 @@ public class Invoker {
                 case 1:
                     if (callback != null) {
                         Bundle b = msg.getData();
-                        callback.execResult(new CommandResponse(b.getString("result"), b.getString("url")));
+                        CommandResponse response = new CommandResponse(b.getString("result"), b.getString("url"));
+                        if (response.reLogin) {     //服务器要求重新登陆
+                            LoginManager.getInstance().loginExpire(response.msg);
+                        } else {
+                            callback.execResult(response);
+                        }
                     }
                     break;
                 default:

@@ -55,7 +55,7 @@ public class LoginRecordActivity extends BaseActivity {
         viewModel.getQueryLoginRecordResult().observe(this, new Observer<OperateResult>() {
             @Override
             public void onChanged(OperateResult operateResult) {
-                BruceDialog.dismissProgressDialog();
+                dismissProgressDialog();
                 if (operateResult.getSuccess() != null) {
                     adapter.notifyDataSetChanged();
                     Message msg = operateResult.getSuccess().getMessage();
@@ -80,7 +80,7 @@ public class LoginRecordActivity extends BaseActivity {
             }
         });
 
-        BruceDialog.showProgressDialog(this, this.getString(R.string.querying));
+        showProgressDialog(this.getString(R.string.querying));
         viewModel.queryLoginRecord();
     }
 }

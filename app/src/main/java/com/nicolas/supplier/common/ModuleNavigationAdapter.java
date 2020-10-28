@@ -1,7 +1,6 @@
 package com.nicolas.supplier.common;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +15,6 @@ import com.nicolas.supplier.R;
 import java.util.List;
 
 public class ModuleNavigationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private static final String TAG = "NavigationAdapter";
 
     private Context context;
     private List<ModuleNavigation> content;
@@ -55,7 +53,6 @@ public class ModuleNavigationAdapter extends RecyclerView.Adapter<RecyclerView.V
             ((NavButtonHolder) holder).notificationButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.d(TAG, "onClick: onItemClick " + position);
                     mListener.onItemClick(position);
                 }
             });

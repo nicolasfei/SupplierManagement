@@ -11,6 +11,7 @@
         android:layout_height="190dp"
         android:layout_marginTop="20dp"
         android:paddingStart="16dp"
+        android:visibility="gone"
         android:paddingEnd="0dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -36,7 +37,7 @@
         android:textSize="16sp"
         app:layout_constraintStart_toEndOf="@+id/photo"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_percent="0.35" />
+        app:layout_constraintWidth_percent="0.475" />
 
     <TextView
         android:id="@+id/orderStatus"
@@ -47,7 +48,7 @@
         android:text="供货商待接单"
         app:layout_constraintStart_toEndOf="@+id/warehouse"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_percent="0.25" />
+        app:layout_constraintWidth_percent="0.365" />
 
     <TextView
         android:id="@+id/orderClass"
@@ -78,7 +79,7 @@
         android:background="?android:attr/listDivider"
         app:layout_constraintStart_toEndOf="@+id/photo"
         app:layout_constraintTop_toBottomOf="@+id/warehouse"
-        app:layout_constraintWidth_percent="0.75" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <LinearLayout
         android:id="@+id/line1"
@@ -87,7 +88,7 @@
         android:orientation="horizontal"
         app:layout_constraintStart_toEndOf="@+id/photo"
         app:layout_constraintTop_toBottomOf="@+id/divider0"
-        app:layout_constraintWidth_percent="0.75">
+        app:layout_constraintEnd_toEndOf="parent">
 
         <TextView
             android:id="@+id/orderTime"
@@ -116,7 +117,7 @@
         android:visibility="invisible"
         app:layout_constraintStart_toEndOf="@+id/photo"
         app:layout_constraintTop_toBottomOf="@+id/line1"
-        app:layout_constraintWidth_percent="0.75" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <LinearLayout
         android:id="@+id/line2"
@@ -125,7 +126,7 @@
         android:orientation="horizontal"
         app:layout_constraintStart_toEndOf="@+id/photo"
         app:layout_constraintTop_toBottomOf="@+id/divider1"
-        app:layout_constraintWidth_percent="0.75">
+        app:layout_constraintEnd_toEndOf="parent">
 
         <TextView
             android:id="@+id/newGoodsID"
@@ -155,7 +156,7 @@
         android:visibility="invisible"
         app:layout_constraintStart_toEndOf="@+id/photo"
         app:layout_constraintTop_toBottomOf="@+id/line2"
-        app:layout_constraintWidth_percent="0.75" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <LinearLayout
         android:id="@+id/line4"
@@ -165,7 +166,7 @@
         android:visibility="gone"
         app:layout_constraintStart_toEndOf="@+id/photo"
         app:layout_constraintTop_toBottomOf="@+id/divider22"
-        app:layout_constraintWidth_percent="0.75">
+        app:layout_constraintEnd_toEndOf="parent">
 
         <TextView
             android:id="@+id/inPrice"
@@ -198,7 +199,7 @@
         android:visibility="invisible"
         app:layout_constraintStart_toEndOf="@+id/photo"
         app:layout_constraintTop_toBottomOf="@+id/line4"
-        app:layout_constraintWidth_percent="0.75" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <LinearLayout
         android:id="@+id/line3"
@@ -207,7 +208,7 @@
         android:orientation="horizontal"
         app:layout_constraintStart_toEndOf="@+id/photo"
         app:layout_constraintTop_toBottomOf="@+id/divider2"
-        app:layout_constraintWidth_percent="0.75">
+        app:layout_constraintEnd_toEndOf="parent">
 
         <TextView
             android:id="@+id/isPrint"
@@ -238,7 +239,7 @@
         android:visibility="invisible"
         app:layout_constraintStart_toEndOf="@+id/photo"
         app:layout_constraintTop_toBottomOf="@+id/line3"
-        app:layout_constraintWidth_percent="0.75" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <LinearLayout
         android:id="@+id/goodsContent"

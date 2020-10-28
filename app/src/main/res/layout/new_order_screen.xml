@@ -565,6 +565,66 @@
         app:layout_constraintTop_toBottomOf="@+id/divider61"
         app:layout_constraintWidth_percent="0.15" />
 
+
+    <View
+        android:id="@+id/divider71"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/isValidChip" />
+
+    <TextView
+        android:id="@+id/isOverdue"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="start|center"
+        android:paddingStart="@dimen/drawer_margin"
+        android:paddingEnd="@dimen/drawer_margin"
+        android:text="@string/OrderOverdue"
+        android:textSize="@dimen/drawer_text_size"
+        app:layout_constraintHeight_percent="0.05"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider71"
+        app:layout_constraintWidth_percent="0.26" />
+
+    <RadioGroup
+        android:id="@+id/isOverdueChip"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        app:layout_constraintHeight_percent="@dimen/view_height_percent"
+        app:layout_constraintStart_toEndOf="@+id/isOverdue"
+        app:layout_constraintTop_toBottomOf="@+id/divider71"
+        app:layout_constraintWidth_percent="0.59">
+
+        <RadioButton
+            android:id="@+id/isOverdue1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="@string/overdueYes"
+            android:textSize="@dimen/drawer_text_size" />
+
+        <RadioButton
+            android:id="@+id/isOverdue2"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="@string/overdueNo"
+            android:textSize="@dimen/drawer_text_size" />
+    </RadioGroup>
+
+    <Button
+        android:id="@+id/isOverdueClear"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:text="@string/clear"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.05"
+        app:layout_constraintTop_toBottomOf="@+id/divider71"
+        app:layout_constraintWidth_percent="0.15" />
+
     <Button
         android:id="@+id/clear"
         android:layout_width="0dp"

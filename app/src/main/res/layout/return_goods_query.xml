@@ -6,23 +6,85 @@
     android:background="@android:color/white">
 
     <TextView
-        android:id="@+id/goodsClassId"
-        android:layout_width="match_parent"
+        android:id="@+id/checkTimeShow"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="16dp"
+        android:gravity="start|center"
+        android:text="@string/checkTime"
+        android:paddingStart="@dimen/drawer_margin"
+        android:paddingEnd="@dimen/drawer_margin"
+        android:textSize="@dimen/text_size"
+        app:layout_constraintHeight_percent="0.05"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.3" />
+
+    <TextView
+        android:id="@+id/checkTime"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/shape_rectangle_black"
+        android:drawableEnd="@drawable/ic_calendar"
+        android:gravity="start|center"
+        android:hint="@string/choice_date"
+        android:textSize="@dimen/text_size"
+        app:layout_constraintHeight_percent="@dimen/view_height_percent"
+        app:layout_constraintStart_toEndOf="@+id/checkTimeShow"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.55" />
+
+    <Button
+        android:id="@+id/checkTimeClear"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:padding="0dp"
+        android:text="@string/reset"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.05"
+        app:layout_constraintStart_toEndOf="@+id/checkTime"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.15" />
+
+    <View
+        android:id="@+id/divider0"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/checkTime" />
+
+    <TextView
+        android:id="@+id/goodsClassId"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:drawableEnd="@drawable/ic_sr_blue"
         android:gravity="start|center"
+        android:paddingStart="@dimen/drawer_margin"
+        android:paddingEnd="@dimen/drawer_margin"
+        app:layout_constraintWidth_percent="0.85"
         android:text="@string/goodsClass"
         android:textSize="@dimen/text_size"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="@dimen/view_height_percent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/divider0" />
+
+    <Button
+        android:id="@+id/goodsClassIdClear"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:text="@string/clear"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="@dimen/view_height_percent"
+        app:layout_constraintStart_toEndOf="@+id/goodsClassId"
+        app:layout_constraintTop_toBottomOf="@+id/divider0"
+        app:layout_constraintWidth_percent="0.15" />
 
     <View
         android:id="@+id/divider1"
         android:layout_width="0dp"
-        android:layout_height="2dp"
+        android:layout_height="1dp"
         android:background="?android:attr/listDivider"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -30,22 +92,34 @@
 
     <TextView
         android:id="@+id/fId"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
+        app:layout_constraintWidth_percent="0.85"
         android:layout_height="0dp"
-        android:layout_marginStart="16dp"
+        android:paddingStart="@dimen/drawer_margin"
+        android:paddingEnd="@dimen/drawer_margin"
         android:drawableEnd="@drawable/ic_sr_blue"
         android:gravity="start|center"
         android:text="@string/branchID"
         android:textSize="@dimen/text_size"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="@dimen/view_height_percent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/divider1" />
 
+    <Button
+        android:id="@+id/fIdClear"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:text="@string/clear"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="@dimen/view_height_percent"
+        app:layout_constraintStart_toEndOf="@+id/fId"
+        app:layout_constraintTop_toBottomOf="@+id/divider1"
+        app:layout_constraintWidth_percent="0.15" />
+
     <View
         android:id="@+id/divider2"
         android:layout_width="0dp"
-        android:layout_height="2dp"
+        android:layout_height="1dp"
         android:background="?android:attr/listDivider"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -53,22 +127,34 @@
 
     <TextView
         android:id="@+id/oldGoodsId"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
+        app:layout_constraintWidth_percent="0.85"
         android:layout_height="0dp"
-        android:layout_marginStart="16dp"
+        android:paddingStart="@dimen/drawer_margin"
+        android:paddingEnd="@dimen/drawer_margin"
         android:drawableEnd="@drawable/ic_sr_blue"
         android:gravity="start|center"
         android:text="@string/oldGoodsId"
         android:textSize="@dimen/text_size"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="@dimen/view_height_percent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/divider2" />
 
+    <Button
+        android:id="@+id/oldGoodsIdClear"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:text="@string/clear"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="@dimen/view_height_percent"
+        app:layout_constraintStart_toEndOf="@+id/oldGoodsId"
+        app:layout_constraintTop_toBottomOf="@+id/divider2"
+        app:layout_constraintWidth_percent="0.15" />
+
     <View
         android:id="@+id/divider3"
         android:layout_width="0dp"
-        android:layout_height="2dp"
+        android:layout_height="1dp"
         android:background="?android:attr/listDivider"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -76,22 +162,34 @@
 
     <TextView
         android:id="@+id/goodsId"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
+        app:layout_constraintWidth_percent="0.85"
         android:layout_height="0dp"
-        android:layout_marginStart="16dp"
+        android:paddingStart="@dimen/drawer_margin"
+        android:paddingEnd="@dimen/drawer_margin"
         android:drawableEnd="@drawable/ic_sr_blue"
         android:gravity="start|center"
         android:text="@string/newGoodsID"
         android:textSize="@dimen/text_size"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="@dimen/view_height_percent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/divider3" />
 
+    <Button
+        android:id="@+id/goodsIdClear"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:text="@string/clear"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="@dimen/view_height_percent"
+        app:layout_constraintStart_toEndOf="@+id/goodsId"
+        app:layout_constraintTop_toBottomOf="@+id/divider3"
+        app:layout_constraintWidth_percent="0.15" />
+
     <View
         android:id="@+id/divider4"
         android:layout_width="0dp"
-        android:layout_height="2dp"
+        android:layout_height="1dp"
         android:background="?android:attr/listDivider"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -99,7 +197,8 @@
 
     <TextView
         android:id="@+id/barcodeId"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
+        app:layout_constraintWidth_percent="0.85"
         android:layout_height="0dp"
         android:drawableEnd="@drawable/ic_sr_blue"
         android:gravity="start|center"
@@ -107,53 +206,25 @@
         android:paddingEnd="0dp"
         android:text="@string/barcodeId"
         android:textSize="@dimen/text_size"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="@dimen/view_height_percent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/divider4" />
 
-    <View
-        android:id="@+id/divider41"
+    <Button
+        android:id="@+id/barcodeIdClear"
         android:layout_width="0dp"
-        android:layout_height="2dp"
-        android:background="?android:attr/listDivider"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/barcodeId" />
-
-    <TextView
-        android:id="@+id/checkTimeShow"
-        android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginStart="16dp"
-        android:gravity="start|center"
-        android:text="@string/checkTime"
-        android:textSize="@dimen/text_size"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="0.03"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider41" />
-
-    <TextView
-        android:id="@+id/checkTime"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:background="@drawable/shape_rectangle_black"
-        android:drawableEnd="@drawable/ic_calendar"
-        android:gravity="start|center"
-        android:hint="@string/choice_date"
-        android:paddingStart="@dimen/drawer_margin"
-        android:paddingEnd="@dimen/drawer_margin"
-        android:textSize="@dimen/text_size"
+        android:text="@string/clear"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="@dimen/view_height_percent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/checkTimeShow" />
+        app:layout_constraintStart_toEndOf="@+id/barcodeId"
+        app:layout_constraintTop_toBottomOf="@+id/divider4"
+        app:layout_constraintWidth_percent="0.15" />
 
     <View
         android:id="@+id/divider5"
         android:layout_width="0dp"
-        android:layout_height="2dp"
+        android:layout_height="1dp"
         android:background="?android:attr/listDivider"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -1,7 +1,6 @@
 package com.nicolas.supplier.data;
 
 import android.content.Context;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -61,7 +60,7 @@ public class ReturnGoodsInformationAdapter extends BaseAdapter {
 
         String stateValue = "<font color=\"black\">" + returnGoods.state + "</font>";
         holder.state.setText(Html.fromHtml(stateValue, Html.FROM_HTML_MODE_COMPACT));
-        holder.state.setBackgroundColor(Color.BLUE);
+        holder.state.setBackgroundColor(Color.GREEN);
 
         String goodsIdValue = mContext.getString(R.string.newGoodsID) + mContext.getString(R.string.colon) + "<font color=\"black\">" + returnGoods.goodsId + "</font>";
         holder.goodsId.setText(Html.fromHtml(goodsIdValue, Html.FROM_HTML_MODE_COMPACT));

@@ -3,9 +3,12 @@ package com.nicolas.supplier;
 import android.content.DialogInterface;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Log;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.nicolas.printerlibraryforufovo.PrinterManager;
+import com.nicolas.supplier.app.LoginManager;
 import com.nicolas.supplier.app.SupplierApp;
 import com.nicolas.toollibrary.AppActivityManager;
 import com.nicolas.toollibrary.HttpHandler;
@@ -45,8 +48,15 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
 
+        //由于长时间被至于后台，系统回收了activity
+        if (TextUtils.isEmpty(SupplierKeeper.getInstance().getOnDutySupplier().sid)){
+            LoginManager.getInstance().loginExpire(getString(R.string.loginTimeOut));
+            finish();
+        }
+
         //--------------初始化全局类-------------------//
         //开启打印机连接任务
+        PrinterManager.getInstance().resetLinkDeviceModel(SupplierKeeper.getInstance().getOnDutySupplier().sid);
         PrinterManager.getInstance().init(SupplierApp.getInstance());
         //开启SupplierKeeper定时查询任务
         SupplierKeeper.getInstance().startTimerTask();
@@ -106,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        AppActivityManager.getInstance().removeActivity(this);
+        Log.d("MainActivity", "onDestroy: ");
         //关闭定时查询任务
         SupplierKeeper.getInstance().cancelTimerTask();
         //打印机模块注销
@@ -114,5 +124,7 @@ public class MainActivity extends AppCompatActivity {
         //释放
         ImageLoadClass.getInstance().release();
         super.onDestroy();
+        AppActivityManager.getInstance().removeActivity(this);
+        Log.d("MainActivity", "onDestroy: finish！");
     }
 }

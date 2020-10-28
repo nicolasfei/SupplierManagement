@@ -49,6 +49,9 @@ public class OrderPrintAdapter extends BaseAdapter {
         }
 
         OrderInformation order = this.orders.get(position);
+        //编号
+        holder.w0.setText(Html.fromHtml(context.getString(R.string.codeID + 1) + context.getString(R.string.colon) + position, Html.FROM_HTML_MODE_COMPACT));
+
         //库房，单属性
         String w1Value = context.getString(R.string.print_warehouse) + context.getString(R.string.colon) + "<font color=\"black\">" + order.storeRoomName + "</font>" + "<br>" +
                 context.getString(R.string.print_order_class) + context.getString(R.string.colon) + "<font color=\"black\">" + order.orderType.getType() + "</font>";
@@ -96,7 +99,7 @@ public class OrderPrintAdapter extends BaseAdapter {
 
     private class ViewHolder {
 
-        private TextView w1, w2, w3;
+        private TextView w0, w1, w2, w3;
         private TextView b1, b2, b3, b3_1, b3_2, b3_3;
 
         private ViewHolder(View root) {
@@ -107,6 +110,7 @@ public class OrderPrintAdapter extends BaseAdapter {
             this.b3_2 = root.findViewById(R.id.b3_2);       //属性
             this.b3_3 = root.findViewById(R.id.b3_3);       //数量
 
+            this.w0 = root.findViewById(R.id.w0);       //编号
             this.w1 = root.findViewById(R.id.w1);       //库房，单属性
             this.w2 = root.findViewById(R.id.w2);       //旧货号，新货号
             this.w3 = root.findViewById(R.id.w3);       //备注
