@@ -1389,23 +1389,22 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
             count = new ListView(this);
             countAdapter = new OrderGoodsCountAdapter(this, viewModel.getOrderStatisticList());
             count.setAdapter(countAdapter);
-            count.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    BruceDialog.showAlertDialog(NewOrderActivity.this, getString(R.string.order_printer), getString(R.string.print_statistic_order), new BruceDialog.OnAlertDialogListener() {
-                        @Override
-                        public void onSelect(boolean confirm) {
-                            if (confirm) {
-                                if (printOrderFormStatisticsDialog != null && printOrderFormStatisticsDialog.isShowing()) {
-                                    printOrderFormStatisticsDialog.dismiss();
-                                    printOrderFormStatisticsDialog = null;
-                                }
-                                printOrderFormStatistics(data.get(position).goodsID);
-                            }
-                        }
-                    });
-                }
-            });
+//            count.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//                @Override
+//                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                    BruceDialog.showAlertDialog(NewOrderActivity.this, getString(R.string.order_printer), getString(R.string.print_statistic_order), new BruceDialog.OnAlertDialogListener() {
+//                        @Override
+//                        public void onSelect(boolean confirm) {
+//                            if (confirm) {
+//                                if (printOrderFormStatisticsDialog != null && printOrderFormStatisticsDialog.isShowing()) {
+//                                    printOrderFormStatisticsDialog.dismiss();
+//                                }
+//                                printOrderFormStatistics(data.get(position).goodsID);
+//                            }
+//                        }
+//                    });
+//                }
+//            });
             printOrderFormStatisticsDialog = new AlertDialog.Builder(this)
                     .setTitle(R.string.goodsCodeCount)
                     .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
@@ -1415,7 +1414,7 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
                         }
                     })
                     .setView(count)
-                    .setCancelable(false)
+                    .setCancelable(true)
                     .create();
         } else {
             countAdapter.notifyDataSetChanged();
