@@ -889,12 +889,12 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
             listView.refreshFinish();
         }
         //更新查询日期
-        String queryDate = viewModel.getQueryCondition().getCreateTime();
-        if (TextUtils.isEmpty(queryDate)) {
-            String nowDate = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA).format(new Date());
-            queryDate = nowDate + "~" + nowDate;
-        }
-        listView.updateContentDate(queryDate);
+//        String queryDate = viewModel.getQueryCondition().getCreateTime();
+//        if (TextUtils.isEmpty(queryDate)) {
+//            String nowDate = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA).format(new Date());
+//            queryDate = nowDate + "~" + nowDate;
+//        }
+        listView.updateContentDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA).format(new Date()));
     }
 
     private void updateCreateTime(String itemValue) {
@@ -1264,7 +1264,9 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
      * 更新明细
      */
     private void updateDetailed() {
-        String value = getString(R.string.detailed) + "\u3000\u3000" + getString(R.string.orderTotal) + getString(R.string.colon) + "<font color=\"black\">" + this.viewModel.getOrderTotal() + "</font>";
+        String value = getString(R.string.detailed) + "\u3000\u3000" + getString(R.string.orderTotal) + getString(R.string.colon) + "<font color=\"black\">" + this.viewModel.getOrderTotal() + "</font>" +
+                "\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000" +
+                getString(R.string.query_date) + getString(R.string.colon) + "<font color=\"black\">" + viewModel.getQueryCondition().getCreateTime() + "</font>";
         this.detailed.setText(Html.fromHtml(value, Html.FROM_HTML_MODE_COMPACT));
     }
 

@@ -369,6 +369,22 @@ public class NewOrderViewModel extends ViewModel {
      * 批量提交订单
      */
     void submitOrders() {
+        if (orderList.size() == 0) {
+            orderSubmitResult.setValue(new OperateResult(new OperateInUserView(null)));
+            return;
+        }
+
+        if (isOrdersAllSelect) {
+            submitAllOrders();
+        } else {
+            submitPartOrders();
+        }
+    }
+
+    /**
+     * 提交勾选订单
+     */
+    void submitPartOrders() {
         StringBuilder builder = new StringBuilder();
         for (OrderInformation order : orderList) {
             if (order.inState.getStatus().equals(OrderStatus.SWAIT) && order.select) {
@@ -390,6 +406,41 @@ public class NewOrderViewModel extends ViewModel {
         vo.requestMode = HttpHandler.RequestMode_POST;
         Map<String, String> parameters = new HashMap<>();
         parameters.put("idList", ids.substring(0, ids.length() - 1));
+        vo.parameters = parameters;
+        Invoker.getInstance().setOnEchoResultCallback(this.callback);
+        Invoker.getInstance().exec(vo);
+        this.isManualSubmit = false;
+    }
+
+    /**
+     * 订单全选的情况下 通过查询条件提交
+     */
+    void submitAllOrders() {
+        CommandVo vo = new CommandVo();
+        vo.typeEnum = CommandTypeEnum.COMMAND_SUPPLIER_ORDER;
+        vo.url = OrderInterface.GoodsOrderPrintAll;
+        vo.contentType = HttpHandler.ContentType_APP;
+        vo.requestMode = HttpHandler.RequestMode_POST;
+        Map<String, String> parameters = new HashMap<>();
+        if (!TextUtils.isEmpty(queryCondition.getStoreRoomID()))
+            parameters.put("storeRoomId", queryCondition.getStoreRoomID());
+        if (!TextUtils.isEmpty(queryCondition.getGoodsId()))
+            parameters.put("goodsId", queryCondition.getGoodsId());
+        if (!TextUtils.isEmpty(queryCondition.getIsPrint()))
+            parameters.put("isPrint", queryCondition.getIsPrint());
+
+        if (!TextUtils.isEmpty(queryCondition.getIsUrgent()))
+            parameters.put("isUrgent", queryCondition.getIsUrgent());
+        if (!TextUtils.isEmpty(queryCondition.getOrderID()))
+            parameters.put("id", queryCondition.getOrderID());
+        parameters.put("createTime", queryCondition.getCreateTime());
+
+        if (!TextUtils.isEmpty(queryCondition.getGoodsClassId()))
+            parameters.put("goodsClassId", queryCondition.getGoodsClassId());
+        if (!TextUtils.isEmpty(queryCondition.getOldGoodsId()))
+            parameters.put("oldGoodsId", queryCondition.getOldGoodsId());
+        if (!TextUtils.isEmpty(queryCondition.getRoomReceiveTime()))
+            parameters.put("roomReceiveTime", queryCondition.getRoomReceiveTime());
         vo.parameters = parameters;
         Invoker.getInstance().setOnEchoResultCallback(this.callback);
         Invoker.getInstance().exec(vo);
@@ -745,7 +796,8 @@ public class NewOrderViewModel extends ViewModel {
                         orderQueryResult.setValue(new OperateResult(new OperateError(result.code, result.msg, null)));
                     }
                     break;
-                case OrderInterface.GoodsOrderPrint:    //订单提交到服务器
+                case OrderInterface.GoodsOrderPrintAll:         //订单全部提交到服务器
+                case OrderInterface.GoodsOrderPrint:            //订单勾选提交到服务器
                     if (result.success) {
                         if (isManualSubmit) {
                             //更新订单状态

@@ -18,13 +18,15 @@ public class OrderCommand extends Command {
         OrderInterface query = new GoodsOrder();
         OrderInterface propertyQuery = new GoodsPropertyOrder();
         OrderInterface print = new GoodsOrderPrint();
+        OrderInterface printAll = new GoodsOrderPrintAll();
         OrderInterface val = new GoodsOrderVal();
         OrderInterface inValid = new GoodsOrderInValid();
         OrderInterface distribution = new GoodsOrderDistribution();
 
         query.setNextHandler(propertyQuery);
         propertyQuery.setNextHandler(print);
-        print.setNextHandler(val);
+        print.setNextHandler(printAll);
+        printAll.setNextHandler(val);
         val.setNextHandler(inValid);
         inValid.setNextHandler(distribution);
         distribution.setNextHandler(null);
