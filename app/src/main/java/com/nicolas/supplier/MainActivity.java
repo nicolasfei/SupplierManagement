@@ -49,9 +49,10 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(navView, navController);
 
         //由于长时间被至于后台，系统回收了activity
-        if (TextUtils.isEmpty(SupplierKeeper.getInstance().getOnDutySupplier().sid)){
+        if (SupplierKeeper.getInstance().getOnDutySupplier().sid==null || TextUtils.isEmpty(SupplierKeeper.getInstance().getOnDutySupplier().sid)){
             LoginManager.getInstance().loginExpire(getString(R.string.loginTimeOut));
             finish();
+            return;
         }
 
         //--------------初始化全局类-------------------//

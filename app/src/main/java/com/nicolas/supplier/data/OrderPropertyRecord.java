@@ -32,9 +32,9 @@ public class OrderPropertyRecord implements Parcelable {
     public OrderPropertyRecord(String json) {
         try {
             JSONObject object = new JSONObject(json);
-            this.id = object.getString("id");
-            this.color = object.getString("color");
-            this.size = object.getString("size");
+            this.id = object.getString("id").trim();
+            this.color = object.getString("color").trim();
+            this.size = object.getString("size").trim();
             this.val = object.getInt("val");
             this.orderVal = object.getInt("orderVal");
             this.actualColor = this.color;

@@ -433,7 +433,8 @@ public class NewOrderViewModel extends ViewModel {
             parameters.put("isUrgent", queryCondition.getIsUrgent());
         if (!TextUtils.isEmpty(queryCondition.getOrderID()))
             parameters.put("id", queryCondition.getOrderID());
-        parameters.put("createTime", queryCondition.getCreateTime());
+        String newDate = Tool.endDateAddOneDay(queryCondition.getCreateTime());
+        parameters.put("createTime", newDate);
 
         if (!TextUtils.isEmpty(queryCondition.getGoodsClassId()))
             parameters.put("goodsClassId", queryCondition.getGoodsClassId());

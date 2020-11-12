@@ -454,4 +454,6 @@
     <string name="codeID">编号</string>
     <string name="loginTimeOut">登录失效，请重新登录</string>
     <string name="loginAgain">请重新登录</string>
+    <string name="startTime">开始时间</string>
+    <string name="endTime">结束时间</string>
 </resources>

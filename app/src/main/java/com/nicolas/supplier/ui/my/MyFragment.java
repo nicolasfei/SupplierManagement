@@ -37,8 +37,7 @@ public class MyFragment extends Fragment implements ModuleNavigationAdapter.OnIt
     }
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_my, container, false);
         mRecyclerView = root.findViewById(R.id.recyclerView);
         mySelf = root.findViewById(R.id.my);

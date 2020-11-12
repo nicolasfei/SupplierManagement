@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:background="@android:color/white"
+    android:layout_height="match_parent">
+
+    <TextView
+    android:id="@+id/startTimeText"
+    android:layout_width="0dp"
+    android:layout_height="0dp"
+    android:gravity="start|center"
+    android:paddingStart="@dimen/drawer_margin"
+    android:paddingEnd="@dimen/drawer_margin"
+    android:text="@string/startTime"
+    android:textSize="@dimen/drawer_text_size"
+    app:layout_constraintHeight_percent="0.05"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintWidth_percent="0.27" />
+
+    <TextView
+        android:id="@+id/startTime"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/shape_rectangle_black"
+        android:drawableEnd="@drawable/ic_calendar"
+        android:gravity="start|center"
+        android:hint="@string/choice_date"
+        android:paddingStart="@dimen/drawer_margin"
+        android:paddingEnd="@dimen/drawer_margin"
+        android:textSize="@dimen/text_size"
+        app:layout_constraintHeight_percent="@dimen/view_height_percent"
+        app:layout_constraintStart_toEndOf="@+id/startTimeText"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.58" />
+
+    <Button
+        android:id="@+id/startTimeClear"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:padding="0dp"
+        android:text="@string/reset"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.05"
+        app:layout_constraintStart_toEndOf="@+id/startTime"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.15" />
+
+    <View
+        android:id="@+id/divider0"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/startTime" />
+
+    <TextView
+        android:id="@+id/endTimeText"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="start|center"
+        android:paddingStart="@dimen/drawer_margin"
+        android:paddingEnd="@dimen/drawer_margin"
+        android:text="@string/endTime"
+        android:textSize="@dimen/drawer_text_size"
+        app:layout_constraintHeight_percent="0.05"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider0"
+        app:layout_constraintWidth_percent="0.27" />
+
+    <TextView
+        android:id="@+id/endTime"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/shape_rectangle_black"
+        android:drawableEnd="@drawable/ic_calendar"
+        android:gravity="start|center"
+        android:hint="@string/choice_date"
+        android:paddingStart="@dimen/drawer_margin"
+        android:paddingEnd="@dimen/drawer_margin"
+        android:textSize="@dimen/text_size"
+        app:layout_constraintHeight_percent="@dimen/view_height_percent"
+        app:layout_constraintStart_toEndOf="@+id/endTimeText"
+        app:layout_constraintTop_toBottomOf="@+id/divider0"
+        app:layout_constraintWidth_percent="0.58" />
+
+    <Button
+        android:id="@+id/endTimeClear"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:padding="0dp"
+        android:text="@string/reset"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.05"
+        app:layout_constraintStart_toEndOf="@+id/endTime"
+        app:layout_constraintTop_toBottomOf="@+id/divider0"
+        app:layout_constraintWidth_percent="0.15" />
+
+    <View
+        android:id="@+id/divider1"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/endTime" />
+
+    <TextView
+        android:id="@+id/newGoodsCode"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:drawableEnd="@drawable/ic_sr_blue"
+        android:gravity="start|center"
+        android:paddingStart="@dimen/drawer_margin"
+        android:paddingEnd="0dp"
+        android:text="@string/newGoodsID"
+        android:textSize="@dimen/text_size"
+        app:layout_constraintHeight_percent="@dimen/view_height_percent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider1"
+        app:layout_constraintWidth_percent="0.85" />
+
+    <Button
+        android:id="@+id/newGoodsCodeClear"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:text="@string/clear"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="@dimen/view_height_percent"
+        app:layout_constraintStart_toEndOf="@+id/newGoodsCode"
+        app:layout_constraintTop_toBottomOf="@+id/divider1"
+        app:layout_constraintWidth_percent="0.15" />
+
+    <View
+        android:id="@+id/divider2"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/newGoodsCode" />
+
+    <TextView
+        android:id="@+id/oldGoodsCode"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:drawableEnd="@drawable/ic_sr_blue"
+        android:gravity="start|center"
+        android:paddingStart="@dimen/drawer_margin"
+        android:paddingEnd="0dp"
+        android:text="@string/oldGoodsID"
+        android:textSize="@dimen/text_size"
+        app:layout_constraintHeight_percent="@dimen/view_height_percent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider2"
+        app:layout_constraintWidth_percent="0.85" />
+
+    <Button
+        android:id="@+id/oldGoodsCodeClear"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:text="@string/clear"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="@dimen/view_height_percent"
+        app:layout_constraintStart_toEndOf="@+id/newGoodsCode"
+        app:layout_constraintTop_toBottomOf="@+id/divider2"
+        app:layout_constraintWidth_percent="0.15" />
+
+    <Button
+        android:id="@+id/reset"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:text="@string/reset"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHeight_percent="@dimen/view_height_percent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintWidth_percent="0.5" />
+
+    <Button
+        android:id="@+id/submit"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:text="@string/query"
+        android:background="@drawable/shape_rectangle_blue"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="@dimen/view_height_percent"
+        app:layout_constraintStart_toEndOf="@+id/reset"
+        app:layout_constraintWidth_percent="0.5" />
+</androidx.constraintlayout.widget.ConstraintLayout>
