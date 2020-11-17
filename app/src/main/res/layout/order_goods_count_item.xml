@@ -9,6 +9,7 @@
         android:id="@+id/goodsID"
         style="@style/TextViewStyleItem"
         android:text="TextView"
+        android:gravity="center"
         app:layout_constraintWidth_percent="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -27,4 +28,12 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintTop_toBottomOf="@+id/goodsID"/>
+
+    <TextView
+        android:id="@+id/total"
+        style="@style/TextViewStyleItem"
+        android:text="TextView"
+        app:layout_constraintStart_toEndOf="@+id/goodsID"
+        app:layout_constraintTop_toBottomOf="@+id/property"
+        app:layout_constraintWidth_percent="0.5"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -24,6 +24,7 @@
         android:drawablePadding="10dp"
         android:ellipsize="marquee"
         android:gravity="start|center"
+        android:textColor="@color/red"
         android:marqueeRepeatLimit="marquee_forever"
         android:singleLine="true"
         app:layout_constraintBottom_toBottomOf="parent"

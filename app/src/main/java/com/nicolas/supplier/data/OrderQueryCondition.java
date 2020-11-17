@@ -22,6 +22,7 @@ public class OrderQueryCondition {
     private String orderID;              //订单号
     private String isUrgent;             //加急订单（加急，普通）
     private String overDue;              //即将过期（1为即将过期，2为非即将过期）
+    private String printTime;            //订单打印时间
 
     private boolean isQueryConditionUpdate = false; //查询条件是否更新
 
@@ -32,14 +33,15 @@ public class OrderQueryCondition {
         this.goodsId = "";
         this.goodsClassIds = new ArrayList<>();
         this.orderType = new OrderClass(OrderClass.NONE);
-        this.isPrint = new PrintStatus(PrintStatus.UN_PRINT);
-        this.inState = new OrderStatus(OrderStatus.NONE);
+        this.isPrint = new PrintStatus(PrintStatus.NONE);
+        this.inState = new OrderStatus(OrderStatus.SWAIT);
         this.createTime = Tool.getNearlyOneDaysDateSlot();      //默认查询一天
         this.roomReceiveTime = "";
         this.valid = OrderValid.NORMAL;
         this.orderID = "";
         this.isUrgent = "";
         this.overDue = OrderOverdue.NONE;
+        this.printTime="";
     }
 
     public void clear() {
@@ -51,11 +53,12 @@ public class OrderQueryCondition {
         addGoodsClassId("");
         setIsPrint(PrintStatus.NONE);
         setInState(OrderStatus.NONE);
-        setCreateTime(Tool.getNearlyThreeDaysDateSlot());
+        setCreateTime(Tool.getNearlyOneDaysDateSlot());
         setRoomReceiveTime("");
         setValid("");
         setOrderID("");
         setOverDue(OrderOverdue.NONE);
+        setPrintTime("");
     }
 
     public void setBranchID(String branchID) {
@@ -179,6 +182,10 @@ public class OrderQueryCondition {
         return inState.getRequestStatus();
     }
 
+    public String getInStateShow() {
+        return inState.getStatus();
+    }
+
     public void setCreateTime(String createTime) {
         if (!this.createTime.equals(createTime)) {
             this.createTime = createTime;
@@ -251,5 +258,16 @@ public class OrderQueryCondition {
 
     public void resetQueryConditionUpdateStatus() {
         this.isQueryConditionUpdate = false;
+    }
+
+    public void setPrintTime(String printTime) {
+        if (!this.printTime.equals(printTime)) {
+            this.printTime = printTime;
+            this.isQueryConditionUpdate = true;
+        }
+    }
+
+    public String getPrintTime(){
+        return this.printTime;
     }
 }

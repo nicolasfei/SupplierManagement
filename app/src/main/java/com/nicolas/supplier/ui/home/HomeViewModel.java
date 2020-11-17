@@ -28,7 +28,7 @@ public class HomeViewModel extends ViewModel {
         this.updateNavNumResult = new MutableLiveData<>();
         //content.add(new ModuleNavigation(true, getString(R.string.nav_cashier_title), 0, null));
         content.add(new ModuleNavigation(false, SupplierApp.getInstance().getString(R.string.nav_order_order), R.drawable.ic_sale_order_blue, NewOrderActivity.class));
-        //content.add(new ModuleNavigation(false, SupplierApp.getInstance().getString(R.string.nav_order_statistics), R.drawable.ic_order_statistics, OrderStatisticsActivity.class));
+        content.add(new ModuleNavigation(false, SupplierApp.getInstance().getString(R.string.nav_order_statistics), R.drawable.ic_order_statistics, OrderStatisticsActivity.class));
         content.add(new ModuleNavigation(false, SupplierApp.getInstance().getString(R.string.nav_order_query), R.drawable.ic_order_query, GoodsQueryActivity.class));
         content.add(new ModuleNavigation(false, SupplierApp.getInstance().getString(R.string.nav_order_return), R.drawable.ic_return_goods, ReturnGoodsQueryActivity.class));
         content.add(new ModuleNavigation(false, SupplierApp.getInstance().getString(R.string.nav_order_credit), R.drawable.ic_credit, ScoreRecordActivity.class));

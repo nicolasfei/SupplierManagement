@@ -86,14 +86,14 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
     private boolean orderGoodsCounting = false;       //订单货号统计中
 
     //以下为查询条件
-    private TextView createTime, oldGoodsId, goodsId, goodsClassId, branchId, storeRoomId, roomReceiveTime, inState, orderID, isUrgent;
+    private TextView createTime, oldGoodsId, goodsId, goodsClassId, branchId, storeRoomId, orderID, printTime;
     private RadioGroup orderClassChip;      //下单类型
-    private RadioGroup isPrintChip;         //是否打印
+    private RadioGroup inStateChip;         //订单接收状态--供应商待接单，供应商已接单，库房已收货，库房已发货，分店已收货
     private RadioGroup isValidChip;         //订单状态--正常,作废
     private RadioGroup isOverdueChip;       //订单即将过期--即将过期,非即将过期
 
     private boolean isOrderClassChipClear = false;   //标记清理orderClassChip
-    private boolean isPrintChipClear = false;        //标记清理isPrintChip
+    private boolean isInStateChipClear = false;      //标记清理isPrintChip
     private boolean isValidChipClear = false;        //标记清理isValidChip
     private boolean isOverdueChipClear = false;      //标记清理isOverdueChip
 
@@ -311,14 +311,6 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
         this.storeRoomId = findClickView(R.id.storeRoomId);
         this.updateStoreRoomId(condition.getStoreRoomID());
 
-        this.roomReceiveTime = findClickView(R.id.roomReceiveTime);
-        this.updateRoomReceiveTime(condition.getRoomReceiveTime());
-
-        this.inState = findClickView(R.id.inState);
-        this.updateInState(condition.getInState());
-
-        this.isUrgent = findClickView(R.id.isUrgent);
-        this.updateIsUrgent(condition.getIsUrgent());
         //下单类型
         this.orderClassChip = findViewById(R.id.orderClassChip);
         this.orderClassChip.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -350,26 +342,37 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
         });
         this.initOrderClassChipSelect(condition.getOrderType());
 
-        //是否打印
-        this.isPrintChip = findViewById(R.id.isPrintChip);
-        this.isPrintChip.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+        //订单发货状态
+        this.inStateChip = findViewById(R.id.inStateChip);
+        this.inStateChip.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                if (isPrintChipClear) {
-                    isPrintChipClear = false;
+                if (isInStateChipClear) {
+                    isInStateChipClear = false;
                     return;
                 }
                 switch (checkedId) {
-                    case R.id.isPrintC1:
-                        viewModel.getQueryCondition().setIsPrint(PrintStatus.PRINT);
+                    case R.id.inStateChip0:
+                        viewModel.getQueryCondition().setInState(OrderStatus.SWAIT);
                         break;
-                    case R.id.isPrintC2:
-                        viewModel.getQueryCondition().setIsPrint(PrintStatus.UN_PRINT);
+                    case R.id.inStateChip1:
+                        viewModel.getQueryCondition().setInState(OrderStatus.SWAITED);
+                        break;
+                    case R.id.inStateChip2:
+                        viewModel.getQueryCondition().setInState(OrderStatus.ROOM_RECEIVE);
+                        break;
+                    case R.id.inStateChip3:
+                        viewModel.getQueryCondition().setInState(OrderStatus.ROOM_SEND);
+                        break;
+                    case R.id.inStateChip4:
+                        viewModel.getQueryCondition().setInState(OrderStatus.BRANCH_RECEIVE);
+                        break;
+                    default:
                         break;
                 }
             }
         });
-        this.initIsPrintChipSelect(condition.getIsPrint());
+        this.initInStateChipSelect(condition.getInStateShow());
 
         //订单状态--正常，作废
         this.isValidChip = findViewById(R.id.isValidChip);
@@ -392,7 +395,7 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
         });
         this.initIsValidChipSelect(condition.getValid());
 
-        //订单状态--正常，作废
+        //订单超期--超期，未超期
         this.isOverdueChip = findViewById(R.id.isOverdueChip);
         this.isOverdueChip.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -413,6 +416,9 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
         });
         this.initOverdueChipSelect(condition.getOverDue());
 
+        //订单打印时间
+        this.printTime = findClickView(R.id.printTime);
+
         //查询条件clear
         findClickView(R.id.orderClassClear);
         findClickView(R.id.oldGoodsIDClear);
@@ -422,13 +428,10 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
         findClickView(R.id.storeRoomIdClear);
         findClickView(R.id.orderIDClear);
         findClickView(R.id.inStateClear);
-        findClickView(R.id.isUrgentClear);
-        findClickView(R.id.roomReceiveTimeClear);
-        findClickView(R.id.isPrintClear);
         findClickView(R.id.isValidClear);
         findClickView(R.id.createTimeClear);
         findClickView(R.id.isOverdueClear);
-
+        findClickView(R.id.printTimeClear);
         findClickView(R.id.clear);
         findClickView(R.id.yes);
 
@@ -491,6 +494,7 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
                     if (msg != null && msg.what == 1) {     //无订单数据
                         adapter.notifyDataSetChanged();
                         updateListViewStatus();
+                        updateDetailed();                   //更新订单明细
                         updateOrderCheckStatus();
                         dismissProgressDialog();
                         BruceDialog.showPromptDialog(NewOrderActivity.this, (String) msg.obj);
@@ -727,42 +731,15 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
                             }
                         });
                 break;
-            case R.id.roomReceiveTime:      //库房接收时间
-                String roomReceiveTime = viewModel.getQueryCondition().getRoomReceiveTime();
-                String startTime = "";
-                String endTime = "";
-                if (!TextUtils.isEmpty(roomReceiveTime)) {
-                    String[] times = roomReceiveTime.split("~");
-                    if (times.length >= 2) {
-                        startTime = times[0];
-                        endTime = times[1];
-                    }
-                }
-                DateTimePickerDialog.showDateSlotPickerDialog(NewOrderActivity.this, startTime, endTime, new DateTimePickerDialog.OnDateTimeSlotPickListener() {
-                    @Override
-                    public void OnDateTimeSlotPick(String start, String end) {
-                        updateRoomReceiveTime((start + "\u3000~\u3000" + end));
-                        viewModel.getQueryCondition().setRoomReceiveTime((start + "~" + end));
-                    }
-                });
-                break;
-            case R.id.inState:          //库房发货状态
-                BruceDialog.showSingleChoiceDialog(R.string.inState, NewOrderActivity.this, OrderStatus.getValues(), new BruceDialog.OnChoiceItemListener() {
-                    @Override
-                    public void onChoiceItem(String itemName) {
-                        updateInState(itemName);
-                        viewModel.getQueryCondition().setInState(itemName);
-                    }
-                });
-                break;
-            case R.id.isUrgent:         //订单加急状态
-                BruceDialog.showSingleChoiceDialog(R.string.isUrgent, NewOrderActivity.this, OrderUrgent.getValues(), new BruceDialog.OnChoiceItemListener() {
-                    @Override
-                    public void onChoiceItem(String itemName) {
-                        updateIsUrgent(itemName);
-                        viewModel.getQueryCondition().setIsUrgent(itemName);
-                    }
-                });
+            case R.id.printTime:
+                DateTimePickerDialog.showDateTimePickerDialog(NewOrderActivity.this, viewModel.getQueryCondition().getPrintTime(),
+                        new DateTimePickerDialog.OnDateTimePickListener() {
+                            @Override
+                            public void OnDateTimePick(String dateTime) {
+                                viewModel.getQueryCondition().setPrintTime(dateTime);
+                                updatePrintTime(dateTime);
+                            }
+                        });
                 break;
             case R.id.clear:
                 viewModel.clearQueryCondition();
@@ -771,13 +748,10 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
                 updateOldGoodsId("");
                 updateStoreRoomId("");
                 updateBranchId("");
-                updateRoomReceiveTime("");
-                updateInState("");
                 updateGoodsClassId("");
                 updateOrderID("");
-                updateIsUrgent("");
+                updatePrintTime("");
                 resetOrderClassChip();
-                resetIsPrintChip();
                 resetValidChip();
                 break;
             case R.id.yes:
@@ -826,25 +800,13 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
                 //清空库房树选择的状态
                 SupplierKeeper.getInstance().clearStorehouseSelect();
                 break;
-            case R.id.roomReceiveTimeClear:
-                viewModel.getQueryCondition().setRoomReceiveTime("");
-                updateRoomReceiveTime("");
-                break;
             case R.id.inStateClear:
                 viewModel.getQueryCondition().setInState(OrderStatus.NONE);
-                updateInState("");
+                resetInStateChip();
                 break;
             case R.id.orderIDClear:
                 viewModel.getQueryCondition().setOrderID("");
                 updateOrderID("");
-                break;
-            case R.id.isUrgentClear:
-                viewModel.getQueryCondition().setIsUrgent("");
-                updateIsUrgent("");
-                break;
-            case R.id.isPrintClear:
-                viewModel.getQueryCondition().setIsPrint("");
-                resetIsPrintChip();
                 break;
             case R.id.isValidClear:
                 viewModel.getQueryCondition().setValid("");
@@ -858,6 +820,9 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
                 viewModel.getQueryCondition().setOverDue(OrderOverdue.NONE);
                 resetOverdueChip();
                 break;
+            case R.id.printTimeClear:
+                viewModel.getQueryCondition().setPrintTime("");
+                updatePrintTime("");
             default:
                 break;
         }
@@ -901,6 +866,10 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
         createTime.setText(itemValue);
     }
 
+    private void updatePrintTime(String itemValue) {
+        printTime.setText(itemValue);
+    }
+
     private void updateGoodsId(String itemValue) {
         String value = NewOrderActivity.this.getString(R.string.newGoodsID) + "\u3000\u3000\u3000\u3000\u3000" + "<font color=\"black\">" + itemValue + "</font>";
         goodsId.setText(Html.fromHtml(value, Html.FROM_HTML_MODE_COMPACT));
@@ -909,11 +878,6 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
     private void updateOrderID(String itemValue) {
         String value = NewOrderActivity.this.getString(R.string.orderID) + "\u3000\u3000\u3000\u3000\u3000" + "<font color=\"black\">" + itemValue + "</font>";
         orderID.setText(Html.fromHtml(value, Html.FROM_HTML_MODE_COMPACT));
-    }
-
-    private void updateIsUrgent(String itemValue) {
-        String value = NewOrderActivity.this.getString(R.string.isUrgent) + "\u3000\u3000" + "<font color=\"black\">" + itemValue + "</font>";
-        isUrgent.setText(Html.fromHtml(value, Html.FROM_HTML_MODE_COMPACT));
     }
 
     private void updateOldGoodsId(String itemValue) {
@@ -930,15 +894,6 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
     private void updateBranchId(String itemValue) {
         String value = NewOrderActivity.this.getString(R.string.branch) + "\u3000\u3000\u3000\u3000\u3000\u3000" + "<font color=\"black\">" + itemValue + "</font>";
         branchId.setText(Html.fromHtml(value, Html.FROM_HTML_MODE_COMPACT));
-    }
-
-    private void updateRoomReceiveTime(String itemValue) {
-        roomReceiveTime.setText(itemValue);
-    }
-
-    private void updateInState(String itemValue) {
-        String value = NewOrderActivity.this.getString(R.string.inState) + "\u3000\u3000" + "<font color=\"black\">" + itemValue + "</font>";
-        inState.setText(Html.fromHtml(value, Html.FROM_HTML_MODE_COMPACT));
     }
 
     private void updateGoodsClassId(String itemValue) {
@@ -972,19 +927,31 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
         }
     }
 
-    private void initIsPrintChipSelect(String itemValue) {
+    private void initInStateChipSelect(String itemValue) {
         switch (itemValue) {
-            case PrintStatus.NONE:
-                isPrintChipClear = true;
-                this.isPrintChip.clearCheck();
+            case OrderStatus.NONE:
+                isInStateChipClear = true;
+                this.inStateChip.clearCheck();
                 break;
-            case PrintStatus.PRINT:
-                isPrintChipClear = true;
-                this.isPrintChip.check(R.id.isPrintC1);
+            case OrderStatus.SWAIT:
+                isInStateChipClear = true;
+                this.inStateChip.check(R.id.inStateChip0);
                 break;
-            case PrintStatus.UN_PRINT:
-                isPrintChipClear = true;
-                this.isPrintChip.check(R.id.isPrintC2);
+            case OrderStatus.SWAITED:
+                isInStateChipClear = true;
+                this.inStateChip.check(R.id.inStateChip1);
+                break;
+            case OrderStatus.ROOM_RECEIVE:
+                isInStateChipClear = true;
+                this.inStateChip.check(R.id.inStateChip2);
+                break;
+            case OrderStatus.ROOM_SEND:
+                isInStateChipClear = true;
+                this.inStateChip.check(R.id.inStateChip3);
+                break;
+            case OrderStatus.BRANCH_RECEIVE:
+                isInStateChipClear = true;
+                this.inStateChip.check(R.id.inStateChip4);
                 break;
             default:
                 break;
@@ -1034,11 +1001,6 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
         orderClassChip.clearCheck();
     }
 
-    private void resetIsPrintChip() {
-        isPrintChipClear = true;
-        isPrintChip.clearCheck();
-    }
-
     private void resetValidChip() {
         isValidChipClear = true;
         isValidChip.clearCheck();
@@ -1047,6 +1009,11 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
     private void resetOverdueChip() {
         isOverdueChipClear = true;
         isOverdueChip.clearCheck();
+    }
+
+    private void resetInStateChip() {
+        isInStateChipClear = true;
+        inStateChip.clearCheck();
     }
 
 
@@ -1264,7 +1231,7 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
      * 更新明细
      */
     private void updateDetailed() {
-        String value = getString(R.string.detailed) + "\u3000\u3000" + getString(R.string.orderTotal) + getString(R.string.colon) + "<font color=\"black\">" + this.viewModel.getOrderTotal() + "</font>" +
+        String value = "\u3000\u3000" + getString(R.string.orderTotal) + getString(R.string.colon) + "<font color=\"black\">" + this.viewModel.getOrderTotal() + "</font>" +
                 "\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000" +
                 getString(R.string.query_date) + getString(R.string.colon) + "<font color=\"black\">" + viewModel.getQueryCondition().getCreateTime() + "</font>";
         this.detailed.setText(Html.fromHtml(value, Html.FROM_HTML_MODE_COMPACT));

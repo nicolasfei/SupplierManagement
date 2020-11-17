@@ -2,6 +2,7 @@ package com.nicolas.supplier.advertisement;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Message;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -11,11 +12,20 @@ import com.nicolas.advertnoticelibrary.DataLocalManagement;
 import com.nicolas.advertnoticelibrary.NoticeData;
 import com.nicolas.supplier.R;
 import com.nicolas.supplier.app.SupplierApp;
+import com.nicolas.supplier.common.OperateError;
 import com.nicolas.supplier.common.OperateInUserView;
 import com.nicolas.supplier.common.OperateResult;
+import com.nicolas.supplier.server.CommandResponse;
+import com.nicolas.supplier.server.CommandTypeEnum;
+import com.nicolas.supplier.server.CommandVo;
+import com.nicolas.supplier.server.Invoker;
+import com.nicolas.supplier.server.common.CommonInterface;
+import com.nicolas.toollibrary.HttpHandler;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class NoticeViewModel extends ViewModel {
     private MutableLiveData<OperateResult> noticeGetResult;
@@ -101,14 +111,21 @@ public class NoticeViewModel extends ViewModel {
      * 查询广告
      */
     public void queryAdvert() {
-
     }
 
     /**
      * 查询通知
      */
     public void queryNotice() {
-
+        CommandVo vo = new CommandVo();
+        vo.typeEnum = CommandTypeEnum.COMMAND_COMMON;
+        vo.url = CommonInterface.NoticeCheck;
+        vo.contentType = HttpHandler.ContentType_APP;
+        vo.requestMode = HttpHandler.RequestMode_GET;
+        Map<String, String> parameters = new HashMap<>();
+        vo.parameters = parameters;
+        Invoker.getInstance().setOnEchoResultCallback(this.callback);
+        Invoker.getInstance().exec(vo);
     }
 
     /**
@@ -117,4 +134,27 @@ public class NoticeViewModel extends ViewModel {
     public void resetAdvertNotice() {
         DataLocalManagement.getInstance().resetInitStatus();
     }
+
+
+    /**
+     * 响应
+     */
+    private Invoker.OnExecResultCallback callback = new Invoker.OnExecResultCallback() {
+        @Override
+        public void execResult(CommandResponse result) {
+            switch (result.url) {
+                case CommonInterface.NoticeCheck:
+                    if (result.success) {
+                        Message msg = new Message();
+                        msg.obj = result.data;              //notice
+                        noticeGetResult.setValue(new OperateResult(new OperateInUserView(msg)));
+                    } else {
+                        noticeGetResult.setValue(new OperateResult(new OperateError(-1, "", null)));
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
 }

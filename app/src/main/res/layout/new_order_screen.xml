@@ -6,130 +6,133 @@
     android:layout_height="match_parent"
     android:background="@android:color/white">
 
-    <TextView
-        android:id="@+id/createTimeText"
-        android:layout_width="0dp"
+    <LinearLayout
+        android:id="@+id/line1"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="5dp"
-        android:gravity="start|center"
-        android:paddingStart="@dimen/drawer_margin"
-        android:paddingEnd="@dimen/drawer_margin"
-        android:text="@string/createTime"
-        android:textSize="@dimen/drawer_text_size"
+        android:orientation="horizontal"
         app:layout_constraintHeight_percent="0.05"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_percent="0.26" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <TextView
-        android:id="@+id/createTime"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="5dp"
-        android:background="@drawable/shape_rectangle_black"
-        android:drawableEnd="@drawable/ic_calendar"
-        android:gravity="start|center"
-        android:hint="@string/choice_date"
-        android:paddingStart="@dimen/drawer_margin"
-        android:paddingEnd="@dimen/drawer_margin"
-        android:textSize="@dimen/drawer_text_size"
-        app:layout_constraintWidth_percent="0.59"
-        app:layout_constraintHeight_percent="@dimen/view_height_percent"
-        app:layout_constraintStart_toEndOf="@+id/createTimeText"
-        app:layout_constraintTop_toTopOf="parent" />
+        <TextView
+            android:id="@+id/createTimeText"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginTop="5dp"
+            android:layout_weight="0.26"
+            android:gravity="start|center"
+            android:paddingStart="@dimen/drawer_margin"
+            android:paddingEnd="@dimen/drawer_margin"
+            android:text="@string/createTime"
+            android:textSize="@dimen/drawer_text_size" />
 
-    <Button
-        android:id="@+id/createTimeClear"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="5dp"
-        android:gravity="center"
-        android:padding="0dp"
-        android:text="@string/reset"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="0.05"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_percent="0.15" />
+        <TextView
+            android:id="@+id/createTime"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginTop="5dp"
+            android:layout_weight="0.59"
+            android:background="@drawable/shape_rectangle_black"
+            android:drawableEnd="@drawable/ic_calendar"
+            android:gravity="start|center"
+            android:hint="@string/choice_date"
+            android:paddingStart="@dimen/drawer_margin"
+            android:paddingEnd="@dimen/drawer_margin"
+            android:textSize="@dimen/drawer_text_size" />
+
+        <Button
+            android:id="@+id/createTimeClear"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginTop="5dp"
+            android:layout_weight="0.15"
+            android:gravity="center"
+            android:padding="0dp"
+            android:text="@string/reset" />
+    </LinearLayout>
+
     <View
         android:id="@+id/divider0"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="?android:attr/listDivider"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/createTime" />
+        app:layout_constraintTop_toBottomOf="@+id/line1" />
 
-    <TextView
-        android:id="@+id/orderClass"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:gravity="start|center"
-        android:paddingStart="@dimen/drawer_margin"
-        android:paddingEnd="0dp"
-        android:text="@string/order_class"
-        android:textSize="@dimen/drawer_text_size"
-        app:layout_constraintHeight_percent="0.05"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider0"
-        app:layout_constraintWidth_percent="0.2" />
-
-    <RadioGroup
-        android:id="@+id/orderClassChip"
-        android:layout_width="0dp"
+    <LinearLayout
+        android:id="@+id/line2"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
         android:orientation="horizontal"
-        app:layout_constraintHeight_percent="@dimen/view_height_percent"
-        app:layout_constraintStart_toEndOf="@+id/orderClass"
-        app:layout_constraintTop_toBottomOf="@+id/divider0"
-        app:layout_constraintWidth_percent="0.65">
-
-        <RadioButton
-            android:id="@+id/orderClassChip0"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="start|center"
-            android:text="@string/order_urgent"
-            android:textSize="@dimen/drawer_text_size" />
-
-        <RadioButton
-            android:id="@+id/orderClassChip1"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="start|center"
-            android:text="@string/order_all"
-            android:textSize="@dimen/drawer_text_size" />
-
-        <RadioButton
-            android:id="@+id/orderClassChip2"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="start|center"
-            android:text="@string/order_first"
-            android:textSize="@dimen/drawer_text_size" />
-
-        <RadioButton
-            android:id="@+id/orderClassChip3"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="start|center"
-            android:text="@string/order_CPFR"
-            android:textSize="@dimen/drawer_text_size" />
-    </RadioGroup>
-
-    <Button
-        android:id="@+id/orderClassClear"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:gravity="center"
-        android:padding="0dp"
-        android:text="@string/clear"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="0.05"
-        app:layout_constraintTop_toBottomOf="@+id/divider0"
-        app:layout_constraintWidth_percent="0.15" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider0">
+
+        <TextView
+            android:id="@+id/orderClass"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.26"
+            android:gravity="start|center"
+            android:paddingStart="@dimen/drawer_margin"
+            android:paddingEnd="0dp"
+            android:text="@string/order_class"
+            android:textSize="@dimen/drawer_text_size" />
+
+        <RadioGroup
+            android:id="@+id/orderClassChip"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.59"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/orderClassChip0"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="start|center"
+                android:text="@string/order_urgent"
+                android:textSize="@dimen/drawer_text_size" />
+
+            <RadioButton
+                android:id="@+id/orderClassChip1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="start|center"
+                android:text="@string/order_all"
+                android:textSize="@dimen/drawer_text_size" />
+
+            <RadioButton
+                android:id="@+id/orderClassChip2"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="start|center"
+                android:text="@string/order_first"
+                android:textSize="@dimen/drawer_text_size" />
+
+            <RadioButton
+                android:id="@+id/orderClassChip3"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="start|center"
+                android:text="@string/order_CPFR"
+                android:textSize="@dimen/drawer_text_size" />
+        </RadioGroup>
+
+        <Button
+            android:id="@+id/orderClassClear"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.15"
+            android:gravity="center"
+            android:padding="0dp"
+            android:text="@string/clear" />
+    </LinearLayout>
 
     <View
         android:id="@+id/divider1"
@@ -137,32 +140,36 @@
         android:layout_height="1dp"
         android:background="?android:attr/listDivider"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/orderClassChip" />
+        app:layout_constraintTop_toBottomOf="@+id/line2" />
 
-    <TextView
-        android:id="@+id/orderID"
-        android:layout_width="0dp"
+    <LinearLayout
+        android:id="@+id/line3"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:drawableEnd="@drawable/ic_sr_blue"
-        android:gravity="start|center"
-        android:paddingStart="@dimen/drawer_margin"
-        android:paddingEnd="@dimen/drawer_margin"
-        android:text="@string/orderID"
-        android:textSize="@dimen/drawer_text_size"
-        app:layout_constraintHeight_percent="@dimen/view_height_percent"
+        android:orientation="horizontal"
+        app:layout_constraintHeight_percent="0.05"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider1"
-        app:layout_constraintWidth_percent="0.85" />
+        app:layout_constraintTop_toBottomOf="@+id/divider1">
 
-    <Button
-        android:id="@+id/orderIDClear"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:text="@string/clear"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="@dimen/view_height_percent"
-        app:layout_constraintTop_toBottomOf="@+id/divider1"
-        app:layout_constraintWidth_percent="0.15" />
+        <TextView
+            android:id="@+id/orderID"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.85"
+            android:drawableEnd="@drawable/ic_sr_blue"
+            android:gravity="start|center"
+            android:paddingStart="@dimen/drawer_margin"
+            android:paddingEnd="@dimen/drawer_margin"
+            android:text="@string/orderID"
+            android:textSize="@dimen/drawer_text_size" />
+
+        <Button
+            android:id="@+id/orderIDClear"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.15"
+            android:text="@string/clear" />
+    </LinearLayout>
 
     <View
         android:id="@+id/divider31"
@@ -170,33 +177,36 @@
         android:layout_height="1dp"
         android:background="?android:attr/listDivider"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/orderID" />
+        app:layout_constraintTop_toBottomOf="@+id/line3" />
 
-
-    <TextView
-        android:id="@+id/oldGoodsID"
-        android:layout_width="0dp"
+    <LinearLayout
+        android:id="@+id/line4"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:drawableEnd="@drawable/ic_sr_blue"
-        android:gravity="start|center"
-        android:paddingStart="@dimen/drawer_margin"
-        android:paddingEnd="@dimen/drawer_margin"
-        android:text="@string/oldGoodsID"
-        android:textSize="@dimen/drawer_text_size"
-        app:layout_constraintHeight_percent="@dimen/view_height_percent"
+        android:orientation="horizontal"
+        app:layout_constraintHeight_percent="0.05"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider31"
-        app:layout_constraintWidth_percent="0.85" />
+        app:layout_constraintTop_toBottomOf="@+id/divider31">
 
-    <Button
-        android:id="@+id/oldGoodsIDClear"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:text="@string/clear"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="@dimen/view_height_percent"
-        app:layout_constraintTop_toBottomOf="@+id/divider31"
-        app:layout_constraintWidth_percent="0.15" />
+        <TextView
+            android:id="@+id/oldGoodsID"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.85"
+            android:drawableEnd="@drawable/ic_sr_blue"
+            android:gravity="start|center"
+            android:paddingStart="@dimen/drawer_margin"
+            android:paddingEnd="@dimen/drawer_margin"
+            android:text="@string/oldGoodsID"
+            android:textSize="@dimen/drawer_text_size" />
+
+        <Button
+            android:id="@+id/oldGoodsIDClear"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.15"
+            android:text="@string/clear" />
+    </LinearLayout>
 
     <View
         android:id="@+id/divider110"
@@ -204,32 +214,36 @@
         android:layout_height="1dp"
         android:background="?android:attr/listDivider"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/oldGoodsID" />
+        app:layout_constraintTop_toBottomOf="@+id/line4" />
 
-    <TextView
-        android:id="@+id/goodsID"
-        android:layout_width="0dp"
+    <LinearLayout
+        android:id="@+id/line5"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:drawableEnd="@drawable/ic_sr_blue"
-        android:gravity="start|center"
-        android:paddingStart="@dimen/drawer_margin"
-        android:paddingEnd="@dimen/drawer_margin"
-        android:text="@string/newGoodsID"
-        android:textSize="@dimen/drawer_text_size"
-        app:layout_constraintHeight_percent="@dimen/view_height_percent"
+        android:orientation="horizontal"
+        app:layout_constraintHeight_percent="0.05"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider110"
-        app:layout_constraintWidth_percent="0.85" />
+        app:layout_constraintTop_toBottomOf="@+id/divider110">
 
-    <Button
-        android:id="@+id/goodsIDClear"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:text="@string/clear"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="@dimen/view_height_percent"
-        app:layout_constraintTop_toBottomOf="@+id/divider110"
-        app:layout_constraintWidth_percent="0.15" />
+        <TextView
+            android:id="@+id/goodsID"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.85"
+            android:drawableEnd="@drawable/ic_sr_blue"
+            android:gravity="start|center"
+            android:paddingStart="@dimen/drawer_margin"
+            android:paddingEnd="@dimen/drawer_margin"
+            android:text="@string/newGoodsID"
+            android:textSize="@dimen/drawer_text_size" />
+
+        <Button
+            android:id="@+id/goodsIDClear"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.15"
+            android:text="@string/clear" />
+    </LinearLayout>
 
     <View
         android:id="@+id/divider11"
@@ -237,32 +251,36 @@
         android:layout_height="1dp"
         android:background="?android:attr/listDivider"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/goodsID" />
+        app:layout_constraintTop_toBottomOf="@+id/line5" />
 
-    <TextView
-        android:id="@+id/goodsClassId"
-        android:layout_width="0dp"
+    <LinearLayout
+        android:id="@+id/line6"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:drawableEnd="@drawable/ic_sr_blue"
-        android:gravity="start|center"
-        android:paddingStart="@dimen/drawer_margin"
-        android:paddingEnd="@dimen/drawer_margin"
-        android:text="@string/goodsClass"
-        android:textSize="@dimen/drawer_text_size"
-        app:layout_constraintHeight_percent="@dimen/view_height_percent"
+        android:orientation="horizontal"
+        app:layout_constraintHeight_percent="0.05"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider11"
-        app:layout_constraintWidth_percent="0.85" />
+        app:layout_constraintTop_toBottomOf="@+id/divider11">
 
-    <Button
-        android:id="@+id/goodsClassIdClear"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:text="@string/clear"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="@dimen/view_height_percent"
-        app:layout_constraintTop_toBottomOf="@+id/divider11"
-        app:layout_constraintWidth_percent="0.15" />
+        <TextView
+            android:id="@+id/goodsClassId"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.85"
+            android:drawableEnd="@drawable/ic_sr_blue"
+            android:gravity="start|center"
+            android:paddingStart="@dimen/drawer_margin"
+            android:paddingEnd="@dimen/drawer_margin"
+            android:text="@string/goodsClass"
+            android:textSize="@dimen/drawer_text_size" />
+
+        <Button
+            android:id="@+id/goodsClassIdClear"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.15"
+            android:text="@string/clear" />
+    </LinearLayout>
 
     <View
         android:id="@+id/divider2"
@@ -270,32 +288,36 @@
         android:layout_height="1dp"
         android:background="?android:attr/listDivider"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/goodsClassId" />
+        app:layout_constraintTop_toBottomOf="@+id/line6" />
 
-    <TextView
-        android:id="@+id/branchId"
-        android:layout_width="0dp"
+    <LinearLayout
+        android:id="@+id/line7"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:drawableEnd="@drawable/ic_sr_blue"
-        android:gravity="start|center"
-        android:paddingStart="@dimen/drawer_margin"
-        android:paddingEnd="@dimen/drawer_margin"
-        android:text="@string/branch"
-        android:textSize="@dimen/drawer_text_size"
-        app:layout_constraintHeight_percent="@dimen/view_height_percent"
+        android:orientation="horizontal"
+        app:layout_constraintHeight_percent="0.05"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider2"
-        app:layout_constraintWidth_percent="0.85" />
+        app:layout_constraintTop_toBottomOf="@+id/divider2">
 
-    <Button
-        android:id="@+id/branchIdClear"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:text="@string/clear"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="@dimen/view_height_percent"
-        app:layout_constraintTop_toBottomOf="@+id/divider2"
-        app:layout_constraintWidth_percent="0.15" />
+        <TextView
+            android:id="@+id/branchId"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.85"
+            android:drawableEnd="@drawable/ic_sr_blue"
+            android:gravity="start|center"
+            android:paddingStart="@dimen/drawer_margin"
+            android:paddingEnd="@dimen/drawer_margin"
+            android:text="@string/branch"
+            android:textSize="@dimen/drawer_text_size" />
+
+        <Button
+            android:id="@+id/branchIdClear"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.15"
+            android:text="@string/clear" />
+    </LinearLayout>
 
     <View
         android:id="@+id/divider4"
@@ -303,32 +325,36 @@
         android:layout_height="1dp"
         android:background="?android:attr/listDivider"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/branchId" />
+        app:layout_constraintTop_toBottomOf="@+id/line7" />
 
-    <TextView
-        android:id="@+id/storeRoomId"
-        android:layout_width="0dp"
+    <LinearLayout
+        android:id="@+id/line8"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:drawableEnd="@drawable/ic_sr_blue"
-        android:gravity="start|center"
-        android:paddingStart="@dimen/drawer_margin"
-        android:paddingEnd="@dimen/drawer_margin"
-        android:text="@string/warehouse"
-        android:textSize="@dimen/drawer_text_size"
-        app:layout_constraintHeight_percent="@dimen/view_height_percent"
+        android:orientation="horizontal"
+        app:layout_constraintHeight_percent="0.05"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider4"
-        app:layout_constraintWidth_percent="0.85" />
+        app:layout_constraintTop_toBottomOf="@+id/divider4">
 
-    <Button
-        android:id="@+id/storeRoomIdClear"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:text="@string/clear"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="@dimen/view_height_percent"
-        app:layout_constraintTop_toBottomOf="@+id/divider4"
-        app:layout_constraintWidth_percent="0.15" />
+        <TextView
+            android:id="@+id/storeRoomId"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.85"
+            android:drawableEnd="@drawable/ic_sr_blue"
+            android:gravity="start|center"
+            android:paddingStart="@dimen/drawer_margin"
+            android:paddingEnd="@dimen/drawer_margin"
+            android:text="@string/warehouse"
+            android:textSize="@dimen/drawer_text_size" />
+
+        <Button
+            android:id="@+id/storeRoomIdClear"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.15"
+            android:text="@string/clear" />
+    </LinearLayout>
 
     <View
         android:id="@+id/divider3"
@@ -336,32 +362,95 @@
         android:layout_height="1dp"
         android:background="?android:attr/listDivider"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/storeRoomId" />
+        app:layout_constraintTop_toBottomOf="@+id/line8" />
 
-    <TextView
-        android:id="@+id/inState"
-        android:layout_width="0dp"
+    <LinearLayout
+        android:id="@+id/line9"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:drawableEnd="@drawable/ic_sr_blue"
-        android:gravity="start|center"
-        android:paddingStart="@dimen/drawer_margin"
-        android:paddingEnd="@dimen/drawer_margin"
-        android:text="@string/inState"
-        android:textSize="@dimen/drawer_text_size"
-        app:layout_constraintHeight_percent="@dimen/view_height_percent"
+        android:orientation="horizontal"
+        app:layout_constraintHeight_percent="0.05"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider3"
-        app:layout_constraintWidth_percent="0.85" />
+        app:layout_constraintTop_toBottomOf="@+id/divider3">
 
-    <Button
-        android:id="@+id/inStateClear"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:text="@string/clear"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="@dimen/view_height_percent"
-        app:layout_constraintTop_toBottomOf="@+id/divider3"
-        app:layout_constraintWidth_percent="0.15" />
+        <TextView
+            android:id="@+id/inState"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.19"
+            android:gravity="start|center"
+            android:paddingStart="@dimen/drawer_margin"
+            android:paddingEnd="0dp"
+            android:text="@string/inState"
+            android:textSize="@dimen/drawer_text_size" />
+
+        <RadioGroup
+            android:id="@+id/inStateChip"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.66"
+            android:orientation="horizontal"
+            android:paddingStart="0dp"
+            android:paddingEnd="0dp">
+
+            <RadioButton
+                android:id="@+id/inStateChip0"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/red"
+                android:gravity="start|center"
+                android:text="@string/swait"
+                android:textSize="@dimen/drawer_text_size" />
+
+            <RadioButton
+                android:id="@+id/inStateChip1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/yellow"
+                android:gravity="start|center"
+                android:text="@string/swaited"
+                android:textSize="@dimen/drawer_text_size" />
+
+            <RadioButton
+                android:id="@+id/inStateChip2"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/green"
+                android:gravity="start|center"
+                android:text="@string/roomreceive"
+                android:textSize="@dimen/drawer_text_size" />
+
+            <RadioButton
+                android:id="@+id/inStateChip3"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/green"
+                android:gravity="start|center"
+                android:text="@string/roomsend"
+                android:textSize="@dimen/drawer_text_size" />
+
+            <RadioButton
+                android:id="@+id/inStateChip4"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/green"
+                android:gravity="start|center"
+                android:text="@string/branchreceive"
+                android:textSize="@dimen/drawer_text_size" />
+        </RadioGroup>
+
+        <Button
+            android:id="@+id/inStateClear"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.15"
+            android:text="@string/clear" />
+    </LinearLayout>
 
     <View
         android:id="@+id/divider41"
@@ -369,202 +458,60 @@
         android:layout_height="1dp"
         android:background="?android:attr/listDivider"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/inState" />
+        app:layout_constraintTop_toBottomOf="@+id/line9" />
 
-    <TextView
-        android:id="@+id/isUrgent"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:drawableEnd="@drawable/ic_sr_blue"
-        android:gravity="start|center"
-        android:paddingStart="@dimen/drawer_margin"
-        android:paddingEnd="@dimen/drawer_margin"
-        android:text="@string/isUrgent"
-        android:textSize="@dimen/drawer_text_size"
-        android:visibility="gone"
-        app:layout_constraintHeight_percent="@dimen/view_height_percent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider41"
-        app:layout_constraintWidth_percent="0.85" />
-
-    <Button
-        android:id="@+id/isUrgentClear"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:text="@string/clear"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="@dimen/view_height_percent"
-        app:layout_constraintTop_toBottomOf="@+id/divider41"
-        app:layout_constraintWidth_percent="0.15" />
-
-    <View
-        android:id="@+id/divider6"
+    <LinearLayout
+        android:id="@+id/line10"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="?android:attr/listDivider"
-        android:visibility="gone"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/isUrgent" />
-
-    <TextView
-        android:id="@+id/roomReceiveTimeText"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:gravity="start|center"
-        android:paddingStart="@dimen/drawer_margin"
-        android:paddingEnd="@dimen/drawer_margin"
-        android:text="@string/storeReceiveTime"
-        android:textSize="@dimen/drawer_text_size"
-        app:layout_constraintHeight_percent="0.05"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider6"
-        app:layout_constraintWidth_percent="0.26" />
-
-    <TextView
-        android:id="@+id/roomReceiveTime"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="@drawable/shape_rectangle_black"
-        android:drawableEnd="@drawable/ic_calendar"
-        android:gravity="start|center"
-        android:hint="@string/choice_date"
-        android:paddingStart="@dimen/drawer_margin"
-        android:paddingEnd="@dimen/drawer_margin"
-        android:textSize="@dimen/drawer_text_size"
-        app:layout_constraintHeight_percent="@dimen/view_height_percent"
-        app:layout_constraintStart_toEndOf="@+id/roomReceiveTimeText"
-        app:layout_constraintTop_toBottomOf="@+id/divider6"
-        app:layout_constraintWidth_percent="0.59" />
-
-    <Button
-        android:id="@+id/roomReceiveTimeClear"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:text="@string/clear"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="0.05"
-        app:layout_constraintTop_toBottomOf="@+id/divider6"
-        app:layout_constraintWidth_percent="0.15" />
-
-    <View
-        android:id="@+id/divider5"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="?android:attr/listDivider"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/roomReceiveTime" />
-
-    <TextView
-        android:id="@+id/isPrint"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:gravity="start|center"
-        android:paddingStart="@dimen/drawer_margin"
-        android:paddingEnd="@dimen/drawer_margin"
-        android:text="@string/is_print"
-        android:textSize="@dimen/drawer_text_size"
-        app:layout_constraintHeight_percent="0.05"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider5"
-        app:layout_constraintWidth_percent="0.2" />
-
-    <RadioGroup
-        android:id="@+id/isPrintChip"
-        android:layout_width="0dp"
         android:layout_height="0dp"
         android:orientation="horizontal"
-        app:layout_constraintHeight_percent="@dimen/view_height_percent"
-        app:layout_constraintStart_toEndOf="@+id/isPrint"
-        app:layout_constraintTop_toBottomOf="@+id/divider5"
-        app:layout_constraintWidth_percent="0.65">
-
-        <RadioButton
-            android:id="@+id/isPrintC1"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="@string/printed"
-            android:textSize="@dimen/drawer_text_size" />
-
-        <RadioButton
-            android:id="@+id/isPrintC2"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="@string/no_print"
-            android:textSize="@dimen/drawer_text_size" />
-    </RadioGroup>
-
-    <Button
-        android:id="@+id/isPrintClear"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:text="@string/clear"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="0.05"
-        app:layout_constraintTop_toBottomOf="@+id/divider5"
-        app:layout_constraintWidth_percent="0.15" />
-
-    <View
-        android:id="@+id/divider61"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="?android:attr/listDivider"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/isPrintChip" />
-
-    <TextView
-        android:id="@+id/isValid"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:gravity="start|center"
-        android:paddingStart="@dimen/drawer_margin"
-        android:paddingEnd="@dimen/drawer_margin"
-        android:text="@string/orderStatus"
-        android:textSize="@dimen/drawer_text_size"
         app:layout_constraintHeight_percent="0.05"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider61"
-        app:layout_constraintWidth_percent="0.2" />
+        app:layout_constraintTop_toBottomOf="@+id/divider41">
 
-    <RadioGroup
-        android:id="@+id/isValidChip"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:orientation="horizontal"
-        app:layout_constraintHeight_percent="@dimen/view_height_percent"
-        app:layout_constraintStart_toEndOf="@+id/isValid"
-        app:layout_constraintTop_toBottomOf="@+id/divider61"
-        app:layout_constraintWidth_percent="0.65">
-
-        <RadioButton
-            android:id="@+id/isValid1"
+        <TextView
+            android:id="@+id/isValid"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="@string/normal"
+            android:layout_weight="0.26"
+            android:gravity="start|center"
+            android:paddingStart="@dimen/drawer_margin"
+            android:paddingEnd="@dimen/drawer_margin"
+            android:text="@string/isValidStatus"
             android:textSize="@dimen/drawer_text_size" />
 
-        <RadioButton
-            android:id="@+id/isValid2"
+        <RadioGroup
+            android:id="@+id/isValidChip"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="@string/inValid"
-            android:textSize="@dimen/drawer_text_size" />
-    </RadioGroup>
+            android:layout_weight="0.59"
+            android:orientation="horizontal">
 
-    <Button
-        android:id="@+id/isValidClear"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:text="@string/clear"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="0.05"
-        app:layout_constraintTop_toBottomOf="@+id/divider61"
-        app:layout_constraintWidth_percent="0.15" />
+            <RadioButton
+                android:id="@+id/isValid1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="@string/normal"
+                android:textSize="@dimen/drawer_text_size" />
 
+            <RadioButton
+                android:id="@+id/isValid2"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="@string/inValid"
+                android:textSize="@dimen/drawer_text_size" />
+        </RadioGroup>
+
+        <Button
+            android:id="@+id/isValidClear"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.15"
+            android:text="@string/clear" />
+
+    </LinearLayout>
 
     <View
         android:id="@+id/divider71"
@@ -572,81 +519,136 @@
         android:layout_height="1dp"
         android:background="?android:attr/listDivider"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/isValidChip" />
+        app:layout_constraintTop_toBottomOf="@+id/line10" />
 
-    <TextView
-        android:id="@+id/isOverdue"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:gravity="start|center"
-        android:paddingStart="@dimen/drawer_margin"
-        android:paddingEnd="@dimen/drawer_margin"
-        android:text="@string/OrderOverdue"
-        android:textSize="@dimen/drawer_text_size"
-        app:layout_constraintHeight_percent="0.05"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider71"
-        app:layout_constraintWidth_percent="0.26" />
-
-    <RadioGroup
-        android:id="@+id/isOverdueChip"
-        android:layout_width="0dp"
+    <LinearLayout
+        android:id="@+id/line11"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
         android:orientation="horizontal"
-        app:layout_constraintHeight_percent="@dimen/view_height_percent"
-        app:layout_constraintStart_toEndOf="@+id/isOverdue"
-        app:layout_constraintTop_toBottomOf="@+id/divider71"
-        app:layout_constraintWidth_percent="0.59">
-
-        <RadioButton
-            android:id="@+id/isOverdue1"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="@string/overdueYes"
-            android:textSize="@dimen/drawer_text_size" />
-
-        <RadioButton
-            android:id="@+id/isOverdue2"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="@string/overdueNo"
-            android:textSize="@dimen/drawer_text_size" />
-    </RadioGroup>
-
-    <Button
-        android:id="@+id/isOverdueClear"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:text="@string/clear"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="0.05"
-        app:layout_constraintTop_toBottomOf="@+id/divider71"
-        app:layout_constraintWidth_percent="0.15" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider71">
+
+        <TextView
+            android:id="@+id/isOverdue"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.26"
+            android:gravity="start|center"
+            android:paddingStart="@dimen/drawer_margin"
+            android:paddingEnd="@dimen/drawer_margin"
+            android:text="@string/OrderOverdue"
+            android:textSize="@dimen/drawer_text_size" />
+
+        <RadioGroup
+            android:id="@+id/isOverdueChip"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.59"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/isOverdue1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="@string/overdueYes"
+                android:textSize="@dimen/drawer_text_size" />
+
+            <RadioButton
+                android:id="@+id/isOverdue2"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="@string/overdueNo"
+                android:textSize="@dimen/drawer_text_size" />
+        </RadioGroup>
+
+        <Button
+            android:id="@+id/isOverdueClear"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.15"
+            android:text="@string/clear" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/divider81"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/line11" />
+
+    <LinearLayout
+        android:id="@+id/line12"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        app:layout_constraintHeight_percent="0.05"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider81">
+
+        <TextView
+            android:id="@+id/printTimeText"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginTop="5dp"
+            android:layout_weight="0.26"
+            android:gravity="start|center"
+            android:paddingStart="@dimen/drawer_margin"
+            android:paddingEnd="@dimen/drawer_margin"
+            android:text="@string/printTime"
+            android:textSize="@dimen/drawer_text_size" />
+
+        <TextView
+            android:id="@+id/printTime"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginTop="5dp"
+            android:layout_weight="0.59"
+            android:background="@drawable/shape_rectangle_black"
+            android:drawableEnd="@drawable/ic_calendar"
+            android:gravity="start|center"
+            android:hint="@string/choice_date"
+            android:paddingStart="@dimen/drawer_margin"
+            android:paddingEnd="@dimen/drawer_margin"
+            android:textSize="@dimen/drawer_text_size" />
+
+        <Button
+            android:id="@+id/printTimeClear"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginTop="5dp"
+            android:layout_weight="0.15"
+            android:gravity="center"
+            android:padding="0dp"
+            android:text="@string/reset" />
+    </LinearLayout>
 
     <Button
         android:id="@+id/clear"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        app:layout_constraintWidth_percent="0.5"
         android:background="@drawable/shape_rectangle_grey"
         android:text="@string/reset"
         android:textSize="@dimen/drawer_text_size"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHeight_percent="@dimen/view_height_percent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintWidth_percent="0.5" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/yes"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        app:layout_constraintWidth_percent="0.5"
         android:background="@drawable/shape_rectangle_blue"
         android:text="@string/yes"
         android:textSize="@dimen/drawer_text_size"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHeight_percent="@dimen/view_height_percent"
-        app:layout_constraintStart_toEndOf="@+id/clear"
-        app:layout_constraintWidth_percent="0.5" />
+        app:layout_constraintStart_toEndOf="@+id/clear" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

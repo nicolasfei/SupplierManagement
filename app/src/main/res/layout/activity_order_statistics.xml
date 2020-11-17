@@ -8,13 +8,13 @@
     tools:openDrawer="end">
 
     <include
-        layout="@layout/new_order_main"
+        layout="@layout/order_statistics_show"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
     <include
-        layout="@layout/new_order_screen"
-        android:layout_width="650dp"
+        layout="@layout/order_statistics_query"
+        android:layout_width="500dp"
         android:layout_height="match_parent"
         android:layout_gravity="end" />
 </androidx.drawerlayout.widget.DrawerLayout>

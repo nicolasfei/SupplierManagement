@@ -433,6 +433,14 @@ public class NewOrderViewModel extends ViewModel {
             parameters.put("isUrgent", queryCondition.getIsUrgent());
         if (!TextUtils.isEmpty(queryCondition.getOrderID()))
             parameters.put("id", queryCondition.getOrderID());
+        if (!TextUtils.isEmpty(queryCondition.getOrderType()))
+            parameters.put("orderType", queryCondition.getOrderType());
+
+        if (!TextUtils.isEmpty(queryCondition.getBranchID()))
+            parameters.put("branchId", queryCondition.getBranchID());
+        if (!TextUtils.isEmpty(queryCondition.getValid()))
+            parameters.put("inValid", queryCondition.getValid());
+
         String newDate = Tool.endDateAddOneDay(queryCondition.getCreateTime());
         parameters.put("createTime", newDate);
 
@@ -515,17 +523,32 @@ public class NewOrderViewModel extends ViewModel {
      * 按订单状态排序，订单状态相同时按订单打印时间排序
      */
     private void sortForInStateAndPrintTime() {
-        //供应商未接单
-        Comparator<OrderInformation> byInState = Comparator.comparing(OrderInformation::getInState);
-        //加急订单
-        Comparator<OrderInformation> byIsUrgent = Comparator.comparing(OrderInformation::getIsUrgent);
-        //先按货号排序
-        Comparator<OrderInformation> byGoodsID = Comparator.comparing(OrderInformation::getGoodsId);
-        //库房排序
-        Comparator<OrderInformation> byStoreRoom = Comparator.comparing(OrderInformation::getStoreRoomName);
-        //发货数量排序--升序
-        Comparator<OrderInformation> bySendAmount = Comparator.comparing(OrderInformation::getSendAmount);
-        orderList.sort(byInState.thenComparing(byGoodsID).thenComparing(byStoreRoom).thenComparing(bySendAmount).thenComparing(byIsUrgent));
+        //已打印订单按打印时间来排序
+        if (this.queryCondition.getIsPrint().equals(PrintStatus.PRINT)) {
+            //打印时间
+            Comparator<OrderInformation> byPrint = Comparator.comparing(OrderInformation::getPrintTime);
+            //加急订单
+            Comparator<OrderInformation> byIsUrgent = Comparator.comparing(OrderInformation::getIsUrgent);
+            //先按货号排序
+            Comparator<OrderInformation> byGoodsID = Comparator.comparing(OrderInformation::getGoodsId);
+            //库房排序
+            Comparator<OrderInformation> byStoreRoom = Comparator.comparing(OrderInformation::getStoreRoomName);
+            //发货数量排序--升序
+            Comparator<OrderInformation> bySendAmount = Comparator.comparing(OrderInformation::getSendAmount);
+            orderList.sort(byPrint.thenComparing(byGoodsID).thenComparing(byStoreRoom).thenComparing(bySendAmount).thenComparing(byIsUrgent));
+        } else {
+            //供应商未接单
+            Comparator<OrderInformation> byInState = Comparator.comparing(OrderInformation::getInState);
+            //加急订单
+            Comparator<OrderInformation> byIsUrgent = Comparator.comparing(OrderInformation::getIsUrgent);
+            //先按货号排序
+            Comparator<OrderInformation> byGoodsID = Comparator.comparing(OrderInformation::getGoodsId);
+            //库房排序
+            Comparator<OrderInformation> byStoreRoom = Comparator.comparing(OrderInformation::getStoreRoomName);
+            //发货数量排序--升序
+            Comparator<OrderInformation> bySendAmount = Comparator.comparing(OrderInformation::getSendAmount);
+            orderList.sort(byInState.thenComparing(byGoodsID).thenComparing(byStoreRoom).thenComparing(bySendAmount).thenComparing(byIsUrgent));
+        }
     }
 
     /**
@@ -767,18 +790,36 @@ public class NewOrderViewModel extends ViewModel {
                                 msg.what = 1;       //表示无订单
                                 orderQueryResult.setValue(new OperateResult(new OperateInUserView(msg)));
                             } else {
-                                for (int i = 0; i < array.length(); i++) {
-                                    //添加订单
-                                    OrderInformation item = new OrderInformation(array.getString(i));
-                                    item.canSelect = true;                      //设置每个项可否被勾选
-                                    if (item.inState.getStatusID() < OrderStatus.ROOM_RECEIVE_ID) {
-                                        item.select = isOrdersAllSelect;            //设置每个项的勾选状态
-                                    } else {
-                                        item.select = false;
+                                if (queryCondition.getIsPrint().equals(PrintStatus.PRINT) && !TextUtils.isEmpty(queryCondition.getPrintTime())) {
+                                    for (int i = 0; i < array.length(); i++) {
+                                        //添加订单
+                                        OrderInformation item = new OrderInformation(array.getString(i));
+                                        item.canSelect = true;                      //设置每个项可否被勾选
+                                        if (item.inState.getStatusID() < OrderStatus.ROOM_RECEIVE_ID) {
+                                            item.select = isOrdersAllSelect;            //设置每个项的勾选状态
+                                        } else {
+                                            item.select = false;
+                                        }
+                                        if (queryCondition.getPrintTime().equals(item.printTime)) {
+                                            orderList.add(item);
+                                            statisticsOrderInformation(item);           //统计订单数据到统计list
+                                            addOrderDistributionQuery(item);            //统计订单配送顺序list
+                                        }
                                     }
-                                    orderList.add(item);
-                                    statisticsOrderInformation(item);           //统计订单数据到统计list
-                                    addOrderDistributionQuery(item);            //统计订单配送顺序list
+                                } else {
+                                    for (int i = 0; i < array.length(); i++) {
+                                        //添加订单
+                                        OrderInformation item = new OrderInformation(array.getString(i));
+                                        item.canSelect = true;                      //设置每个项可否被勾选
+                                        if (item.inState.getStatusID() < OrderStatus.ROOM_RECEIVE_ID) {
+                                            item.select = isOrdersAllSelect;            //设置每个项的勾选状态
+                                        } else {
+                                            item.select = false;
+                                        }
+                                        orderList.add(item);
+                                        statisticsOrderInformation(item);           //统计订单数据到统计list
+                                        addOrderDistributionQuery(item);            //统计订单配送顺序list
+                                    }
                                 }
                                 //排序，按订单状态排序，订单状态相同时按订单打印时间排序
                                 sortForInStateAndPrintTime();
@@ -1127,7 +1168,7 @@ public class NewOrderViewModel extends ViewModel {
      * @return 总订单数
      */
     int getOrderTotal() {
-        return this.pageCount;
+        return this.orderList.size();
     }
 
     /**

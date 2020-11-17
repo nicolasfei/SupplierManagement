@@ -16,11 +16,13 @@ public class CommonCommand extends Command {
         CommonInterface branchQuery = new BranchQuery();
         CommonInterface storehouseQuery = new StorehouseQuery();
         CommonInterface versionCheck = new VersionCheck();
+        CommonInterface noticeCheck = new NoticeCheck();
 
         goodsClassQuery.setNextHandler(branchQuery);
         branchQuery.setNextHandler(storehouseQuery);
         storehouseQuery.setNextHandler(versionCheck);
-        versionCheck.setNextHandler(null);
+        versionCheck.setNextHandler(noticeCheck);
+        noticeCheck.setNextHandler(null);
 
         super.firstNode = goodsClassQuery;
     }

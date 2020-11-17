@@ -68,6 +68,9 @@ public class OrderGoodsCountAdapter extends BaseAdapter {
             num.setText(String.valueOf(property.num));
             holder.property.addView(item);
         }
+        //合计
+        String totalV = mContext.getString(R.string.total) + mContext.getString(R.string.colon) + "<font color=\"black\">" + count.getTotal() + "</font>";
+        holder.total.setText(Html.fromHtml(totalV, Html.FROM_HTML_MODE_COMPACT));
         return convertView;
     }
 
@@ -75,11 +78,13 @@ public class OrderGoodsCountAdapter extends BaseAdapter {
         private TextView goodsID;
         private TextView oldGoodsID;
         private LinearLayout property;
+        private TextView total;
 
         private ViewHolder(View root) {
             this.goodsID = root.findViewById(R.id.goodsID);
             this.oldGoodsID = root.findViewById(R.id.oldGoodsID);
             this.property = root.findViewById(R.id.property);
+            this.total = root.findViewById(R.id.total);
         }
     }
 }

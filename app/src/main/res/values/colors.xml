@@ -9,4 +9,8 @@
     <color name="transparent">#00000000</color>
     <color name="list_background">#FFFFFF</color>
     <color name="ic_launcher_background">#FFFFFF</color>
+
+    <color name="red">#FFFF0000</color>
+    <color name="yellow">#FFFFFF00</color>
+    <color name="green">#FF00FF00</color>
 </resources>

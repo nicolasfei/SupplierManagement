@@ -366,6 +366,10 @@ public class OrderInformation implements Parcelable {
         return inState.getStatusID();
     }
 
+    public String getPrintTime(){
+        return printTime;
+    }
+
     public String getIsUrgent() {
         return isUrgent;
     }

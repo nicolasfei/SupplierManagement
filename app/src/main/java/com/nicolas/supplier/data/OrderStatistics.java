@@ -17,6 +17,14 @@ public class OrderStatistics implements Parcelable {
         this.properties = new ArrayList<>();
     }
 
+    public int getTotal() {
+        int total = 0;
+        for (OrderStatisticsProperty property : properties) {
+            total += property.num;
+        }
+        return total;
+    }
+
     protected OrderStatistics(Parcel in) {
         goodsID = in.readString();
         oldGoodsID = in.readString();

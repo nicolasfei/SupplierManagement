@@ -2,6 +2,7 @@ package com.nicolas.supplier.advertisement;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -74,6 +75,20 @@ public class NoticeFragment extends Fragment {
         });
         //本地数据初始化
         noticeViewModel.advertNoticeLocalInit();
+
+        //监听远程广告
+        noticeViewModel.getNoticeGetResult().observe(requireActivity(), new Observer<OperateResult>() {
+            @Override
+            public void onChanged(OperateResult operateResult) {
+                if (operateResult.getSuccess() != null) {
+                    Message msg = operateResult.getSuccess().getMessage();
+                    noticeTextView.setText((String) msg.obj);
+                    noticeTextView.setSelected(true);
+                }
+            }
+        });
+        //查询远程通知
+        noticeViewModel.queryNotice();
     }
 
     @Override

@@ -8,6 +8,7 @@ public abstract class AbstractInterface {
 
     private static final String TAG = "AbstractInterface";
     public static final String COMMAND_URL = "https://supplier.scdawn.com/";
+//    public static final String COMMAND_URL = "http://192.168.101.23:5000/";
 
     private AbstractInterface nextHandler;
 
