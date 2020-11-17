@@ -20,7 +20,7 @@
     <View
         android:id="@+id/divider"
         android:layout_width="0dp"
-        android:layout_height="2dp"
+        android:layout_height="1dp"
         android:background="?android:attr/listDivider"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -28,23 +28,12 @@
 
     <TextView
         android:id="@+id/detailed"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginStart="16dp"
-        android:gravity="start|center"
-        android:text="@string/detailed"
+        android:gravity="center"
         app:layout_constraintHeight_percent="0.03"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider"
-        app:layout_constraintWidth_percent="0.8" />
-
-    <View
-        android:id="@+id/divider01"
-        android:layout_width="1dp"
-        android:layout_height="0dp"
-        android:background="?android:attr/listDivider"
-        app:layout_constraintHeight_percent="0.03"
-        app:layout_constraintStart_toEndOf="@+id/detailed"
         app:layout_constraintTop_toBottomOf="@+id/divider" />
 
     <LinearLayout
@@ -55,6 +44,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/detailed">
+
+        <TextView
+            android:id="@+id/statisticsTotal"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:gravity="start|center"
+            android:text="@string/statisticsTotal"
+            android:paddingStart="16dp"
+            android:paddingEnd="0dp"
+            android:textSize="32sp" />
 
         <TextView
             android:id="@+id/send"
@@ -105,7 +104,7 @@
     <View
         android:id="@+id/divider1"
         android:layout_width="0dp"
-        android:layout_height="2dp"
+        android:layout_height="1dp"
         android:background="?android:attr/listDivider"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

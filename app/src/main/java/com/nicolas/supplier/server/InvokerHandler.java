@@ -135,4 +135,19 @@ public class InvokerHandler {
         vo.parameters = parameters;
         return vo;
     }
+
+    /**
+     * 获取命令---查询货号类型--货号类型(normal正常/attempt试卖/replace代卖/special特殊需求)
+     * @return 货号类型命令
+     */
+    public CommandVo getGoodsTypeCommand() {
+        CommandVo vo = new CommandVo();
+        vo.typeEnum = CommandTypeEnum.COMMAND_COMMON;
+        vo.url = CommonInterface.GoodsType;
+        vo.contentType = HttpHandler.ContentType_APP;
+        vo.requestMode = HttpHandler.RequestMode_GET;
+        Map<String, String> parameters = new HashMap<>();
+        vo.parameters = parameters;
+        return vo;
+    }
 }

@@ -1,6 +1,7 @@
 package com.nicolas.supplier.supplier;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.nicolas.componentlibrary.multileveltree.TreeNode;
 import com.nicolas.supplier.data.BranchInformation;
@@ -14,7 +15,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -30,6 +33,7 @@ public class SupplierKeeper {
     private TreeNode storehouseTree;        //库房树
     private List<BranchInformation> branchList = new ArrayList<>();     //分店信息
     private List<String> branchCodeList = new ArrayList<>();            //分店编号信息
+    private HashMap<String, String> goodsTypeMap = new HashMap<>();     //货号类型
 
     private InformationObserveTask timerTask = new InformationObserveTask();    //信息定时查询任务
     private boolean timerTaskIsStart = false;
@@ -81,6 +85,25 @@ public class SupplierKeeper {
         for (BranchInformation b : branchList) {
             if (b.fId.equals(fId)) {
                 return b.id;
+            }
+        }
+        return "";
+    }
+
+    public String[] getGoodsTypeShow() {
+        String[] goodsType = new String[this.goodsTypeMap.size()];
+        int i = 0;
+        for (Map.Entry<String, String> set : this.goodsTypeMap.entrySet()) {
+            goodsType[i] = set.getValue();
+            i++;
+        }
+        return goodsType;
+    }
+
+    public String getGoodsTypeRequest(String value) {
+        for (Map.Entry<String, String> set : this.goodsTypeMap.entrySet()) {
+            if (value.equals(set.getValue())) {
+                return set.getKey();
             }
         }
         return "";
@@ -187,6 +210,27 @@ public class SupplierKeeper {
                                 branchCodeList.clear();
                                 for (BranchInformation branch : branchInformationList) {
                                     branchCodeList.add(branch.fId);
+                                }
+                            }
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    //查询货号类型
+                    CommandVo goodsTypeVo = InvokerHandler.getInstance().getGoodsTypeCommand();
+                    String goodsType = Invoker.getInstance().synchronousExec(goodsTypeVo);
+                    try {
+                        Log.d("----------------->", "run: "+goodsType);
+                        JSONObject object = new JSONObject(goodsType);
+                        if (object.getBoolean("success")) {
+                            if (object.has("kvData")) {
+                                synchronized (SupplierKeeper.class) {
+                                    JSONArray array = new JSONArray(object.getString("kvData"));
+                                    for (int i = 0; i < array.length(); i++) {
+                                        JSONObject o = new JSONObject(array.getString(i));
+                                        goodsTypeMap.put(o.getString("Key"), o.getString("Value"));
+                                    }
                                 }
                             }
                         }

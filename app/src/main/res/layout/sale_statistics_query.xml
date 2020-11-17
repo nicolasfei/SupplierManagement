@@ -2,77 +2,25 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:background="@android:color/white"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@android:color/white">
 
     <TextView
-    android:id="@+id/startTimeText"
-    android:layout_width="0dp"
-    android:layout_height="0dp"
-    android:gravity="start|center"
-    android:paddingStart="@dimen/drawer_margin"
-    android:paddingEnd="@dimen/drawer_margin"
-    android:text="@string/startTime"
-    android:textSize="@dimen/drawer_text_size"
-    app:layout_constraintHeight_percent="0.05"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent"
-    app:layout_constraintWidth_percent="0.27" />
-
-    <TextView
-        android:id="@+id/startTime"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="@drawable/shape_rectangle_black"
-        android:drawableEnd="@drawable/ic_calendar"
-        android:gravity="start|center"
-        android:hint="@string/choice_date"
-        android:paddingStart="@dimen/drawer_margin"
-        android:paddingEnd="@dimen/drawer_margin"
-        android:textSize="@dimen/text_size"
-        app:layout_constraintHeight_percent="@dimen/view_height_percent"
-        app:layout_constraintStart_toEndOf="@+id/startTimeText"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_percent="0.58" />
-
-    <Button
-        android:id="@+id/startTimeClear"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:gravity="center"
-        android:padding="0dp"
-        android:text="@string/reset"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="0.05"
-        app:layout_constraintStart_toEndOf="@+id/startTime"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_percent="0.15" />
-
-    <View
-        android:id="@+id/divider0"
-        android:layout_width="0dp"
-        android:layout_height="1dp"
-        android:background="?android:attr/listDivider"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/startTime" />
-
-    <TextView
-        android:id="@+id/endTimeText"
+        android:id="@+id/queryTimeShow"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:gravity="start|center"
         android:paddingStart="@dimen/drawer_margin"
         android:paddingEnd="@dimen/drawer_margin"
-        android:text="@string/endTime"
+        android:text="@string/queryTime"
         android:textSize="@dimen/drawer_text_size"
         app:layout_constraintHeight_percent="0.05"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider0"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_percent="0.27" />
 
     <TextView
-        android:id="@+id/endTime"
+        android:id="@+id/queryTime"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@drawable/shape_rectangle_black"
@@ -83,12 +31,12 @@
         android:paddingEnd="@dimen/drawer_margin"
         android:textSize="@dimen/text_size"
         app:layout_constraintHeight_percent="@dimen/view_height_percent"
-        app:layout_constraintStart_toEndOf="@+id/endTimeText"
-        app:layout_constraintTop_toBottomOf="@+id/divider0"
+        app:layout_constraintStart_toEndOf="@+id/queryTimeShow"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_percent="0.58" />
 
     <Button
-        android:id="@+id/endTimeClear"
+        android:id="@+id/queryTimeClear"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:gravity="center"
@@ -96,8 +44,8 @@
         android:text="@string/reset"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="0.05"
-        app:layout_constraintStart_toEndOf="@+id/endTime"
-        app:layout_constraintTop_toBottomOf="@+id/divider0"
+        app:layout_constraintStart_toEndOf="@+id/queryTime"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_percent="0.15" />
 
     <View
@@ -107,7 +55,7 @@
         android:background="?android:attr/listDivider"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/endTime" />
+        app:layout_constraintTop_toBottomOf="@+id/queryTime" />
 
     <TextView
         android:id="@+id/newGoodsCode"
@@ -145,22 +93,31 @@
         app:layout_constraintTop_toBottomOf="@+id/newGoodsCode" />
 
     <TextView
-        android:id="@+id/oldGoodsCode"
+        android:id="@+id/goodsType"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:drawableEnd="@drawable/ic_sr_blue"
         android:gravity="start|center"
         android:paddingStart="@dimen/drawer_margin"
         android:paddingEnd="0dp"
-        android:text="@string/oldGoodsID"
+        android:text="@string/goodsType"
         android:textSize="@dimen/text_size"
         app:layout_constraintHeight_percent="@dimen/view_height_percent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/divider2"
         app:layout_constraintWidth_percent="0.85" />
 
+    <View
+        android:id="@+id/divider3"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/goodsType" />
+
     <Button
-        android:id="@+id/oldGoodsCodeClear"
+        android:id="@+id/goodsTypeClear"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:text="@string/clear"
@@ -181,11 +138,11 @@
         app:layout_constraintWidth_percent="0.5" />
 
     <Button
-        android:id="@+id/submit"
+        android:id="@+id/query"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:text="@string/query"
         android:background="@drawable/shape_rectangle_blue"
+        android:text="@string/query"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="@dimen/view_height_percent"

@@ -15,14 +15,22 @@ public class CommonCommand extends Command {
         CommonInterface goodsClassQuery = new GoodsClassQuery();
         CommonInterface branchQuery = new BranchQuery();
         CommonInterface storehouseQuery = new StorehouseQuery();
+        CommonInterface goodType = new GoodsType();
+
         CommonInterface versionCheck = new VersionCheck();
         CommonInterface noticeCheck = new NoticeCheck();
 
+        CommonInterface statisticsGoodsId = new StatisticsGoodsId();
+        CommonInterface statisticsGoodsIdTotal = new StatisticsGoodsIdTotal();
+
         goodsClassQuery.setNextHandler(branchQuery);
         branchQuery.setNextHandler(storehouseQuery);
-        storehouseQuery.setNextHandler(versionCheck);
+        storehouseQuery.setNextHandler(goodType);
+        goodType.setNextHandler(versionCheck);
         versionCheck.setNextHandler(noticeCheck);
-        noticeCheck.setNextHandler(null);
+        noticeCheck.setNextHandler(statisticsGoodsId);
+        statisticsGoodsId.setNextHandler(statisticsGoodsIdTotal);
+        statisticsGoodsIdTotal.setNextHandler(null);
 
         super.firstNode = goodsClassQuery;
     }

@@ -464,4 +464,17 @@
     <string name="printTime">订单打印时间</string>
     <string name="no_order">无订单</string>
     <string name="isValidStatus">订单是否作废</string>
+    <string name="goodsTotal">总货号数</string>
+    <string name="sendGoodsCount">已发货数量</string>
+    <string name="saleGoodsCount">已销售数量</string>
+    <string name="backGoodsCount">已返货数量</string>
+    <string name="surplusGoodsCount">剩余库存</string>
+    <string name="send">已发货</string>
+    <string name="sale">已销售</string>
+    <string name="back">已返货</string>
+    <string name="purchase">实际进货</string>
+    <string name="surplus">实际库存</string>
+    <string name="nav_goods_statistics">销售统计</string>
+    <string name="goodsStatistics">销售统计</string>
+    <string name="statisticsTotal">统计汇总</string>
 </resources>

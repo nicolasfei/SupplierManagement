@@ -14,7 +14,7 @@
 
     <include
         layout="@layout/sale_statistics_query"
-        android:layout_width="500dp"
+        android:layout_width="600dp"
         android:layout_height="match_parent"
         android:layout_gravity="end" />
 </androidx.drawerlayout.widget.DrawerLayout>

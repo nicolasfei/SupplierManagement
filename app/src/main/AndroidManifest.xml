@@ -150,6 +150,19 @@
         </activity>
 
         <activity
+            android:name="com.nicolas.supplier.ui.home.salestatistics.SaleStatisticsActivity"
+            android:label="@string/goodsStatistics"
+            android:theme="@style/AppTheme"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan">
+            <intent-filter>
+                <action android:name="android.intent.action.SaleStatisticsActivity" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <activity
             android:name="com.nicolas.supplier.ui.home.returngoods.ReturnGoodsQueryActivity"
             android:label="@string/returnGoodsQuery"
             android:screenOrientation="portrait"
