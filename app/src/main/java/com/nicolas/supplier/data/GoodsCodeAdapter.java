@@ -134,8 +134,8 @@ public class GoodsCodeAdapter extends BaseAdapter {
         String originalPriceValue = mContext.getString(R.string.originalPrice) + mContext.getString(R.string.colon) + "<font color=\"green\"><big>" + mContext.getString(R.string.money) + goodsCode.originalPrice + "</big></font>";
         holder.originalPrice.setText(Html.fromHtml(originalPriceValue, Html.FROM_HTML_MODE_COMPACT));
 
-        String orderPriceValue = mContext.getString(R.string.orderPrice) + mContext.getString(R.string.colon) + "<font color=\"blue\"><big>" + mContext.getString(R.string.money) + goodsCode.orderPrice + "</big></font>";
-        holder.orderPrice.setText(Html.fromHtml(orderPriceValue, Html.FROM_HTML_MODE_COMPACT));
+//        String orderPriceValue = mContext.getString(R.string.orderPrice) + mContext.getString(R.string.colon) + "<font color=\"blue\"><big>" + mContext.getString(R.string.money) + goodsCode.orderPrice + "</big></font>";
+//        holder.orderPrice.setText(Html.fromHtml(orderPriceValue, Html.FROM_HTML_MODE_COMPACT));
 
         String deliveryDateValue = mContext.getString(R.string.deliveryDays) + mContext.getString(R.string.colon) + "<font color=\"red\"><big>" + goodsCode.deliveryDate + "</big></font>";
         holder.deliveryDate.setText(Html.fromHtml(deliveryDateValue, Html.FROM_HTML_MODE_COMPACT));
@@ -218,7 +218,7 @@ public class GoodsCodeAdapter extends BaseAdapter {
 
 //        private TextView inPrice;           //进价
         private TextView originalPrice;     //原进价
-        private TextView orderPrice;        //订货价
+//        private TextView orderPrice;        //订货价
         private TextView deliveryDate;      //交货天数
 
         private TextView goodsType;         //货号类型
@@ -238,7 +238,7 @@ public class GoodsCodeAdapter extends BaseAdapter {
             this.goodsId = root.findViewById(R.id.goodsId);
 //            this.inPrice = root.findViewById(R.id.inPrice);
             this.originalPrice = root.findViewById(R.id.originalPrice);
-            this.orderPrice = root.findViewById(R.id.orderPrice);
+//            this.orderPrice = root.findViewById(R.id.orderPrice);
             this.deliveryDate = root.findViewById(R.id.deliveryDate);
             this.goodsType = root.findViewById(R.id.goodsType);
             this.isStock = root.findViewById(R.id.isStock);

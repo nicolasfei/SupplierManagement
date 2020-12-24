@@ -50,6 +50,7 @@
             android:label="@string/app_name"
             android:theme="@style/AppTheme"
             android:screenOrientation="portrait"
+            android:launchMode="singleTask"
             android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -63,6 +64,7 @@
             android:label="@string/app_version_check"
             android:theme="@style/AppTheme"
             android:screenOrientation="portrait"
+            android:launchMode="singleTask"
             android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.VersionCheckActivity" />
@@ -76,6 +78,7 @@
             android:label="@string/app_main"
             android:theme="@style/AppTheme"
             android:screenOrientation="portrait"
+            android:launchMode="singleTask"
             android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MainActivity" />
@@ -89,6 +92,7 @@
             android:label="@string/app_login"
             android:theme="@style/AppThemeFull"
             android:screenOrientation="portrait"
+            android:launchMode="singleTask"
             android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.LoginActivity" />
@@ -102,6 +106,7 @@
             android:label="@string/app_new_order"
             android:theme="@style/AppTheme"
             android:screenOrientation="portrait"
+            android:launchMode="singleTask"
             android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.NewOrderActivity" />
@@ -115,6 +120,7 @@
             android:label="@string/order_printer"
             android:theme="@style/AppTheme"
             android:screenOrientation="portrait"
+            android:launchMode="singleTask"
             android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.OrderPrintActivity" />
@@ -128,6 +134,7 @@
             android:label="@string/app_order_statistics"
             android:theme="@style/AppTheme"
             android:screenOrientation="portrait"
+            android:launchMode="singleTask"
             android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.OrderStatisticsActivity" />
@@ -141,6 +148,7 @@
             android:label="@string/goodsQuery"
             android:theme="@style/AppTheme"
             android:screenOrientation="portrait"
+            android:launchMode="singleTask"
             android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.GoodsQueryActivity" />
@@ -154,6 +162,7 @@
             android:label="@string/goodsStatistics"
             android:theme="@style/AppTheme"
             android:screenOrientation="portrait"
+            android:launchMode="singleTask"
             android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.SaleStatisticsActivity" />
@@ -167,6 +176,7 @@
             android:label="@string/returnGoodsQuery"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
+            android:launchMode="singleTask"
             android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.ReturnGoodsQueryActivity" />
@@ -180,6 +190,7 @@
             android:label="@string/scoreRecord"
             android:theme="@style/AppTheme"
             android:screenOrientation="portrait"
+            android:launchMode="singleTask"
             android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.ScoreRecordActivity" />
@@ -193,6 +204,7 @@
             android:label="@string/scoreExplain"
             android:theme="@style/AppTheme"
             android:screenOrientation="portrait"
+            android:launchMode="singleTask"
             android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.ScoreClassActivity" />
@@ -206,6 +218,7 @@
             android:label="@string/myInformation"
             android:theme="@style/AppTheme"
             android:screenOrientation="portrait"
+            android:launchMode="singleTask"
             android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.UserActivity" />
@@ -219,6 +232,7 @@
             android:label="@string/loginRecord"
             android:theme="@style/AppTheme"
             android:screenOrientation="portrait"
+            android:launchMode="singleTask"
             android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.LoginRecordActivity" />
@@ -232,6 +246,7 @@
             android:label="@string/nav_about"
             android:theme="@style/AppTheme"
             android:screenOrientation="portrait"
+            android:launchMode="singleTask"
             android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.LoginRecordActivity" />
@@ -244,6 +259,7 @@
             android:name="com.nicolas.supplier.ui.my.user.ModifyPWActivity"
             android:label="@string/app_modify_pw"
             android:theme="@style/AppTheme"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan">
             <intent-filter>
@@ -258,6 +274,7 @@
             android:label="@string/app_printer"
             android:theme="@style/AppTheme"
             android:screenOrientation="portrait"
+            android:launchMode="singleTask"
             android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.PrinterActivity" />

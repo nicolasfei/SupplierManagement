@@ -151,13 +151,13 @@ public class OrderPrintActivity extends BaseActivity implements View.OnClickList
      * 打印订单
      */
     private void printOrder() {
-        if (PrinterManager.getInstance().isLinkedPrinter()) {
+//        if (PrinterManager.getInstance().isLinkedPrinter()) {
             super.showProgressDialog(getString(R.string.printeing));
             this.viewModel.printOrderUseBlue();
-        } else {
-            BruceDialog.showAlertDialog(OrderPrintActivity.this, getString(R.string.failed),
-                    getString(R.string.printer_no_link), null);
-        }
+//        } else {
+//            BruceDialog.showAlertDialog(OrderPrintActivity.this, getString(R.string.failed),
+//                    getString(R.string.printer_no_link), null);
+//        }
     }
 
     @Override

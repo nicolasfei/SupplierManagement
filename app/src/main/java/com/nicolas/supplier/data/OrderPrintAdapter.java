@@ -50,7 +50,7 @@ public class OrderPrintAdapter extends BaseAdapter {
 
         OrderInformation order = this.orders.get(position);
         //编号
-        holder.w0.setText(Html.fromHtml(context.getString(R.string.codeID + 1) + context.getString(R.string.colon) + position, Html.FROM_HTML_MODE_COMPACT));
+        holder.w0.setText(Html.fromHtml(context.getString(R.string.codeID) + context.getString(R.string.colon) + (position + 1), Html.FROM_HTML_MODE_COMPACT));
 
         //库房，单属性
         String w1Value = context.getString(R.string.print_warehouse) + context.getString(R.string.colon) + "<font color=\"black\">" + order.storeRoomName + "</font>" + "<br>" +

@@ -117,7 +117,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        Log.d("MainActivity", "onDestroy: ");
         //关闭定时查询任务
         SupplierKeeper.getInstance().cancelTimerTask();
         //打印机模块注销
@@ -126,6 +125,5 @@ public class MainActivity extends AppCompatActivity {
         ImageLoadClass.getInstance().release();
         super.onDestroy();
         AppActivityManager.getInstance().removeActivity(this);
-        Log.d("MainActivity", "onDestroy: finish！");
     }
 }

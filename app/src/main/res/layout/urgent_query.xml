@@ -87,6 +87,16 @@
             android:orientation="horizontal">
 
             <RadioButton
+                android:id="@+id/orderClassChip0"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:visibility="gone"
+                android:gravity="start|center"
+                android:text="@string/order_urgent"
+                android:textSize="@dimen/drawer_text_size" />
+
+            <RadioButton
                 android:id="@+id/orderClassChip1"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -124,70 +134,6 @@
             android:text="@string/clear" />
     </LinearLayout>
 
-    <View
-        android:id="@+id/divider1111"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="?android:attr/listDivider"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/line2" />
-    <LinearLayout
-        android:id="@+id/line321"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:orientation="horizontal"
-        app:layout_constraintHeight_percent="0.05"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider1111">
-
-        <TextView
-            android:id="@+id/urgent"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.26"
-            android:gravity="start|center"
-            android:paddingStart="@dimen/drawer_margin"
-            android:paddingEnd="0dp"
-            android:text="@string/order_is_urgent"
-            android:textSize="@dimen/drawer_text_size" />
-
-        <RadioGroup
-            android:id="@+id/urgentChip"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.59"
-            android:orientation="horizontal">
-
-            <RadioButton
-                android:id="@+id/urgentChip0"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:visibility="visible"
-                android:gravity="start|center"
-                android:text="@string/order_urgent"
-                android:textSize="@dimen/drawer_text_size" />
-
-            <RadioButton
-                android:id="@+id/urgentChip1"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="start|center"
-                android:text="@string/order_not_urgent"
-                android:textSize="@dimen/drawer_text_size" />
-        </RadioGroup>
-
-        <Button
-            android:id="@+id/urgentReset"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginTop="5dp"
-            android:layout_weight="0.15"
-            android:gravity="center"
-            android:padding="0dp"
-            android:text="@string/reset" />
-    </LinearLayout>
 
     <View
         android:id="@+id/divider1"
@@ -195,7 +141,7 @@
         android:layout_height="1dp"
         android:background="?android:attr/listDivider"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/line321" />
+        app:layout_constraintTop_toBottomOf="@+id/line2" />
 
     <LinearLayout
         android:id="@+id/line3"
@@ -565,67 +511,6 @@
             android:layout_height="match_parent"
             android:layout_weight="0.15"
             android:text="@string/clear" />
-
-    </LinearLayout>
-
-    <View
-        android:id="@+id/divider71"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="?android:attr/listDivider"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/line10" />
-
-    <LinearLayout
-        android:id="@+id/line11"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:orientation="horizontal"
-        app:layout_constraintHeight_percent="0.05"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider71">
-
-        <TextView
-            android:id="@+id/isOverdue"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.26"
-            android:gravity="start|center"
-            android:paddingStart="@dimen/drawer_margin"
-            android:paddingEnd="@dimen/drawer_margin"
-            android:text="@string/OrderOverdue"
-            android:textSize="@dimen/drawer_text_size" />
-
-        <RadioGroup
-            android:id="@+id/isOverdueChip"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.59"
-            android:orientation="horizontal">
-
-            <RadioButton
-                android:id="@+id/isOverdue1"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="@string/overdueYes"
-                android:textSize="@dimen/drawer_text_size" />
-
-            <RadioButton
-                android:id="@+id/isOverdue2"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="@string/overdueNo"
-                android:textSize="@dimen/drawer_text_size" />
-        </RadioGroup>
-
-        <Button
-            android:id="@+id/isOverdueClear"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.15"
-            android:text="@string/clear" />
     </LinearLayout>
 
     <View
@@ -634,7 +519,7 @@
         android:layout_height="1dp"
         android:background="?android:attr/listDivider"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/line11" />
+        app:layout_constraintTop_toBottomOf="@+id/line10" />
 
     <LinearLayout
         android:id="@+id/line12"
@@ -686,24 +571,24 @@
         android:id="@+id/clear"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintWidth_percent="0.5"
         android:background="@drawable/shape_rectangle_grey"
         android:text="@string/reset"
         android:textSize="@dimen/drawer_text_size"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHeight_percent="@dimen/view_height_percent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintWidth_percent="0.5" />
 
     <Button
         android:id="@+id/yes"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintWidth_percent="0.5"
         android:background="@drawable/shape_rectangle_blue"
         android:text="@string/yes"
         android:textSize="@dimen/drawer_text_size"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHeight_percent="@dimen/view_height_percent"
-        app:layout_constraintStart_toEndOf="@+id/clear" />
+        app:layout_constraintStart_toEndOf="@+id/clear"
+        app:layout_constraintWidth_percent="0.5" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

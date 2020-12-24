@@ -80,6 +80,7 @@ public class OrderInformation implements Parcelable {
 
     public String id;               //ID
     public String gId;              //货号ID
+    public String sId;              //供应商编号
     public String fId;              //分店ID
     public String supplierId;       //供货商主键编号
     public String supplierName;     //供货商名称
@@ -110,6 +111,7 @@ public class OrderInformation implements Parcelable {
     public String sendId;           //"",
     public String remark;           //备注"",
     public String valid;            //"启用",
+    public String isCheck;          //是否需要质检
     public String isUrgent;         //加急(加急/普通)
     public String img;              //图片url
     public List<OrderPropertyRecord> propertyRecords;
@@ -152,6 +154,7 @@ public class OrderInformation implements Parcelable {
         this.valid = "正常";            //"启用",
         this.img = "123456";              //图片
         this.isUrgent = "普通";
+        this.isCheck="";
         this.propertyRecords = new ArrayList<>();
         for (int i = 0; i < 70; i++) {
             this.propertyRecords.add(new OrderPropertyRecord());
@@ -164,6 +167,7 @@ public class OrderInformation implements Parcelable {
             JSONObject object = new JSONObject(json);
             this.id = object.getString("id");
             this.gId = object.getString("gId");
+            this.sId = object.getString("sId");
             this.supplierId = object.getString("supplierId");
             this.supplierName = object.getString("supplierName");
             this.goodsClassId = object.getString("goodsClassId");
@@ -199,6 +203,9 @@ public class OrderInformation implements Parcelable {
                     this.printTime = printTime.substring(0, printTime.length() - 3);        //默认去除秒，只显示到分
                 }
             }
+            if (object.has("isCheck")){
+                this.isCheck = object.getString("isCheck");
+            }
             this.inState = new OrderStatus(object.getString("inState"));
             this.roomSendTime = object.getString("roomSendTime");
             this.branchReceiveTime = object.getString("branchReceiveTime");
@@ -222,34 +229,13 @@ public class OrderInformation implements Parcelable {
         }
     }
 
-    public void setPropertyRecords(String propertyRecords) {
-        try {
-            JSONArray array = new JSONArray(propertyRecords);
-            for (int i = 0; i < array.length(); i++) {
-                OrderPropertyRecord record = new OrderPropertyRecord(array.getString(i));
-                //加一个重复检测
-                boolean isAdd = false;
-                for (OrderPropertyRecord r : this.propertyRecords) {
-                    if (r.id.equals(record.id)) {
-                        isAdd = true;
-                        break;
-                    }
-                }
-                if (!isAdd) {
-                    this.propertyRecords.add(record);
-                }
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
     protected OrderInformation(Parcel in) {
         canSelect = in.readByte() != 0;
         select = in.readByte() != 0;
         expansion = in.readByte() != 0;
         id = in.readString();
         gId = in.readString();
+        sId = in.readString();
         fId = in.readString();
         supplierId = in.readString();
         supplierName = in.readString();
@@ -280,6 +266,7 @@ public class OrderInformation implements Parcelable {
         sendId = in.readString();
         remark = in.readString();
         valid = in.readString();
+        isUrgent = in.readString();
         img = in.readString();
         propertyRecords = in.createTypedArrayList(OrderPropertyRecord.CREATOR);
         showProperties = in.readByte() != 0;
@@ -293,6 +280,7 @@ public class OrderInformation implements Parcelable {
         dest.writeByte((byte) (expansion ? 1 : 0));
         dest.writeString(id);
         dest.writeString(gId);
+        dest.writeString(sId);
         dest.writeString(fId);
         dest.writeString(supplierId);
         dest.writeString(supplierName);
@@ -323,6 +311,7 @@ public class OrderInformation implements Parcelable {
         dest.writeString(sendId);
         dest.writeString(remark);
         dest.writeString(valid);
+        dest.writeString(isUrgent);
         dest.writeString(img);
         dest.writeTypedList(propertyRecords);
         dest.writeByte((byte) (showProperties ? 1 : 0));
@@ -345,6 +334,28 @@ public class OrderInformation implements Parcelable {
             return new OrderInformation[size];
         }
     };
+
+    public void setPropertyRecords(String propertyRecords) {
+        try {
+            JSONArray array = new JSONArray(propertyRecords);
+            for (int i = 0; i < array.length(); i++) {
+                OrderPropertyRecord record = new OrderPropertyRecord(array.getString(i));
+                //加一个重复检测
+                boolean isAdd = false;
+                for (OrderPropertyRecord r : this.propertyRecords) {
+                    if (r.id.equals(record.id)) {
+                        isAdd = true;
+                        break;
+                    }
+                }
+                if (!isAdd) {
+                    this.propertyRecords.add(record);
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
 
     public String getGoodsId() {
         return goodsId;

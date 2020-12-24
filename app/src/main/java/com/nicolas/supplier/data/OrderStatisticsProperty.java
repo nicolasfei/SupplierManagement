@@ -9,8 +9,8 @@ public class OrderStatisticsProperty implements Parcelable {
     public int num;         //数量
 
     public OrderStatisticsProperty(String color, String size, int num) {
-        this.color = color;
-        this.size = size;
+        this.color = color.trim();
+        this.size = size.trim();
         this.num = num;
     }
 

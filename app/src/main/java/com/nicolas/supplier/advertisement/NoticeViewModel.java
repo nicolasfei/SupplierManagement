@@ -146,7 +146,7 @@ public class NoticeViewModel extends ViewModel {
                 case CommonInterface.NoticeCheck:
                     if (result.success) {
                         Message msg = new Message();
-                        msg.obj = result.data;              //notice
+                        msg.obj = result.data.replace("&","\r\n");              //notice
                         noticeGetResult.setValue(new OperateResult(new OperateInUserView(msg)));
                     } else {
                         noticeGetResult.setValue(new OperateResult(new OperateError(-1, "", null)));

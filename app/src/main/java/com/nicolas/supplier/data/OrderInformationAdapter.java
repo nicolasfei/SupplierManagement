@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.text.Html;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,8 +33,8 @@ public class OrderInformationAdapter extends BaseAdapter {
     private OnOrderChangeListener orderChangeListener;
 
     //上一次点击时间---点击防抖
-    private static long lastClickTime = 0;
-    private static final int INTERVAL_TIME = 600;
+//    private long lastClickTime = 0;
+//    private static final int INTERVAL_TIME = 200;
 
     public OrderInformationAdapter(Context context, List<OrderInformation> list) {
         this.context = context;
@@ -73,7 +74,7 @@ public class OrderInformationAdapter extends BaseAdapter {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        if (position > informationList.size() - 1) {
+        if (position > (informationList.size() - 1)) {
             return null;
         }
         final OrderInformation order = informationList.get(position);
@@ -153,7 +154,7 @@ public class OrderInformationAdapter extends BaseAdapter {
         holder.sendAmount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (System.currentTimeMillis() - lastClickTime > INTERVAL_TIME) {
+//                if (System.currentTimeMillis() - lastClickTime > INTERVAL_TIME) {
                     if (order.hasQueryProperties) {     //已经查询了属性
                         if (order.expansion) {       //展开状态，关闭
                             holder.goodsContent.setVisibility(View.GONE);
@@ -169,8 +170,8 @@ public class OrderInformationAdapter extends BaseAdapter {
                             orderChangeListener.orderPropertyQuery(order.id);
                         }
                     }
-                    lastClickTime = System.currentTimeMillis();
-                }
+//                    lastClickTime = System.currentTimeMillis();
+//                }
             }
         });
 
@@ -218,7 +219,8 @@ public class OrderInformationAdapter extends BaseAdapter {
             holder.choice.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    if (System.currentTimeMillis() - lastClickTime > INTERVAL_TIME) {
+//                    if (System.currentTimeMillis() - lastClickTime > INTERVAL_TIME) {
+                        Log.d("-------------------->", "onCheckedChanged: " + isChecked);
                         order.select = isChecked;
                         if (orderChangeListener != null) {
                             orderChangeListener.orderChoice(order);
@@ -228,8 +230,8 @@ public class OrderInformationAdapter extends BaseAdapter {
 //                            orderChangeListener.orderPropertyQuery(order.id);
 //                        }
 //                    }
-                        lastClickTime = System.currentTimeMillis();
-                    }
+//                        lastClickTime = System.currentTimeMillis();
+//                    }
                 }
             });
         }
@@ -265,7 +267,7 @@ public class OrderInformationAdapter extends BaseAdapter {
                          */
                         @Override
                         public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                            if (System.currentTimeMillis() - lastClickTime > INTERVAL_TIME) {
+//                            if (System.currentTimeMillis() - lastClickTime > INTERVAL_TIME) {
                                 if (actionId == EditorInfo.IME_ACTION_NEXT || actionId == EditorInfo.IME_ACTION_DONE) {      //下一个/回车键
                                     String value = numT.getText().toString();
                                     if (!TextUtils.isEmpty(value)) {
@@ -285,8 +287,8 @@ public class OrderInformationAdapter extends BaseAdapter {
                                         BruceDialog.showAlertDialog(context, context.getString(R.string.inputError), context.getString(R.string.inputError_fix_oder_pnum), null);
                                     }
                                 }
-                                lastClickTime = System.currentTimeMillis();
-                            }
+//                                lastClickTime = System.currentTimeMillis();
+//                            }
                             return false;
                         }
                     });
@@ -294,12 +296,12 @@ public class OrderInformationAdapter extends BaseAdapter {
                     reduce.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            if (System.currentTimeMillis() - lastClickTime > INTERVAL_TIME) {
+//                            if (System.currentTimeMillis() - lastClickTime > INTERVAL_TIME) {
                                 if (orderChangeListener != null) {
                                     orderChangeListener.orderGoodsNumChange(order.id, attr.id, attr.actualNum - 1);
                                 }
-                                lastClickTime = System.currentTimeMillis();
-                            }
+//                                lastClickTime = System.currentTimeMillis();
+//                            }
                         }
                     });
                     if (attr.actualNum == 0) {
@@ -310,12 +312,12 @@ public class OrderInformationAdapter extends BaseAdapter {
                     add.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            if (System.currentTimeMillis() - lastClickTime > INTERVAL_TIME) {
+//                            if (System.currentTimeMillis() - lastClickTime > INTERVAL_TIME) {
                                 if (orderChangeListener != null) {
                                     orderChangeListener.orderGoodsNumChange(order.id, attr.id, attr.actualNum + 1);
                                 }
-                                lastClickTime = System.currentTimeMillis();
-                            }
+//                                lastClickTime = System.currentTimeMillis();
+//                            }
                         }
                     });
                     if (attr.actualNum == attr.orderVal) {

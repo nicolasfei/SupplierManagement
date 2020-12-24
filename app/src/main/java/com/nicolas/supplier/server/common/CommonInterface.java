@@ -14,7 +14,7 @@ public abstract class CommonInterface extends AbstractInterface {
 
     //版本监测
     public final static String VersionCheck = "http://updatesupplier.scdawn.com/v.json";
-    //版本监测
+    //广播消息
     public final static String NoticeCheck = "http://updatesupplier.scdawn.com/g.json";
 
     //供货商货号销售统计

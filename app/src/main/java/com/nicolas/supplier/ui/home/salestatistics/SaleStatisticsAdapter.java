@@ -52,6 +52,7 @@ public class SaleStatisticsAdapter extends BaseAdapter {
 
         SaleStatisticsData data = saleStatistics.get(position);
 
+        holder.num.setText((mContext.getString(R.string.pos) + mContext.getString(R.string.colon) + (position + 1)));
         //加载图片
         if (!isBusy) {
             ImageLoadClass.getInstance().displayImage(data.img, holder.photo, false);
@@ -91,6 +92,7 @@ public class SaleStatisticsAdapter extends BaseAdapter {
     }
 
     private static class ViewHolder {
+        private TextView num;
         private ImageView photo;
         private TextView newGoodsCode;      //新货号
         private TextView oldGoodsCode;      //旧货号
@@ -100,6 +102,7 @@ public class SaleStatisticsAdapter extends BaseAdapter {
         private TextView surplus;           //库存数量
 
         private ViewHolder(View root) {
+            this.num = root.findViewById(R.id.num);
             this.photo = root.findViewById(R.id.photo);
             this.newGoodsCode = root.findViewById(R.id.newGoodsCode);
             this.oldGoodsCode = root.findViewById(R.id.oldGoodsCode);

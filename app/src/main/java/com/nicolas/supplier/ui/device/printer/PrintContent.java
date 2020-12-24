@@ -246,6 +246,7 @@ public class PrintContent {
         tsc.addText(RowStartOffset + wordWidth * 5, 0, LabelCommand.FONTTYPE.SIMPLIFIED_CHINESE,
                 LabelCommand.ROTATION.ROTATION_0, LabelCommand.FONTMUL.MUL_1, LabelCommand.FONTMUL.MUL_1,
                 SupplierKeeper.getInstance().getOnDutySupplier().sid);
+
         //类别
         tsc.addText(LabelHalfWidth + RowStartOffset + wordWidth * 2, 0, LabelCommand.FONTTYPE.SIMPLIFIED_CHINESE,
                 LabelCommand.ROTATION.ROTATION_0, LabelCommand.FONTMUL.MUL_1, LabelCommand.FONTMUL.MUL_1,
@@ -318,6 +319,13 @@ public class PrintContent {
         tsc.addText(LabelHalfWidth + RowStartOffset + wordWidth * 5, -RowHeight / 2 + 10, LabelCommand.FONTTYPE.SIMPLIFIED_CHINESE,
                 LabelCommand.ROTATION.ROTATION_0, LabelCommand.FONTMUL.MUL_4, LabelCommand.FONTMUL.MUL_3,
                 String.valueOf(order.sendAmount));
+
+        //是否质检
+        if (order.isCheck.equals("ok") || order.isCheck.equals("OK")) {
+            tsc.addText(LabelHalfWidth + RowStartOffset + wordWidth * 8, -RowHeight / 2 + 10, LabelCommand.FONTTYPE.SIMPLIFIED_CHINESE,
+                    LabelCommand.ROTATION.ROTATION_0, LabelCommand.FONTMUL.MUL_3, LabelCommand.FONTMUL.MUL_3,
+                    "(检)");
+        }
 
         //---------------------------第5行-------------------------//
         /* 设置原点坐标 */

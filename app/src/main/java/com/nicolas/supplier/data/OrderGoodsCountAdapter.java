@@ -2,7 +2,6 @@ package com.nicolas.supplier.data;
 
 import android.content.Context;
 import android.text.Html;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -69,7 +68,7 @@ public class OrderGoodsCountAdapter extends BaseAdapter {
             holder.property.addView(item);
         }
         //合计
-        String totalV = mContext.getString(R.string.total) + mContext.getString(R.string.colon) + "<font color=\"black\">" + count.getTotal() + "</font>";
+        String totalV = "<font color=\"red\">" + mContext.getString(R.string.total) + mContext.getString(R.string.colon) + count.getTotal() + "</font>";
         holder.total.setText(Html.fromHtml(totalV, Html.FROM_HTML_MODE_COMPACT));
         return convertView;
     }

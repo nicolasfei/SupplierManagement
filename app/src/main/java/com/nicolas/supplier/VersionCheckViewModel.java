@@ -118,10 +118,24 @@ public class VersionCheckViewModel extends ViewModel {
                     SupplierApp.getInstance().getString(R.string.remoteCheckAppVFailed), null)));
         } else {
             Message msg = new Message();
-            if (appCurrentVersion.compareTo(appLastVersion) < 0) {     //有新版本app发布
+            String[] cv = appCurrentVersion.split(".");
+            String[] lv = appLastVersion.split(".");
+            boolean havNewV = false;
+            for (int i = 0; i < Math.min(cv.length, lv.length); i++) {
+                if (Integer.parseInt(cv[i]) < Integer.parseInt(lv[i])) {
+                    havNewV = true;
+                    break;
+                }
+            }
+
+            if (havNewV) {     //有新版本app发布
                 msg.what = 1;
             } else {
-                msg.what = 0;
+                if (lv.length > cv.length) {
+                    msg.what = 1;
+                } else {
+                    msg.what = 0;
+                }
             }
             matchVersionResult.setValue(new OperateResult(new OperateInUserView(msg)));
         }

@@ -54,6 +54,7 @@ public class OrderStatisticsViewModel extends ViewModel {
         this.sendingOrders = new ArrayList<>();
         this.beenSendOrders = new ArrayList<>();
         this.queryCondition = new OrderStatisticsQueryCondition();
+        this.queryCondition.setQueryTime(Tool.getNearlyThreeDaysDateSlot());
     }
 
     /**

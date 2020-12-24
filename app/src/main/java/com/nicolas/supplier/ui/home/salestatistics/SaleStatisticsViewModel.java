@@ -71,7 +71,7 @@ public class SaleStatisticsViewModel extends ViewModel {
      */
     void querySaleStatistics() {
         this.currentPage = 1;
-        this.pageSize = defaultPageSize;     //每一页1000条记录
+        this.pageSize = 16;     //每一页10000条记录
         this.pageCount = 0;     //一共多少也，默认为0
         this.queryStatistics();
     }
@@ -79,7 +79,7 @@ public class SaleStatisticsViewModel extends ViewModel {
     /**
      * 加载更多订单
      */
-    void loadMoreOrders() {
+    void loadMoreSaleStatistics() {
         if (this.currentPage >= (this.pageCount % this.pageSize == 0 ? this.pageCount / this.pageSize : this.pageCount / this.pageSize + 1)) {
             this.saleQueryResult.setValue(new OperateResult(new OperateError(1, SupplierApp.getInstance().getString(R.string.no_more_load), null)));
             return;

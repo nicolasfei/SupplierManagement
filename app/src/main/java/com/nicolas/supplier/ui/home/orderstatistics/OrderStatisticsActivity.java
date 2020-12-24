@@ -192,7 +192,7 @@ public class OrderStatisticsActivity extends BaseActivity implements View.OnClic
                         });
                 break;
             case R.id.queryTimeClear:       //清空查询时间--重置
-                viewModel.getQueryCondition().setQueryTime(Tool.getNearlyOneDaysDateSlot());
+                viewModel.getQueryCondition().setQueryTime(Tool.getNearlyThreeDaysDateSlot());
                 updateQueryTime(viewModel.getQueryCondition().queryTime.replace("~", "\u3000~\u3000"));
                 break;
             case R.id.newGoodsCodeClear:    //清空新货号

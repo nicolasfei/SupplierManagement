@@ -36,9 +36,8 @@ import com.nicolas.toollibrary.Utils;
 public class LoginActivity extends AppCompatActivity {
 
     private LoginViewModel loginViewModel;
-
     //登陆中
-    private static boolean loginIng = false;
+    private boolean loginIng = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -208,7 +207,7 @@ public class LoginActivity extends AppCompatActivity {
         if (requestCode == 1) {
             loginIng = false;
         }
-        AppActivityManager.getInstance().printActivity();
+//        AppActivityManager.getInstance().printActivity();
     }
 
     private void updateUiWithUser() {

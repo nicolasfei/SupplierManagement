@@ -477,4 +477,7 @@
     <string name="nav_goods_statistics">销售统计</string>
     <string name="goodsStatistics">销售统计</string>
     <string name="statisticsTotal">统计汇总</string>
+    <string name="totalQuery">汇总查询</string>
+    <string name="order_is_urgent">是否加急</string>
+    <string name="order_not_urgent">普通</string>
 </resources>

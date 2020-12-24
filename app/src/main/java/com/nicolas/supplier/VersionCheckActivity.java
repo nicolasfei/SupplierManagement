@@ -85,6 +85,7 @@ public class VersionCheckActivity extends AppCompatActivity {
     private void jumpToLoginActivity() {
         Intent intent = new Intent(VersionCheckActivity.this, LoginActivity.class);
         startActivity(intent);
+        this.finish();
     }
 
     /**

@@ -9,25 +9,20 @@ import android.os.Message;
 import android.text.Html;
 import android.text.InputType;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -42,26 +37,20 @@ import com.nicolas.componentlibrary.pullrefreshswipemenu.PullRefreshMenuItem;
 import com.nicolas.componentlibrary.pullrefreshswipemenu.PullRefreshSwipeMenuListView;
 import com.nicolas.printerlibraryforufovo.PrinterManager;
 import com.nicolas.supplier.R;
-import com.nicolas.supplier.data.OrderDataHolder;
-import com.nicolas.supplier.data.OrderGoodsCountAdapter;
-import com.nicolas.supplier.data.OrderGoodsStatistics;
-import com.nicolas.supplier.data.OrderOverdue;
-import com.nicolas.supplier.data.OrderQueryCondition;
-import com.nicolas.supplier.data.OrderStatistics;
-import com.nicolas.supplier.data.OrderUrgent;
-import com.nicolas.supplier.data.OrderValid;
-import com.nicolas.supplier.ui.device.printer.PrinterActivity;
-import com.nicolas.toollibrary.BruceDialog;
-import com.nicolas.toollibrary.Tool;
 import com.nicolas.supplier.common.OperateResult;
 import com.nicolas.supplier.component.SingleFloatingDialog;
-import com.nicolas.supplier.data.OrderClass;
+import com.nicolas.supplier.data.OrderDataHolder;
+import com.nicolas.supplier.data.OrderGoodsCountAdapter;
 import com.nicolas.supplier.data.OrderInformation;
 import com.nicolas.supplier.data.OrderInformationAdapter;
+import com.nicolas.supplier.data.OrderQueryCondition;
+import com.nicolas.supplier.data.OrderStatistics;
 import com.nicolas.supplier.data.OrderStatus;
-import com.nicolas.supplier.data.PrintStatus;
+import com.nicolas.supplier.data.OrderValid;
 import com.nicolas.supplier.supplier.SupplierKeeper;
 import com.nicolas.supplier.ui.BaseActivity;
+import com.nicolas.toollibrary.BruceDialog;
+import com.nicolas.toollibrary.Tool;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -72,11 +61,10 @@ import java.util.Locale;
 import static com.nicolas.supplier.data.OrderStatus.SWAITED_ID;
 import static com.nicolas.supplier.data.OrderStatus.SWAIT_ID;
 
-public class NewOrderActivity extends BaseActivity implements View.OnClickListener {
+public class UrgentOrderActivity extends BaseActivity implements View.OnClickListener {
     private DrawerLayout drawerLayout;
     private SingleFloatingDialog dialog;
     private CheckBox checkAll;
-    private Button loadAll;
     private TextView staff;     //供应商
     private TextView detailed;  //明细
     private TextView total;     //合计
@@ -86,34 +74,25 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
     private OrderInformationAdapter adapter;
     private boolean isOrderGoodsCount = false;        //订单货号统计
     private boolean isOrderPrint = false;             //打印所有订单
-    private boolean orderGoodsCounting = false;       //订单货号统计中
 
     //以下为查询条件
     private TextView createTime, oldGoodsId, goodsId, goodsClassId, branchId, storeRoomId, orderID, printTime;
-    private RadioGroup orderClassChip;      //下单类型
     private RadioGroup inStateChip;         //订单接收状态--供应商待接单，供应商已接单，库房已收货，库房已发货，分店已收货
     private RadioGroup isValidChip;         //订单状态--正常,作废
-    private RadioGroup isOverdueChip;       //订单即将过期--即将过期,非即将过期
-    private RadioGroup isUrgentChip;        //订单即将过期--即将过期,非即将过期
 
-    private Button orderClassClearButton;
-
-    private boolean isOrderClassChipClear = false;   //标记清理orderClassChip
-    private boolean isInStateChipClear = false;      //标记清理isInStateChip
+    private boolean isInStateChipClear = false;      //标记清理--订单状态
     private boolean isValidChipClear = false;        //标记清理isValidChip
-    private boolean isOverdueChipClear = false;      //标记清理isOverdueChip
-//    private boolean isOrderUrgentReset = false;      //标记重置isUrgentChip
 
     private boolean manualCheckAll = false;     //手动设置checkAll状态
-    private NewOrderViewModel viewModel;
+    private UrgentOrderViewModel viewModel;
     private boolean isManualSubmit = false;     //手动单个接单
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_new_order);
+        setContentView(R.layout.activity_urgent);
 
-        this.viewModel = new ViewModelProvider(this).get(NewOrderViewModel.class);
+        this.viewModel = new ViewModelProvider(this).get(UrgentOrderViewModel.class);
         this.drawerLayout = findViewById(R.id.drawer_layout);
         //添加打印机实时状态监听
         PrinterManager.getInstance().setOnPrinterStatusReaderCallBack(this.printerRealCheckCallBack);
@@ -207,9 +186,7 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
                         if (status == SWAIT_ID || status == SWAITED_ID) {
                             showOrderInValidDialog(order.id);
                         } else {
-//                            Utils.toast(NewOrderActivity.this, order.valid.equals(OrderValid.INVALID) ? R.string.order_has_invlid :
-//                                    R.string.order_cannot_invlid);
-                            BruceDialog.showPromptDialog(NewOrderActivity.this,
+                            BruceDialog.showPromptDialog(UrgentOrderActivity.this,
                                     order.valid.equals(OrderValid.INVALID) ? getString(R.string.order_has_invlid) :
                                             getString(R.string.order_cannot_invlid));
                         }
@@ -219,9 +196,7 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
                         if (status == SWAIT_ID) {
                             showManualSubmitOrderToServerDialog(order.id);
                         } else {
-//                            Utils.toast(NewOrderActivity.this, order.valid.equals(OrderValid.INVALID) ? R.string.order_has_invlid :
-//                                    R.string.order_has_take);
-                            BruceDialog.showPromptDialog(NewOrderActivity.this,
+                            BruceDialog.showPromptDialog(UrgentOrderActivity.this,
                                     order.valid.equals(OrderValid.INVALID) ? getString(R.string.order_has_invlid) :
                                             getString(R.string.order_has_take));
                         }
@@ -230,28 +205,7 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
                 return true;
             }
         });
-//        this.listView.setOnScrollListener(new AbsListView.OnScrollListener() {
-//            @Override
-//            public void onScrollStateChanged(AbsListView view, int scrollState) {
-//                switch (scrollState) {
-//                    case SCROLL_STATE_IDLE:             //是当屏幕停止滚动时
-//                        adapter.setIsBusy(false);
-//                        break;
-//                    case SCROLL_STATE_TOUCH_SCROLL:     //是当用户在以触屏方式滚动屏幕并且手指仍然还在屏幕上时
-//                        break;
-//                    case SCROLL_STATE_FLING:            //是当用户由于之前划动屏幕并抬起手指，屏幕产生惯性滑动时--这个时候默认图片只在缓存中加载，如果缓存没有，这不下载
-//                        adapter.setIsBusy(true);
-//                        break;
-//                    default:
-//                        break;
-//                }
-//            }
-//
-//            @Override
-//            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-//
-//            }
-//        });
+
         //全选
         this.checkAll = findViewById(R.id.all);
         this.checkAll.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -264,8 +218,7 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
                 viewModel.setOrderAllSelectStatus(isChecked);
             }
         });
-        //加载全部订单
-        this.loadAll = findClickView(R.id.loadAll);
+
         //合计
         this.total = findViewById(R.id.total);
         this.total.setText(getString(R.string.total));
@@ -300,37 +253,6 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
         this.storeRoomId = findClickView(R.id.storeRoomId);
         this.updateStoreRoomId(condition.getStoreRoomID());
 
-        //下单类型
-        this.orderClassChip = findViewById(R.id.orderClassChip);
-        this.orderClassChip.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                if (isOrderClassChipClear) {
-                    isOrderClassChipClear = false;
-                    return;
-                }
-                switch (checkedId) {
-//                    case R.id.orderClassChip0:
-//                        viewModel.getQueryCondition().setOrderType(OrderClass.NONE);
-//                        viewModel.getQueryCondition().setIsUrgent(OrderUrgent.URGENT_URGENT);
-//                        break;
-                    case R.id.orderClassChip1:
-                        viewModel.getQueryCondition().setOrderType(OrderClass.ALL);
-//                        viewModel.getQueryCondition().setIsUrgent(OrderUrgent.URGENT_COMMON);
-                        break;
-                    case R.id.orderClassChip2:
-                        viewModel.getQueryCondition().setOrderType(OrderClass.FIRST);
-//                        viewModel.getQueryCondition().setIsUrgent(OrderUrgent.URGENT_COMMON);
-                        break;
-                    case R.id.orderClassChip3:
-                        viewModel.getQueryCondition().setOrderType(OrderClass.CPFR);
-//                        viewModel.getQueryCondition().setIsUrgent(OrderUrgent.URGENT_COMMON);
-                        break;
-                }
-            }
-        });
-        this.initOrderClassChipSelect(condition.getOrderType());
-
         //订单发货状态
         this.inStateChip = findViewById(R.id.inStateChip);
         this.inStateChip.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -363,33 +285,6 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
         });
         this.initInStateChipSelect(condition.getInStateShow());
 
-        //是否加急单
-        this.isUrgentChip = findViewById(R.id.urgentChip);
-        this.isUrgentChip.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                switch (checkedId) {
-                    case R.id.urgentChip0:
-                        viewModel.getQueryCondition().setIsUrgent(OrderUrgent.URGENT_URGENT);
-                        //加急单状态下，订单类型不可选择，默认为不选
-                        viewModel.getQueryCondition().setOrderType(OrderClass.NONE);
-                        isOrderClassChipClear=true;
-                        orderClassChip.clearCheck();
-                        Tool.disableRadioGroup(orderClassChip);
-                        orderClassClearButton.setEnabled(false);
-                        break;
-                    case R.id.urgentChip1:
-                        viewModel.getQueryCondition().setIsUrgent(OrderUrgent.URGENT_COMMON);
-                        //普通状态下，订单类型可以选择
-                        Tool.enableRadioGroup(orderClassChip);
-                        orderClassClearButton.setEnabled(true);
-                        break;
-                    default:
-                        break;
-                }
-            }
-        });
-
         //订单状态--正常，作废
         this.isValidChip = findViewById(R.id.isValidChip);
         this.isValidChip.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -411,32 +306,10 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
         });
         this.initIsValidChipSelect(condition.getValid());
 
-        //订单超期--超期，未超期
-        this.isOverdueChip = findViewById(R.id.isOverdueChip);
-        this.isOverdueChip.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                if (isOverdueChipClear) {
-                    isOverdueChipClear = false;
-                    return;
-                }
-                switch (checkedId) {
-                    case R.id.isOverdue1:
-                        viewModel.getQueryCondition().setOverDue(OrderOverdue.YES);
-                        break;
-                    case R.id.isOverdue2:
-                        viewModel.getQueryCondition().setOverDue(OrderOverdue.NO);
-                        break;
-                }
-            }
-        });
-        this.initOverdueChipSelect(condition.getOverDue());
-
         //订单打印时间
         this.printTime = findClickView(R.id.printTime);
 
         //查询条件clear
-       this.orderClassClearButton =  findClickView(R.id.orderClassClear);
         findClickView(R.id.oldGoodsIDClear);
         findClickView(R.id.goodsIDClear);
         findClickView(R.id.goodsClassIdClear);
@@ -446,7 +319,6 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
         findClickView(R.id.inStateClear);
         findClickView(R.id.isValidClear);
         findClickView(R.id.createTimeClear);
-        findClickView(R.id.isOverdueClear);
         findClickView(R.id.printTimeClear);
         findClickView(R.id.clear);
         findClickView(R.id.yes);
@@ -489,12 +361,12 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
             public void onChanged(OperateResult operateResult) {
                 if (operateResult.getSuccess() != null) {
                     adapter.notifyDataSetChanged();
-                    BruceDialog.showPromptDialog(NewOrderActivity.this,
+                    BruceDialog.showPromptDialog(UrgentOrderActivity.this,
                             getString(R.string.order_invalid_success));
                 }
                 if (operateResult.getError() != null) {
-//                    Utils.toast(NewOrderActivity.this, operateResult.getError().getErrorMsg());
-                    BruceDialog.showPromptDialog(NewOrderActivity.this,
+//                    Utils.toast(UrgentOrderActivity.this, operateResult.getError().getErrorMsg());
+                    BruceDialog.showPromptDialog(UrgentOrderActivity.this,
                             operateResult.getError().getErrorMsg());
                 }
                 dismissProgressDialog();
@@ -513,7 +385,7 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
                         updateDetailed();                   //更新订单明细
                         updateOrderCheckStatus();
                         dismissProgressDialog();
-                        BruceDialog.showPromptDialog(NewOrderActivity.this, (String) msg.obj);
+                        BruceDialog.showPromptDialog(UrgentOrderActivity.this, (String) msg.obj);
                     } else {
                         //订单查询成功，查询订单配送顺序
                         viewModel.queryOrderDistribution();
@@ -523,7 +395,7 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
                     adapter.notifyDataSetChanged();
                     updateListViewStatus();
                     dismissProgressDialog();
-                    BruceDialog.showPromptDialog(NewOrderActivity.this,
+                    BruceDialog.showPromptDialog(UrgentOrderActivity.this,
                             operateResult.getError().getErrorMsg());
                 }
             }
@@ -540,12 +412,12 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
                     updateOrderCheckStatus();   //更新订单选择状态
                     Message msg = operateResult.getSuccess().getMessage();
                     if (msg != null) {
-                        BruceDialog.showPromptDialog(NewOrderActivity.this,
+                        BruceDialog.showPromptDialog(UrgentOrderActivity.this,
                                 (String) msg.obj);
                     }
                 }
                 if (operateResult.getError() != null) {
-                    BruceDialog.showPromptDialog(NewOrderActivity.this,
+                    BruceDialog.showPromptDialog(UrgentOrderActivity.this,
                             operateResult.getError().getErrorMsg());
                 }
                 dismissProgressDialog();
@@ -559,14 +431,14 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
                 if (operateResult.getSuccess() != null) {
                     Message msg = operateResult.getSuccess().getMessage();
                     if (msg != null) {
-                        BruceDialog.showPromptDialog(NewOrderActivity.this,
+                        BruceDialog.showPromptDialog(UrgentOrderActivity.this,
                                 (String) msg.obj);
                     }
                     adapter.notifyDataSetChanged();
                 }
                 if (operateResult.getError() != null) {
-//                    Utils.toast(NewOrderActivity.this, operateResult.getError().getErrorMsg());
-                    BruceDialog.showPromptDialog(NewOrderActivity.this,
+//                    Utils.toast(UrgentOrderActivity.this, operateResult.getError().getErrorMsg());
+                    BruceDialog.showPromptDialog(UrgentOrderActivity.this,
                             operateResult.getError().getErrorMsg());
                 }
                 dismissProgressDialog();
@@ -588,12 +460,12 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
                     //显示订单货号统计
                     if (isOrderGoodsCount) {
                         isOrderGoodsCount = false;
-                        showOrderStatisticDialog();
+//                        showOrderStatisticDialog();
                     }
                 }
                 if (operateResult.getError() != null) {
-//                    Utils.toast(NewOrderActivity.this, operateResult.getError().getErrorMsg());
-                    BruceDialog.showPromptDialog(NewOrderActivity.this,
+//                    Utils.toast(UrgentOrderActivity.this, operateResult.getError().getErrorMsg());
+                    BruceDialog.showPromptDialog(UrgentOrderActivity.this,
                             operateResult.getError().getErrorMsg());
                 }
             }
@@ -605,11 +477,11 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
             public void onChanged(OperateResult operateResult) {
                 if (operateResult.getSuccess() != null) {
                     adapter.notifyDataSetChanged();
-                    BruceDialog.showPromptDialog(NewOrderActivity.this,
+                    BruceDialog.showPromptDialog(UrgentOrderActivity.this,
                             getString(R.string.orderNumUpdateSuccess));
                 }
                 if (operateResult.getError() != null) {
-                    BruceDialog.showPromptDialog(NewOrderActivity.this,
+                    BruceDialog.showPromptDialog(UrgentOrderActivity.this,
                             operateResult.getError().getErrorMsg());
                 }
                 dismissProgressDialog();
@@ -634,14 +506,12 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
                     printOrderFormSelect();
                 }
                 if (operateResult.getError() != null) {
-                    BruceDialog.showPromptDialog(NewOrderActivity.this,
+                    BruceDialog.showPromptDialog(UrgentOrderActivity.this,
                             operateResult.getError().getErrorMsg());
                 }
             }
         });
 
-        //默认为查询加急
-        this.isUrgentChip.check(R.id.urgentChip0);
         //默认查询近3天的订单
         showProgressDialog(getString(R.string.querying));
         viewModel.queryOrder();
@@ -680,7 +550,7 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
                         end = times[1];
                     }
                 }
-                DateTimePickerDialog.showDateSlotPickerDialog(NewOrderActivity.this, start, end, new DateTimePickerDialog.OnDateTimeSlotPickListener() {
+                DateTimePickerDialog.showDateSlotPickerDialog(UrgentOrderActivity.this, start, end, new DateTimePickerDialog.OnDateTimeSlotPickListener() {
                     @Override
                     public void OnDateTimeSlotPick(String start, String end) {
                         updateCreateTime((start + "\u3000~\u3000" + end));
@@ -689,7 +559,7 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
                 });
                 break;
             case R.id.goodsID:          //新货号
-                BruceDialog.showEditInputDialog(R.string.newGoodsID, R.string.newGoodsID, InputType.TYPE_CLASS_TEXT, NewOrderActivity.this, new BruceDialog.OnInputFinishListener() {
+                BruceDialog.showEditInputDialog(R.string.newGoodsID, R.string.newGoodsID, InputType.TYPE_CLASS_TEXT, UrgentOrderActivity.this, new BruceDialog.OnInputFinishListener() {
                     @Override
                     public void onInputFinish(String itemName) {
                         updateGoodsId(itemName);
@@ -698,7 +568,7 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
                 });
                 break;
             case R.id.oldGoodsID:          //旧货号
-                BruceDialog.showEditInputDialog(R.string.oldGoodsID, R.string.oldGoodsID, InputType.TYPE_CLASS_TEXT, NewOrderActivity.this, new BruceDialog.OnInputFinishListener() {
+                BruceDialog.showEditInputDialog(R.string.oldGoodsID, R.string.oldGoodsID, InputType.TYPE_CLASS_TEXT, UrgentOrderActivity.this, new BruceDialog.OnInputFinishListener() {
                     @Override
                     public void onInputFinish(String itemName) {
                         updateOldGoodsId(itemName);
@@ -707,7 +577,7 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
                 });
                 break;
             case R.id.goodsClassId:     //货物类型
-                TreeNodeViewDialog.showTreeNodeViewDialog(NewOrderActivity.this, getString(R.string.goodsClassChoice),
+                TreeNodeViewDialog.showTreeNodeViewDialog(UrgentOrderActivity.this, getString(R.string.goodsClassChoice),
                         SupplierKeeper.getInstance().getGoodsClassTree(), false, new TreeNodeViewDialog.OnTreeNodeViewDialogListener() {
                             @Override
                             public void onChoice(List<TreeNode> node) {
@@ -721,7 +591,7 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
                         });
                 break;
             case R.id.storeRoomId:       //库房
-                TreeNodeViewDialog.showTreeNodeViewDialog(NewOrderActivity.this, getString(R.string.warehouse_choice),
+                TreeNodeViewDialog.showTreeNodeViewDialog(UrgentOrderActivity.this, getString(R.string.warehouse_choice),
                         SupplierKeeper.getInstance().getStorehouseTree(), false, new TreeNodeViewDialog.OnTreeNodeViewDialogListener() {
                             @Override
                             public void onChoice(List<TreeNode> node) {
@@ -735,7 +605,7 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
                         });
                 break;
             case R.id.orderID:      //订单号
-                BruceDialog.showEditInputDialog(R.string.orderID, R.string.orderID, InputType.TYPE_CLASS_TEXT, NewOrderActivity.this, new BruceDialog.OnInputFinishListener() {
+                BruceDialog.showEditInputDialog(R.string.orderID, R.string.orderID, InputType.TYPE_CLASS_TEXT, UrgentOrderActivity.this, new BruceDialog.OnInputFinishListener() {
                     @Override
                     public void onInputFinish(String itemName) {
                         updateOrderID(itemName);
@@ -744,7 +614,7 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
                 });
                 break;
             case R.id.branchId:     //分店
-                BruceDialog.showAutoCompleteTextViewDialog(R.string.branch, R.string.branchInput, InputType.TYPE_CLASS_TEXT, NewOrderActivity.this,
+                BruceDialog.showAutoCompleteTextViewDialog(R.string.branch, R.string.branchInput, InputType.TYPE_CLASS_TEXT, UrgentOrderActivity.this,
                         SupplierKeeper.getInstance().getBranchCodeList(), new BruceDialog.OnInputFinishListener() {
                             @Override
                             public void onInputFinish(String itemName) {
@@ -754,7 +624,7 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
                         });
                 break;
             case R.id.printTime:
-                DateTimePickerDialog.showDateTimePickerDialog(NewOrderActivity.this, viewModel.getQueryCondition().getPrintTime(),
+                DateTimePickerDialog.showDateTimePickerDialog(UrgentOrderActivity.this, viewModel.getQueryCondition().getPrintTime(),
                         new DateTimePickerDialog.OnDateTimePickListener() {
                             @Override
                             public void OnDateTimePick(String dateTime) {
@@ -773,7 +643,6 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
                 updateGoodsClassId("");
                 updateOrderID("");
                 updatePrintTime("");
-                resetOrderClassChip();
                 resetValidChip();
                 break;
             case R.id.yes:
@@ -782,7 +651,7 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
             case R.id.submit:
                 //先批量加载订单属性，然后打印订单条码---跳转到订单条码打印页面
 //                this.isOrderPrint = true;
-//                showProgressDialog(NewOrderActivity.this, getString(R.string.orderQueryProperties));
+//                showProgressDialog(UrgentOrderActivity.this, getString(R.string.orderQueryProperties));
 //                viewModel.batchDownloadOrderProperty(true);
                 submitDataAndPrint();
                 break;
@@ -795,11 +664,6 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
                 viewModel.queryAllOrder();      //查询所有订单
                 break;
             //查询条件清空
-            case R.id.orderClassClear:
-                viewModel.getQueryCondition().setOrderType(OrderClass.NONE);
-                viewModel.getQueryCondition().setIsUrgent("");
-                resetOrderClassChip();
-                break;
             case R.id.oldGoodsIDClear:
                 viewModel.getQueryCondition().setOldGoodsId("");
                 updateOldGoodsId("");
@@ -835,12 +699,8 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
                 resetValidChip();
                 break;
             case R.id.createTimeClear:
-                viewModel.getQueryCondition().setCreateTime(Tool.getNearlyThreeDaysDateSlot());
+                viewModel.getQueryCondition().setCreateTime(Tool.getNearlyOneDaysDateSlot());
                 updateCreateTime(viewModel.getQueryCondition().getCreateTime().replace("~", "\u3000~\u3000"));
-                break;
-            case R.id.isOverdueClear:
-                viewModel.getQueryCondition().setOverDue(OrderOverdue.NONE);
-                resetOverdueChip();
                 break;
             case R.id.printTimeClear:
                 viewModel.getQueryCondition().setPrintTime("");
@@ -876,11 +736,6 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
             listView.refreshFinish();
         }
         //更新查询日期
-//        String queryDate = viewModel.getQueryCondition().getCreateTime();
-//        if (TextUtils.isEmpty(queryDate)) {
-//            String nowDate = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA).format(new Date());
-//            queryDate = nowDate + "~" + nowDate;
-//        }
         listView.updateContentDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA).format(new Date()));
     }
 
@@ -893,60 +748,35 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
     }
 
     private void updateGoodsId(String itemValue) {
-        String value = NewOrderActivity.this.getString(R.string.newGoodsID) + "\u3000\u3000\u3000\u3000\u3000" + "<font color=\"black\">" + itemValue + "</font>";
+        String value = UrgentOrderActivity.this.getString(R.string.newGoodsID) + "\u3000\u3000\u3000\u3000\u3000" + "<font color=\"black\">" + itemValue + "</font>";
         goodsId.setText(Html.fromHtml(value, Html.FROM_HTML_MODE_COMPACT));
     }
 
     private void updateOrderID(String itemValue) {
-        String value = NewOrderActivity.this.getString(R.string.orderID) + "\u3000\u3000\u3000\u3000\u3000" + "<font color=\"black\">" + itemValue + "</font>";
+        String value = UrgentOrderActivity.this.getString(R.string.orderID) + "\u3000\u3000\u3000\u3000\u3000" + "<font color=\"black\">" + itemValue + "</font>";
         orderID.setText(Html.fromHtml(value, Html.FROM_HTML_MODE_COMPACT));
     }
 
     private void updateOldGoodsId(String itemValue) {
-        String value = NewOrderActivity.this.getString(R.string.oldGoodsID) + "\u3000\u3000\u3000\u3000\u3000" + "<font color=\"black\">" + itemValue + "</font>";
+        String value = UrgentOrderActivity.this.getString(R.string.oldGoodsID) + "\u3000\u3000\u3000\u3000\u3000" + "<font color=\"black\">" + itemValue + "</font>";
         oldGoodsId.setText(Html.fromHtml(value, Html.FROM_HTML_MODE_COMPACT));
     }
 
     private void updateStoreRoomId(String itemValue) {
-        String value = NewOrderActivity.this.getString(R.string.warehouse) + "\u3000\u3000\u3000\u3000\u3000\u3000" + "<font color=\"black\">" +
+        String value = UrgentOrderActivity.this.getString(R.string.warehouse) + "\u3000\u3000\u3000\u3000\u3000\u3000" + "<font color=\"black\">" +
                 itemValue + "</font>";
         storeRoomId.setText(Html.fromHtml(value, Html.FROM_HTML_MODE_COMPACT));
     }
 
     private void updateBranchId(String itemValue) {
-        String value = NewOrderActivity.this.getString(R.string.branch) + "\u3000\u3000\u3000\u3000\u3000\u3000" + "<font color=\"black\">" + itemValue + "</font>";
+        String value = UrgentOrderActivity.this.getString(R.string.branch) + "\u3000\u3000\u3000\u3000\u3000\u3000" + "<font color=\"black\">" + itemValue + "</font>";
         branchId.setText(Html.fromHtml(value, Html.FROM_HTML_MODE_COMPACT));
     }
 
     private void updateGoodsClassId(String itemValue) {
-        String value = NewOrderActivity.this.getString(R.string.goodsClass) + "\u3000\u3000\u3000\u3000" + "<font color=\"black\">" +
+        String value = UrgentOrderActivity.this.getString(R.string.goodsClass) + "\u3000\u3000\u3000\u3000" + "<font color=\"black\">" +
                 itemValue + "</font>";
         goodsClassId.setText(Html.fromHtml(value, Html.FROM_HTML_MODE_COMPACT));
-    }
-
-    private void initOrderClassChipSelect(String itemValue) {
-        switch (itemValue) {
-            case OrderClass.NONE:
-                if (viewModel.getQueryCondition().getIsUrgent().equals(OrderUrgent.URGENT_URGENT)) {
-                    isOrderClassChipClear = true;
-                    this.orderClassChip.check(R.id.orderClassChip0);
-                }
-                break;
-            case OrderClass.ALL:
-                isOrderClassChipClear = true;
-                this.orderClassChip.check(R.id.orderClassChip1);
-                break;
-            case OrderClass.FIRST:
-                isOrderClassChipClear = true;
-                this.orderClassChip.check(R.id.orderClassChip2);
-                break;
-            case OrderClass.CPFR:
-                isOrderClassChipClear = true;
-                this.orderClassChip.check(R.id.orderClassChip3);
-                break;
-            default:
-                break;
-        }
     }
 
     private void initInStateChipSelect(String itemValue) {
@@ -999,38 +829,9 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
         }
     }
 
-    private void initOverdueChipSelect(String itemValue) {
-        switch (itemValue) {
-            case OrderOverdue.NONE:
-                isOverdueChipClear = true;
-                this.isOverdueChip.clearCheck();
-                break;
-            case OrderOverdue.YES:
-                isOverdueChipClear = true;
-                this.isOverdueChip.check(R.id.isOverdue1);
-                break;
-            case OrderOverdue.NO:
-                isOverdueChipClear = true;
-                this.isOverdueChip.check(R.id.isOverdue2);
-                break;
-            default:
-                break;
-        }
-    }
-
-    private void resetOrderClassChip() {
-        isOrderClassChipClear = true;
-        orderClassChip.clearCheck();
-    }
-
     private void resetValidChip() {
         isValidChipClear = true;
         isValidChip.clearCheck();
-    }
-
-    private void resetOverdueChip() {
-        isOverdueChipClear = true;
-        isOverdueChip.clearCheck();
     }
 
     private void resetInStateChip() {
@@ -1068,7 +869,7 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
      * 通过选择订单的方式打印
      */
     private void printOrderFormSelect() {
-        Intent intent = new Intent(NewOrderActivity.this, OrderPrintActivity.class);
+        Intent intent = new Intent(UrgentOrderActivity.this, OrderPrintActivity.class);
         OrderDataHolder.getInstance().setData("orders", viewModel.getCheckedOrders());
         OrderDataHolder.getInstance().setData("distributions", viewModel.getOrderDistributionList());
         startActivityForResult(intent, 1);
@@ -1078,7 +879,7 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
      * 通过统计数据的方式打印
      */
     private void printOrderFormStatistics(String goodsID) {
-        Intent intent = new Intent(NewOrderActivity.this, OrderPrintActivity.class);
+        Intent intent = new Intent(UrgentOrderActivity.this, OrderPrintActivity.class);
         OrderDataHolder.getInstance().setData("orders", viewModel.getOrdersFormGoodsID(goodsID));
         OrderDataHolder.getInstance().setData("distributions", viewModel.getOrderDistributionList());
         startActivityForResult(intent, 1);
@@ -1095,7 +896,7 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
 //                    this.checkAll.setChecked(false);
 //                }
 //            } else if (resultCode == -1) {
-//                BruceDialog.showAlertDialog(NewOrderActivity.this, getString(R.string.failed),
+//                BruceDialog.showAlertDialog(UrgentOrderActivity.this, getString(R.string.failed),
 //                        getString(R.string.print_default_check), new BruceDialog.OnAlertDialogListener() {
 //                            @Override
 //                            public void onSelect(boolean confirm) {
@@ -1119,7 +920,6 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
      * 打印机实时状态监听
      */
     private PrinterManager.OnPrinterStatusReaderCallBack printerRealCheckCallBack = new PrinterManager.OnPrinterStatusReaderCallBack() {
-
         @Override
         public void printerRealStatus(int status, int mode, String msg) {
             switch (status) {
@@ -1130,12 +930,12 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
                         viewModel.submitOrders();       //提交订单更新数据到服务器
                     } else {
                         dismissProgressDialog();
-                        BruceDialog.showPromptDialog(NewOrderActivity.this, "打印机模式非标签打印模式，请检查打印机!");
+                        BruceDialog.showPromptDialog(UrgentOrderActivity.this, "打印机模式非标签打印模式，请检查打印机!");
                     }
                     break;
                 default:
                     dismissProgressDialog();
-                    BruceDialog.showPromptDialog(NewOrderActivity.this, msg);
+                    BruceDialog.showPromptDialog(UrgentOrderActivity.this, msg);
                     break;
             }
         }
@@ -1294,7 +1094,7 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
      */
     private void resortOfRule(int position) {
         showProgressDialog("");
-        viewModel.resortOfRule(position);
+//        viewModel.resortOfRule(position);
     }
 
     /**
@@ -1342,9 +1142,6 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
             case R.id.menu_count:
                 goodsCodeCount();
                 break;
-            case R.id.menu_printer:
-                jumpToPrinterSet();
-                break;
             default:
                 break;
         }
@@ -1352,24 +1149,10 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
     }
 
     /**
-     * 跳转到打印机设置页面
-     */
-    private void jumpToPrinterSet() {
-        Intent intent = new Intent(this, PrinterActivity.class);
-        startActivityForResult(intent, 2);
-    }
-
-    /**
      * 订单货号统计
      */
     private void goodsCodeCount() {
-//        if (!this.orderGoodsCounting) {
-//            this.orderGoodsCounting = true;
-//            this.isOrderGoodsCount = true;
-//            BruceDialog.showProgressDialog(this, getString(R.string.goodsCountting));
-//            viewModel.batchDownloadOrderProperty(false);     //下载所有订单属性
-//        }
-        showOrderStatisticDialog();
+//        showOrderStatisticDialog();
     }
 
     @Override
@@ -1407,95 +1190,32 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
     ListView count;
     OrderGoodsCountAdapter countAdapter;
 
-    private void showOrderStatisticDialog() {
-        List<OrderStatistics> data = viewModel.getOrderStatisticList();
-        if (data.size() == 0) {
-            BruceDialog.showPromptDialog(NewOrderActivity.this,
-                    getString(R.string.noOrder));
-            this.orderGoodsCounting = false;
-            return;
-        }
-        if (countAdapter == null) {
-            count = new ListView(this);
-            countAdapter = new OrderGoodsCountAdapter(this, viewModel.getOrderStatisticList());
-            count.setAdapter(countAdapter);
-//            count.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//                @Override
-//                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                    BruceDialog.showAlertDialog(NewOrderActivity.this, getString(R.string.order_printer), getString(R.string.print_statistic_order), new BruceDialog.OnAlertDialogListener() {
-//                        @Override
-//                        public void onSelect(boolean confirm) {
-//                            if (confirm) {
-//                                if (printOrderFormStatisticsDialog != null && printOrderFormStatisticsDialog.isShowing()) {
-//                                    printOrderFormStatisticsDialog.dismiss();
-//                                }
-//                                printOrderFormStatistics(data.get(position).goodsID);
-//                            }
-//                        }
-//                    });
-//                }
-//            });
-            printOrderFormStatisticsDialog = new AlertDialog.Builder(this)
-                    .setTitle(R.string.goodsCodeCount)
-                    .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            orderGoodsCounting = false;
-                        }
-                    })
-                    .setView(count)
-                    .setCancelable(true)
-                    .create();
-        } else {
-            countAdapter.notifyDataSetChanged();
-        }
-        printOrderFormStatisticsDialog.show();
-    }
-
-//    /**
-//     * 显示货号统计对话框
-//     */
-//    private void showGoodsCodeStatisticsDialog() {
-//        final List<OrderStatistics> data = viewModel.getOrderStatisticList();
+//    private void showOrderStatisticDialog() {
+//        List<OrderStatistics> data = viewModel.getOrderStatisticList();
 //        if (data.size() == 0) {
-//            Utils.toast(this, R.string.noOrder);
-//            this.orderGoodsCounting = false;
+//            BruceDialog.showPromptDialog(UrgentOrderActivity.this,
+//                    getString(R.string.noOrder));
+////            this.orderGoodsCounting = false;
 //            return;
 //        }
-//        ListView count = new ListView(this);
-//        OrderGoodsStatisticsAdapter adapter = new OrderGoodsStatisticsAdapter(this, data);
-//        count.setAdapter(adapter);
-//        count.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                printOrderFormStatisticsData(data.get(position));       //从统计数据打印订单
-//            }
-//        });
-//        new AlertDialog.Builder(this)
-//                .setTitle(R.string.goodsCodeCount)
-//                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        orderGoodsCounting = false;
-//                    }
-//                })
-//                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        orderGoodsCounting = false;
-//                    }
-//                })
-//                .setView(count)
-//                .setCancelable(false)
-//                .create().show();
+//        if (countAdapter == null) {
+//            count = new ListView(this);
+//            countAdapter = new OrderGoodsCountAdapter(this, viewModel.getOrderStatisticList());
+//            count.setAdapter(countAdapter);
+//            printOrderFormStatisticsDialog = new AlertDialog.Builder(this)
+//                    .setTitle(R.string.goodsCodeCount)
+//                    .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+////                            orderGoodsCounting = false;
+//                        }
+//                    })
+//                    .setView(count)
+//                    .setCancelable(true)
+//                    .create();
+//        } else {
+//            countAdapter.notifyDataSetChanged();
+//        }
+//        printOrderFormStatisticsDialog.show();
 //    }
-
-    /**
-     * 从统计数据打印订单
-     *
-     * @param statistics 统计数据
-     */
-    private void printOrderFormStatisticsData(OrderGoodsStatistics statistics) {
-//        List<OrderInformation> orders = viewModel.getOrdersFormStatistics(statistics);
-    }
 }

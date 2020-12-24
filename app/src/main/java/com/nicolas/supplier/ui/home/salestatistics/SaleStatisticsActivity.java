@@ -10,6 +10,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -26,7 +28,6 @@ import com.nicolas.supplier.common.OperateResult;
 import com.nicolas.supplier.supplier.SupplierKeeper;
 import com.nicolas.supplier.ui.BaseActivity;
 import com.nicolas.toollibrary.BruceDialog;
-import com.nicolas.toollibrary.Tool;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -46,6 +47,8 @@ public class SaleStatisticsActivity extends BaseActivity implements View.OnClick
 
     private PullRefreshListView listView;
     private SaleStatisticsAdapter adapter;
+    private Button totalQuery;
+    private LinearLayout totalQueryBar;          //汇总查询Bar
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -66,7 +69,12 @@ public class SaleStatisticsActivity extends BaseActivity implements View.OnClick
         this.back = findViewById(R.id.back);
         this.purchase = findViewById(R.id.purchase);
         this.surplus = findViewById(R.id.surplus);
+        //汇总查询
+        this.totalQueryBar = findViewById(R.id.progressBar);
+        this.totalQueryBar.setVisibility(View.INVISIBLE);
+        this.totalQuery = findClickView(R.id.totalQuery);
         this.updateSaleStatisticsTotal();
+
         //查询条件
         this.queryTime = findClickView(R.id.queryTime);
         this.newGoodsCode = findClickView(R.id.newGoodsCode);
@@ -84,11 +92,17 @@ public class SaleStatisticsActivity extends BaseActivity implements View.OnClick
         this.adapter = new SaleStatisticsAdapter(this, this.viewModel.getStatistics());
         this.listView.setAdapter(this.adapter);
         this.listView.enablePullRefresh();
-        this.listView.disablePushLoadMore();
+        this.listView.enablePushLoadMore();
         this.listView.setOnRefreshListener(new PullRefreshListView.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 viewModel.refreshSaleStatistics();
+            }
+        });
+        this.listView.setOnLoadingMoreListener(new PullRefreshListView.OnLoadingMoreListener() {
+            @Override
+            public void onLoadingMore() {
+                viewModel.loadMoreSaleStatistics();
             }
         });
 
@@ -100,24 +114,21 @@ public class SaleStatisticsActivity extends BaseActivity implements View.OnClick
                 if (operateResult.getSuccess() != null) {
                     Message msg = operateResult.getSuccess().getMessage();
                     if (msg != null && msg.what == 1) {     //无数据
-                        dismissProgressDialog();
-                        if (listView.isPullToRefreshing()) {
-                            listView.refreshFinish();
-                        }
                         BruceDialog.showPromptDialog(SaleStatisticsActivity.this, (String) msg.obj);
-                    } else {
-                        viewModel.queryStatisticsTotal();       //查询统计汇总数据
                     }
                     updateDetailed();
                     adapter.notifyDataSetChanged();
                 }
                 if (operateResult.getError() != null) {
-                    dismissProgressDialog();
-                    if (listView.isPullToRefreshing()) {
-                        listView.refreshFinish();
-                    }
                     BruceDialog.showPromptDialog(SaleStatisticsActivity.this,
                             operateResult.getError().getErrorMsg());
+                }
+                dismissProgressDialog();
+                if (listView.isPullToRefreshing()) {
+                    listView.refreshFinish();
+                }
+                if (listView.isPushLoadingMore()) {
+                    listView.loadMoreFinish();
                 }
             }
         });
@@ -133,10 +144,8 @@ public class SaleStatisticsActivity extends BaseActivity implements View.OnClick
                     BruceDialog.showPromptDialog(SaleStatisticsActivity.this,
                             operateResult.getError().getErrorMsg());
                 }
-                dismissProgressDialog();
-                if (listView.isPullToRefreshing()) {
-                    listView.refreshFinish();
-                }
+                totalQueryBar.setVisibility(View.INVISIBLE);
+                totalQuery.setVisibility(View.VISIBLE);
             }
         });
 
@@ -163,8 +172,8 @@ public class SaleStatisticsActivity extends BaseActivity implements View.OnClick
                 "件(￥</big></font></big></font><font color=\"red\"><big>" + total.backPrice + "</big></font><font color=\"black\"><big>元)" + "</big></font>";
         this.back.setText(Html.fromHtml(backValue, Html.FROM_HTML_MODE_COMPACT));
         //实际进货
-        String purchaseValue = "<font color=\"black\"><big>" + getString(R.string.purchase) + getString(R.string.colon) + total.sendAmount +
-                "件(￥</big></font><font color=\"red\"><big>" + total.sendPrice + "</big></font><font color=\"black\"><big>元)" + "</big></font>";
+        String purchaseValue = "<font color=\"black\"><big>" + getString(R.string.purchase) + getString(R.string.colon) + (total.sendAmount - total.backAmount) +
+                "件(￥</big></font><font color=\"red\"><big>" + (total.sendPrice - total.backPrice) + "</big></font><font color=\"black\"><big>元)" + "</big></font>";
         this.purchase.setText(Html.fromHtml(purchaseValue, Html.FROM_HTML_MODE_COMPACT));
         //剩余库存
         String surplusValue = "<font color=\"black\"><big>" + getString(R.string.surplus) + getString(R.string.colon) + total.inStockAmount +
@@ -176,10 +185,15 @@ public class SaleStatisticsActivity extends BaseActivity implements View.OnClick
      * 更新明细
      */
     private void updateDetailed() {
+        String queryDate = "";
+        if (TextUtils.isEmpty(viewModel.getQueryCondition().queryTime)) {
+            queryDate = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA).format(new Date());
+        } else {
+            queryDate = viewModel.getQueryCondition().queryTime;
+        }
         String value = getString(R.string.goodsTotal) + getString(R.string.colon) + "<font color=\"black\">" +
                 this.viewModel.getGoodsCount() + "</font>" + "\u3000\u3000\u3000\u3000\u3000\u3000\u3000" +
-//                "<font color=\"black\"><big>" + getString(R.string.statisticsTotal) + "</big></font>" + "\u3000\u3000\u3000\u3000\u3000\u3000\u3000" +
-                getString(R.string.query_date) + getString(R.string.colon) + "<font color=\"black\">" + viewModel.getQueryCondition().queryTime + "</font>";
+                getString(R.string.query_date) + getString(R.string.colon) + "<font color=\"black\">" + queryDate + "</font>";
         this.detailed.setText(Html.fromHtml(value, Html.FROM_HTML_MODE_COMPACT));
     }
 
@@ -258,6 +272,11 @@ public class SaleStatisticsActivity extends BaseActivity implements View.OnClick
                             }
                         });
                 break;
+            case R.id.totalQuery:           //汇总查询
+                this.totalQueryBar.setVisibility(View.VISIBLE);
+                this.totalQuery.setVisibility(View.INVISIBLE);
+                viewModel.queryStatisticsTotal();
+                break;
             case R.id.queryTimeClear:       //清空查询时间--重置
                 viewModel.getQueryCondition().setQueryTime("");
                 updateQueryTime(viewModel.getQueryCondition().queryTime);
@@ -302,7 +321,7 @@ public class SaleStatisticsActivity extends BaseActivity implements View.OnClick
      * @param itemValue 新货号
      */
     private void updateNewGoodsCode(String itemValue) {
-        String value = getString(R.string.newGoodsID) + "\u3000\u3000\u3000\u3000\u3000" + "<font color=\"black\">" + itemValue + "</font>";
+        String value = getString(R.string.newGoodsID) + "\u3000\u3000\u3000\u3000\u3000\u3000" + "<font color=\"black\">" + itemValue + "</font>";
         this.newGoodsCode.setText(Html.fromHtml(value, Html.FROM_HTML_MODE_COMPACT));
     }
 

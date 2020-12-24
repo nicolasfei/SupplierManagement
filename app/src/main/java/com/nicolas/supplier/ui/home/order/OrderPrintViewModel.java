@@ -1,24 +1,19 @@
 package com.nicolas.supplier.ui.home.order;
 
-import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.nicolas.printerlibraryforufovo.PrinterManager;
 import com.nicolas.supplier.R;
-import com.nicolas.supplier.app.LoginManager;
 import com.nicolas.supplier.app.SupplierApp;
 import com.nicolas.supplier.common.OperateError;
 import com.nicolas.supplier.common.OperateInUserView;
 import com.nicolas.supplier.common.OperateResult;
 import com.nicolas.supplier.data.OrderClass;
 import com.nicolas.supplier.data.OrderDistribution;
-import com.nicolas.supplier.server.CommandResponse;
 import com.nicolas.supplier.ui.device.printer.PrintContent;
 import com.nicolas.supplier.data.OrderInformation;
 
@@ -141,14 +136,21 @@ public class OrderPrintViewModel extends ViewModel {
                     for (Object object : printOrders) {
                         if (object instanceof OrderInformation) {
                             OrderInformation order = (OrderInformation) object;
-                            if (order.sendAmount > 0) {
-                                PrinterManager.getInstance().printLabelBlue(PrintContent.getOrderReceipt(order, i));
-                                i++;
-                            }
+//                            if (order.sendAmount > 0) {
+                            PrinterManager.getInstance().printLabelBlue(PrintContent.getOrderReceipt(order, i));
+//                                PrinterManager.getInstance().printLabelBlue(new OrderView(SupplierApp.getInstance(), order, i));
+                            i++;
+//                            }
                         }
                         if (object instanceof OrderDistribution) {
                             OrderDistribution distribution = (OrderDistribution) object;
                             PrinterManager.getInstance().printLabelBlue(PrintContent.getDistribution(distribution));
+                        }
+
+                        try {
+                            Thread.sleep(500);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
                         }
                     }
                     handler.post(new Runnable() {

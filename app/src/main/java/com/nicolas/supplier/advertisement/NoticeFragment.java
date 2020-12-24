@@ -12,12 +12,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.nicolas.advertnoticelibrary.AdvertViewHolderCreator;
 import com.nicolas.advertnoticelibrary.NoticeData;
 import com.nicolas.supplier.R;
 import com.nicolas.supplier.common.OperateResult;
+import com.nicolas.toollibrary.BruceDialog;
 import com.youth.banner.Banner;
 import com.youth.banner.indicator.CircleIndicator;
 
@@ -31,6 +32,8 @@ public class NoticeFragment extends Fragment {
     private TextView noticeTextView;
     private Context context;
 
+    private String noticeString;
+
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -43,13 +46,19 @@ public class NoticeFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_notice, container, false);
         banner = root.findViewById(R.id.banner);
         noticeTextView = root.findViewById(R.id.notice);
+        noticeTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                BruceDialog.showPromptDialog(context, noticeString);
+            }
+        });
         return root;
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        noticeViewModel = ViewModelProviders.of(requireActivity()).get(NoticeViewModel.class);
+        noticeViewModel = new ViewModelProvider(requireActivity()).get(NoticeViewModel.class);
 
         //广告通知加载完成
         noticeViewModel.getInitResult().observe(requireActivity(), new Observer<OperateResult>() {
@@ -82,7 +91,8 @@ public class NoticeFragment extends Fragment {
             public void onChanged(OperateResult operateResult) {
                 if (operateResult.getSuccess() != null) {
                     Message msg = operateResult.getSuccess().getMessage();
-                    noticeTextView.setText((String) msg.obj);
+                    noticeString = (String) msg.obj;
+                    noticeTextView.setText(noticeString);
                     noticeTextView.setSelected(true);
                 }
             }
