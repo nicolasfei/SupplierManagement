@@ -118,8 +118,10 @@ public class VersionCheckViewModel extends ViewModel {
                     SupplierApp.getInstance().getString(R.string.remoteCheckAppVFailed), null)));
         } else {
             Message msg = new Message();
-            String[] cv = appCurrentVersion.split(".");
-            String[] lv = appLastVersion.split(".");
+//            String[] cv = appCurrentVersion.split(".");
+//            String[] lv = appLastVersion.split(".");
+            String[] cv = appCurrentVersion.split("\\.");
+            String[] lv = appLastVersion.split("\\.");
             boolean havNewV = false;
             for (int i = 0; i < Math.min(cv.length, lv.length); i++) {
                 if (Integer.parseInt(cv[i]) < Integer.parseInt(lv[i])) {

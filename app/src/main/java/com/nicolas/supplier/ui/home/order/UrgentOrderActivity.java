@@ -1,5 +1,6 @@
 package com.nicolas.supplier.ui.home.order;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -76,7 +77,7 @@ public class UrgentOrderActivity extends BaseActivity implements View.OnClickLis
     private boolean isOrderPrint = false;             //打印所有订单
 
     //以下为查询条件
-    private TextView createTime, oldGoodsId, goodsId, goodsClassId, branchId, storeRoomId, orderID, printTime;
+    private TextView createTime,receiptTime, oldGoodsId, goodsId, goodsClassId, branchId, storeRoomId, orderID, printTime;
     private RadioGroup inStateChip;         //订单接收状态--供应商待接单，供应商已接单，库房已收货，库房已发货，分店已收货
     private RadioGroup isValidChip;         //订单状态--正常,作废
 
@@ -235,6 +236,9 @@ public class UrgentOrderActivity extends BaseActivity implements View.OnClickLis
         this.createTime = findClickView(R.id.createTime);
         this.updateCreateTime(condition.getCreateTime().replace("~", "\u3000~\u3000"));
 
+        this.receiptTime = findClickView(R.id.receiptTime);
+        this.updateReceiptTime(condition.getReceiptTime().replace("~", "\u3000~\u3000"));
+
         this.oldGoodsId = findClickView(R.id.oldGoodsID);
         this.updateOldGoodsId(condition.getOldGoodsId());
 
@@ -319,6 +323,7 @@ public class UrgentOrderActivity extends BaseActivity implements View.OnClickLis
         findClickView(R.id.inStateClear);
         findClickView(R.id.isValidClear);
         findClickView(R.id.createTimeClear);
+        findClickView(R.id.receiptTimeClear);
         findClickView(R.id.printTimeClear);
         findClickView(R.id.clear);
         findClickView(R.id.yes);
@@ -522,7 +527,7 @@ public class UrgentOrderActivity extends BaseActivity implements View.OnClickLis
      */
     private void showManualOrderDialog(final String orderID) {
         String[] operation = new String[]{getString(R.string.manual_order), getString(R.string.OrderInValid)};
-        BruceDialog.showSingleChoiceDialog(R.string.orderOperation, this, operation, new BruceDialog.OnChoiceItemListener() {
+        BruceDialog.showSingleChoiceDialog(R.string.orderOperation, (Context) this, operation, new BruceDialog.OnChoiceItemListener() {
             @Override
             public void onChoiceItem(String itemName) {
                 if (itemName.equals(getString(R.string.manual_order))) {
@@ -555,6 +560,26 @@ public class UrgentOrderActivity extends BaseActivity implements View.OnClickLis
                     public void OnDateTimeSlotPick(String start, String end) {
                         updateCreateTime((start + "\u3000~\u3000" + end));
                         viewModel.getQueryCondition().setCreateTime((start + "~" + end));
+                    }
+                });
+                break;
+            case R.id.receiptTime:
+                OrderQueryCondition conditions = viewModel.getQueryCondition();
+                String receiptTime = conditions.getReceiptTime();
+                String startTime = "";
+                String endTime = "";
+                if(!TextUtils.isEmpty(receiptTime)){
+                    String[] time = receiptTime.split("~");
+                    if(time.length >=2){
+                        startTime = time[0];
+                        endTime = time[1];
+                    }
+                }
+                DateTimePickerDialog.showDateSlotPickerDialog(UrgentOrderActivity.this, startTime, endTime, new DateTimePickerDialog.OnDateTimeSlotPickListener() {
+                    @Override
+                    public void OnDateTimeSlotPick(String start, String end) {
+                        updateReceiptTime((start + "\u3000~\u3000" + end));
+                        viewModel.getQueryCondition().setReceiptTime((start + "~" + end));
                     }
                 });
                 break;
@@ -635,7 +660,9 @@ public class UrgentOrderActivity extends BaseActivity implements View.OnClickLis
                 break;
             case R.id.clear:
                 viewModel.clearQueryCondition();
-                updateCreateTime(viewModel.getQueryCondition().getCreateTime().replace("~", "\u3000~\u3000"));
+                updateCreateTime("");
+//                updateReceiptTime(viewModel.getQueryCondition().getCreateTime().replace("~", "\u3000~\u3000"));
+                updateReceiptTime("");
                 updateGoodsId("");
                 updateOldGoodsId("");
                 updateStoreRoomId("");
@@ -699,8 +726,12 @@ public class UrgentOrderActivity extends BaseActivity implements View.OnClickLis
                 resetValidChip();
                 break;
             case R.id.createTimeClear:
-                viewModel.getQueryCondition().setCreateTime(Tool.getNearlyOneDaysDateSlot());
-                updateCreateTime(viewModel.getQueryCondition().getCreateTime().replace("~", "\u3000~\u3000"));
+                viewModel.getQueryCondition().setCreateTime("");
+                updateCreateTime("");
+                break;
+            case R.id.receiptTimeClear:
+                viewModel.getQueryCondition().setReceiptTime("");
+                updateReceiptTime("");
                 break;
             case R.id.printTimeClear:
                 viewModel.getQueryCondition().setPrintTime("");
@@ -741,6 +772,10 @@ public class UrgentOrderActivity extends BaseActivity implements View.OnClickLis
 
     private void updateCreateTime(String itemValue) {
         createTime.setText(itemValue);
+    }
+
+    private void updateReceiptTime(String itemValue){
+        receiptTime.setText(itemValue);
     }
 
     private void updatePrintTime(String itemValue) {

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:background="@android:color/white"
     android:layout_height="match_parent">
@@ -101,7 +100,7 @@
         android:gravity="start|center"
         android:paddingStart="@dimen/drawer_margin"
         android:paddingEnd="0dp"
-        android:text="@string/goodsType"
+        android:text="@string/oldGoodsId"
         android:textSize="@dimen/text_size"
         app:layout_constraintHeight_percent="@dimen/view_height_percent"
         app:layout_constraintStart_toStartOf="parent"

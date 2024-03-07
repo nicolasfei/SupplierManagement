@@ -73,6 +73,10 @@ public class SaleStatisticsAdapter extends BaseAdapter {
                 mContext.getString(R.string.totalPrice) + mContext.getString(R.string.colon) + "￥<font color=\"red\">" + data.sendPrice + "</font>";
         holder.send.setText(Html.fromHtml(sendValue, Html.FROM_HTML_MODE_COMPACT));
 
+        //已发货订单
+        String sendBookValue = mContext.getString(R.string.sendGoodsBook) + mContext.getString(R.string.colon) + data.sendBook;
+        holder.sendBook.setText(Html.fromHtml(sendBookValue, Html.FROM_HTML_MODE_COMPACT));
+
         //已销售数量+总价
         String saleValue = mContext.getString(R.string.saleGoodsCount) + mContext.getString(R.string.colon) + data.saleAmount + " " +
                 mContext.getString(R.string.totalPrice) + mContext.getString(R.string.colon) + "￥<font color=\"red\">" + data.salePrice + "</font>";
@@ -97,6 +101,7 @@ public class SaleStatisticsAdapter extends BaseAdapter {
         private TextView newGoodsCode;      //新货号
         private TextView oldGoodsCode;      //旧货号
         private TextView send;              //已发货数量
+        private TextView sendBook;          //已发货订单
         private TextView sale;              //已销售数量
         private TextView back;              //已返货数量
         private TextView surplus;           //库存数量
@@ -107,6 +112,7 @@ public class SaleStatisticsAdapter extends BaseAdapter {
             this.newGoodsCode = root.findViewById(R.id.newGoodsCode);
             this.oldGoodsCode = root.findViewById(R.id.oldGoodsCode);
             this.send = root.findViewById(R.id.send);
+            this.sendBook = root.findViewById(R.id.sendBook);
             this.sale = root.findViewById(R.id.sale);
             this.back = root.findViewById(R.id.back);
             this.surplus = root.findViewById(R.id.surplus);

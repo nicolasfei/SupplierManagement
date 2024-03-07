@@ -284,7 +284,7 @@
     <string name="orderStatus">订单状态</string>
     <string name="goodsQuery">货号查询</string>
     <string name="query">查询</string>
-    <string name="branchID">分店编号</string>
+    <string name="branchID">(分店编号)</string>
     <string name="deliveryDays">交货天数</string>
     <string name="returnTotalPrice">返货总价格</string>
     <string name="returnPrice">返货价格</string>
@@ -466,6 +466,7 @@
     <string name="isValidStatus">订单是否作废</string>
     <string name="goodsTotal">总货号数</string>
     <string name="sendGoodsCount">已发货数量</string>
+    <string name="sendGoodsBook">已发货订单</string>
     <string name="saleGoodsCount">已销售数量</string>
     <string name="backGoodsCount">已返货数量</string>
     <string name="surplusGoodsCount">剩余库存</string>
@@ -480,4 +481,6 @@
     <string name="totalQuery">汇总查询</string>
     <string name="order_is_urgent">是否加急</string>
     <string name="order_not_urgent">普通</string>
+    <string name="receiptTime">库房收货时间</string>
+    <string name="receiptTimeTime">库房收货时间</string>
 </resources>

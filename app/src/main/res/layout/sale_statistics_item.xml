@@ -65,6 +65,15 @@
             android:textSize="@dimen/text_size" />
 
         <TextView
+            android:id="@+id/sendBook"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:gravity="start|center"
+            android:paddingStart="@dimen/drawer_margin"
+            android:paddingEnd="@dimen/drawer_margin"
+            android:textSize="@dimen/text_size" />
+
+        <TextView
             android:id="@+id/sale"
             android:layout_width="match_parent"
             android:layout_height="30dp"

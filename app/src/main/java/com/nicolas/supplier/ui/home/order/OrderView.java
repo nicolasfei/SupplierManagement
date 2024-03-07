@@ -32,6 +32,10 @@ public class OrderView extends LinearLayout {
     private TextView createTime;    //下单时间
     private TextView deadline;      //截至时间
     private TextView sendAmount;    //发货数量
+
+    private TextView Urgent;        //加急
+    private TextView check;         //质检
+    private TextView air;           //空运
     private TextView remark;        //备注
 
     private ListView listView;      //颜色尺码
@@ -61,6 +65,10 @@ public class OrderView extends LinearLayout {
         this.deadline = root.findViewById(R.id.deadline);
         this.sendAmount = root.findViewById(R.id.sendAmount);
 
+        this.Urgent = root.findViewById(R.id.Urgent);
+        this.check = root.findViewById(R.id.check);
+        this.air = root.findViewById(R.id.air);
+
         this.remark = root.findViewById(R.id.remark);
         this.listView = root.findViewById(R.id.listView);
     }
@@ -88,20 +96,30 @@ public class OrderView extends LinearLayout {
         String oldGoodsIDValue = "旧货号" + "\u3000" + order.oldGoodsId;
         this.oldGoodsID.setText(Html.fromHtml(oldGoodsIDValue, Html.FROM_HTML_MODE_COMPACT));
 
-        String warehouseValue = "\u3000库房" + "\u3000" + order.storeRoomName;
+        String warehouseValue = "库房" + "\u3000" + order.storeRoomName;
         this.warehouse.setText(Html.fromHtml(warehouseValue, Html.FROM_HTML_MODE_COMPACT));
 
         String goodsTypeValue = "类别" + "\u3000" + order.goodsClassName;
         this.goodsType.setText(Html.fromHtml(goodsTypeValue, Html.FROM_HTML_MODE_COMPACT));
 
-        String createTimeValue = "下单日期" + "\u3000" + order.createTime.substring(0, 10);
+        String createTimeValue = "下单日期" + "\u3000" + order.createTime;//.substring(0, 10);      by nicolas 24/03/08
         this.createTime.setText(Html.fromHtml(createTimeValue, Html.FROM_HTML_MODE_COMPACT));
 
         String deadlineValue = "截至日期" + "\u3000" + order.inValidTime;
         this.deadline.setText(Html.fromHtml(deadlineValue, Html.FROM_HTML_MODE_COMPACT));
 
-        String sendAmountValue = "发货数量" + "\u3000" + "<font color=\"black\"><big>" + order.sendAmount + "</big></font>";
+//        String sendAmountValue = "发货数量" + "\u3000" + "<font color=\"black\"><big>" + order.sendAmount + "</big></font>";
+        String sendAmountValue = "数量" + "\u3000" + order.sendAmount;                                //by nicolas 24/03/08
         this.sendAmount.setText(Html.fromHtml(sendAmountValue, Html.FROM_HTML_MODE_COMPACT));
+
+        String Urgent = "<font color=\"black\"><big>" + order.isUrgent + "</big></font>";
+        this.Urgent.setText(Html.fromHtml(Urgent, Html.FROM_HTML_MODE_COMPACT));
+
+        String check = "<font color=\"black\"><big>" + order.isCheck + "</big></font>";
+        this.check.setText(Html.fromHtml(check, Html.FROM_HTML_MODE_COMPACT));
+
+        String air = "<font color=\"black\"><big>" + order.isAir + "</big></font>";
+        this.air.setText(Html.fromHtml(air, Html.FROM_HTML_MODE_COMPACT));
 
         String remarkValue = "" + "备注" + "\u3000" + order.remark;
         this.remark.setText(Html.fromHtml(remarkValue, Html.FROM_HTML_MODE_COMPACT));

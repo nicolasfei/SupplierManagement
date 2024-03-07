@@ -1,6 +1,7 @@
 package com.nicolas.supplier.data;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.nicolas.toollibrary.Tool;
 
@@ -13,10 +14,11 @@ public class OrderQueryCondition {
     private String oldGoodsId;           //旧货号
     private String goodsId;              //货号
     private List<String> goodsClassIds;   //货物类型
-    private OrderClass orderType;       //下单类型
-    private PrintStatus isPrint;        //是否打印
-    private OrderStatus inState;         //发货状态
+    private OrderClass orderType;       //下否打印
+    private OrderStatus inState;         //发单类型
+    private PrintStatus isPrint;        //是货状态
     private String createTime;           //下单时间
+    private String receiptTime;    //库房收货时间
     private String roomReceiveTime;      //库房发货时间
     private String valid;                //订单状态--正常，作废
     private String orderID;              //订单号
@@ -35,7 +37,8 @@ public class OrderQueryCondition {
         this.orderType = new OrderClass(OrderClass.NONE);
         this.isPrint = new PrintStatus(PrintStatus.NONE);
         this.inState = new OrderStatus(OrderStatus.SWAIT);
-        this.createTime = Tool.getNearlyOneDaysDateSlot();      //默认查询一天
+        this.createTime = "";      //默认查询一天
+        this.receiptTime = "";
         this.roomReceiveTime = "";
         this.valid = OrderValid.NORMAL;
         this.orderID = "";
@@ -53,7 +56,8 @@ public class OrderQueryCondition {
         addGoodsClassId("");
         setIsPrint(PrintStatus.NONE);
         setInState(OrderStatus.NONE);
-        setCreateTime(Tool.getNearlyOneDaysDateSlot());
+        setCreateTime("");
+        setReceiptTime("");
         setRoomReceiveTime("");
         setValid("");
         setOrderID("");
@@ -186,8 +190,8 @@ public class OrderQueryCondition {
         return inState.getStatus();
     }
 
-    public void setCreateTime(String createTime) {
-        if (!this.createTime.equals(createTime)) {
+    public void setCreateTime(String createTime){
+        if(!this.createTime.equals(createTime)){
             this.createTime = createTime;
             this.isQueryConditionUpdate = true;
         }
@@ -195,6 +199,17 @@ public class OrderQueryCondition {
 
     public String getCreateTime() {
         return createTime;
+    }
+
+    public void setReceiptTime(String receiptTime){
+        if(!this.receiptTime.equals(receiptTime)){
+            this.receiptTime = receiptTime;
+            this.isQueryConditionUpdate = true;
+        }
+    }
+
+    public String getReceiptTime(){
+        return receiptTime;
     }
 
     public void setRoomReceiveTime(String roomReceiveTime) {

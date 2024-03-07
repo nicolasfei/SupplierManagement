@@ -21,7 +21,7 @@ public class CommandResponse {
     public static boolean setTest = false;
 
     public CommandResponse(String response, String requestUrl) {
-        Tool.longPrint("CommandResponse: " + response + " requestUrl is " + requestUrl);
+//        Tool.longPrint("CommandResponse: " + response + " requestUrl is " + requestUrl);
         this.url = requestUrl;
         if (setTest){
             setTest=false;

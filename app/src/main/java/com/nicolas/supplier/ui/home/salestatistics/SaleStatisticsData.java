@@ -11,6 +11,7 @@ public class SaleStatisticsData {
     public String goodsType = "";//"特殊需求",
     public String isStock = "";//"允许",
     public int sendAmount = 0;//64,
+    public int sendBook = 0;//64,           //已发货订单
     public float sendPrice = 0;//5888,
     public int saleAmount = 0;//0,
     public float salePrice = 0;//0,
@@ -47,6 +48,9 @@ public class SaleStatisticsData {
             }
             if (jsonObject.has("sendAmount")) {
                 this.sendAmount = jsonObject.getInt("sendAmount");
+            }
+            if (jsonObject.has("sendBook")) {
+                this.sendBook = jsonObject.getInt("sendBook");
             }
             if (jsonObject.has("sendPrice")) {
                 this.sendPrice = (float) jsonObject.getDouble("sendPrice");

@@ -16,6 +16,7 @@ import com.nicolas.supplier.data.OrderStatistics;
 import com.nicolas.supplier.data.OrderStatisticsProperty;
 import com.nicolas.supplier.data.OrderUrgent;
 import com.nicolas.supplier.data.OrderValid;
+import com.nicolas.supplier.supplier.Supplier;
 import com.nicolas.supplier.supplier.SupplierKeeper;
 import com.nicolas.toollibrary.HttpHandler;
 import com.nicolas.supplier.app.SupplierApp;
@@ -61,6 +62,8 @@ public class NewOrderViewModel extends ViewModel {
     private ArrayList<OrderInformation> printOrderList;              //待打印的订单
     private int totalOrderNum;               //被选中的订单数统计
     private float totalOrderPrice;           //被选中的订单价格统计
+
+    private String instate;     //选中库房已收货
 
     private OrderQueryCondition queryCondition;     //订单查询条件
 
@@ -108,7 +111,7 @@ public class NewOrderViewModel extends ViewModel {
         this.orderDistributionQueryList = new ArrayList<>();
         this.queryCondition = new OrderQueryCondition();
         this.queryCondition.setIsUrgent(OrderUrgent.URGENT_URGENT);     //默认查询加急单子
-        this.queryCondition.setCreateTime(Tool.getNearlyThreeDaysDateSlot());
+        this.queryCondition.setCreateTime("");
     }
 
     LiveData<OperateResult> getOrderPropertyAllDownResult() {
@@ -291,15 +294,22 @@ public class NewOrderViewModel extends ViewModel {
             parameters.put("isPrint", queryCondition.getIsPrint());
         }
         if (!TextUtils.isEmpty(queryCondition.getInState())) {
-            parameters.put("inState", queryCondition.getInState());
+            //选中库房已收货，库房已发货和分店已收货以逗号形式隔开加载后面
+            if(queryCondition.getInState().equals(OrderStatus.REQUEST_ROOM_RECEIVE)){
+                this.instate = OrderStatus.REQUEST_ROOM_RECEIVE+","+OrderStatus.REQUEST_ROOM_SEND+","+OrderStatus.REQUEST_BRANCH_RECEIVE;
+            }else {
+                this.instate = queryCondition.getInState();
+            }
+            parameters.put("inState", this.instate);
         }
         if (!TextUtils.isEmpty(queryCondition.getCreateTime())) {
             //查询日期加一天，以配合服务器
             String newDate = Tool.endDateAddOneDay(queryCondition.getCreateTime());
             parameters.put("createTime", newDate);
         }
-        if (!TextUtils.isEmpty(queryCondition.getRoomReceiveTime())) {
-            parameters.put("roomReceiveTime", queryCondition.getRoomReceiveTime());
+        if (!TextUtils.isEmpty(queryCondition.getReceiptTime())) {
+            String addDate = Tool.endDateAddOneDay(queryCondition.getReceiptTime());
+            parameters.put("roomReceiveTime", addDate);
         }
         if (!TextUtils.isEmpty(queryCondition.getBranchID())) {
             String branchId = SupplierKeeper.getInstance().getBranchID(queryCondition.getBranchID());
@@ -322,7 +332,12 @@ public class NewOrderViewModel extends ViewModel {
         if (!TextUtils.isEmpty(queryCondition.getOverDue())) {
             parameters.put("inValid", queryCondition.getOverDue());
         }
+        if (!TextUtils.isEmpty(queryCondition.getPrintTime())) {
+            String newDate1 = Tool.endDateAddOneDay(queryCondition.getPrintTime());
+            parameters.put("printTime",newDate1);
+        }
         vo.parameters = parameters;
+
         Invoker.getInstance().setOnEchoResultCallback(this.callback);
         Invoker.getInstance().exec(vo);
     }
@@ -439,19 +454,28 @@ public class NewOrderViewModel extends ViewModel {
             parameters.put("orderType", queryCondition.getOrderType());
 
         if (!TextUtils.isEmpty(queryCondition.getBranchID()))
-            parameters.put("branchId", queryCondition.getBranchID());
+            parameters.put("branchId", SupplierKeeper.getInstance().getBranchID(queryCondition.getBranchID()));
         if (!TextUtils.isEmpty(queryCondition.getValid()))
             parameters.put("inValid", queryCondition.getValid());
-
-        String newDate = Tool.endDateAddOneDay(queryCondition.getCreateTime());
-        parameters.put("createTime", newDate);
+        if (!TextUtils.isEmpty(queryCondition.getCreateTime())) {
+            //查询日期加一天，以配合服务器
+            String newDate = Tool.endDateAddOneDay(queryCondition.getCreateTime());
+            parameters.put("createTime", newDate);
+        }
 
         if (!TextUtils.isEmpty(queryCondition.getGoodsClassId()))
             parameters.put("goodsClassId", queryCondition.getGoodsClassId());
         if (!TextUtils.isEmpty(queryCondition.getOldGoodsId()))
             parameters.put("oldGoodsId", queryCondition.getOldGoodsId());
-        if (!TextUtils.isEmpty(queryCondition.getRoomReceiveTime()))
-            parameters.put("roomReceiveTime", queryCondition.getRoomReceiveTime());
+        if (!TextUtils.isEmpty(queryCondition.getRoomReceiveTime())) {
+            String addDate = Tool.endDateAddOneDay(queryCondition.getReceiptTime());
+            parameters.put("roomReceiveTime", addDate);
+        }
+
+        if (!TextUtils.isEmpty(queryCondition.getPrintTime())) {
+            String newDate1 = Tool.endDateAddOneDay(queryCondition.getPrintTime());
+            parameters.put("printTime",newDate1);
+        }
         vo.parameters = parameters;
         Invoker.getInstance().setOnEchoResultCallback(this.callback);
         Invoker.getInstance().exec(vo);
@@ -537,7 +561,7 @@ public class NewOrderViewModel extends ViewModel {
             Comparator<OrderInformation> byStoreRoom = Comparator.comparing(OrderInformation::getStoreRoomName);
             //发货数量排序--升序
             Comparator<OrderInformation> bySendAmount = Comparator.comparing(OrderInformation::getSendAmount);
-            orderList.sort(byPrint.thenComparing(byGoodsID).thenComparing(byStoreRoom).thenComparing(bySendAmount).thenComparing(byIsUrgent));
+            orderList.sort(byGoodsID.thenComparing(byStoreRoom).thenComparing(bySendAmount).thenComparing(byIsUrgent));
         } else {
             //供应商未接单
             Comparator<OrderInformation> byInState = Comparator.comparing(OrderInformation::getInState);
@@ -792,7 +816,7 @@ public class NewOrderViewModel extends ViewModel {
                                 msg.what = 1;       //表示无订单
                                 orderQueryResult.setValue(new OperateResult(new OperateInUserView(msg)));
                             } else {
-                                if (queryCondition.getInState().equals(OrderStatus.REQUEST_SWAITED) && !TextUtils.isEmpty(queryCondition.getPrintTime())) {
+                                if (queryCondition.getInState().equals(OrderStatus.REQUEST_SWAITED)) {
                                     for (int i = 0; i < array.length(); i++) {
                                         //添加订单
                                         OrderInformation item = new OrderInformation(array.getString(i));
@@ -802,11 +826,11 @@ public class NewOrderViewModel extends ViewModel {
                                         } else {
                                             item.select = false;
                                         }
-                                        if (queryCondition.getPrintTime().equals(item.printTime)) {
+//                                        if (queryCondition.getPrintTime().equals(item.printTime)) {
                                             orderList.add(item);
                                             statisticsOrderInformation(item);           //统计订单数据到统计list
                                             addOrderDistributionQuery(item);            //统计订单配送顺序list
-                                        }
+//                                        }
                                     }
                                 } else {
                                     for (int i = 0; i < array.length(); i++) {

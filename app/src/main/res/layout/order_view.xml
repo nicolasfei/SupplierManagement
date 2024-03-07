@@ -1,206 +1,253 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="283dp"
-    android:layout_height="283dp"
-    android:orientation="vertical"
-    android:padding="3dp">
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white">
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.65" />
+
+    <TextView
+        android:id="@+id/branchId"
+        android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:orientation="horizontal">
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="10dp"
+        android:gravity="start|center|bottom"
+        android:text="JM43"
+        android:textColor="@color/black"
+        android:textSize="48sp"
+        android:textStyle="bold"
+        app:layout_constraintHeight_percent="0.09"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:layout_weight="0.2"
-            android:gravity="start|bottom"
-            android:orientation="vertical">
+    <TextView
+        android:id="@+id/branchIdText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="start|center"
+        android:text="@string/branchID"
+        android:textColor="@color/black"
+        android:textSize="12sp"
+        app:layout_constraintStart_toStartOf="@+id/branchId"
+        app:layout_constraintTop_toBottomOf="@+id/branchId" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.2"
-                android:gravity="start|bottom"
-                android:text="@string/branchID"
-                android:textColor="@color/black"
-                android:textSize="12sp"
-                android:textStyle="bold" />
+    <TextView
+        android:id="@+id/printID"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="start|center"
+        android:text="打印序号：1"
+        android:layout_marginStart="10dp"
+        android:textColor="@color/black"
+        android:textSize="10sp"
+        android:textStyle="normal"
+        app:layout_constraintStart_toEndOf="@+id/branchIdText"
+        app:layout_constraintTop_toTopOf="@+id/branchIdText" />
 
-            <TextView
-                android:id="@+id/printID"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.2"
-                android:gravity="start|bottom"
-                android:text="打印序号：1"
-                android:textColor="@color/black"
-                android:textSize="10sp"
-                android:textStyle="normal" />
-
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/branchId"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.3"
-            android:gravity="start|bottom"
-            android:paddingStart="5dp"
-            android:paddingEnd="0dp"
-            android:text="JM43"
-            android:textColor="@color/black"
-            android:textSize="24sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/orderClass"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.1"
-            android:gravity="start|bottom"
-            android:text="@string/order_first"
-            android:textColor="@color/black"
-            android:textSize="12sp"
-            android:textStyle="bold" />
-
-        <ImageView
-            android:id="@+id/code"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.4"
-            android:gravity="start|center" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
+    <ImageView
+        android:id="@+id/code"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="5dp"
-        android:layout_weight="2"
-        android:orientation="horizontal">
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:gravity="start|center"
+        app:layout_constraintBottom_toBottomOf="@id/branchIdText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guideline"
+        app:layout_constraintTop_toTopOf="@+id/branchId" />
 
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.5"
-            android:orientation="vertical">
+    <TextView
+        android:id="@+id/supplier"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:gravity="start|center"
+        android:text="供应商&#12288;9010"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_order_view1"
+        android:textStyle="normal"
+        app:layout_constraintHeight_percent="@dimen/ovhp"
+        app:layout_constraintStart_toStartOf="@+id/branchIdText"
+        app:layout_constraintTop_toBottomOf="@+id/branchIdText" />
 
-            <TextView
-                android:id="@+id/supplier"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="0.1"
-                android:gravity="start|bottom"
-                android:text="供应商&#12288;9010"
-                android:textColor="@color/black"
-                android:textSize="12sp"
-                android:textStyle="normal" />
+    <TextView
+        android:id="@+id/orderClass"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:gravity="start|center"
+        android:text="下单属性&#12288;首单"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_order_view1"
+        android:textStyle="normal"
+        app:layout_constraintHeight_percent="@dimen/ovhp"
+        app:layout_constraintStart_toStartOf="@+id/branchIdText"
+        app:layout_constraintTop_toBottomOf="@+id/supplier" />
 
-            <TextView
-                android:id="@+id/newGoodsID"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="0.1"
-                android:gravity="start|bottom"
-                android:text="新货号&#12288;01116059"
-                android:textColor="@color/black"
-                android:textSize="12sp"
-                android:textStyle="normal" />
+    <TextView
+        android:id="@+id/oldGoodsID"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:gravity="start|center"
+        android:text="旧货号&#12288;8811"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_order_view1"
+        android:textStyle="normal"
+        app:layout_constraintHeight_percent="@dimen/ovhp"
+        app:layout_constraintStart_toStartOf="@+id/branchIdText"
+        app:layout_constraintTop_toBottomOf="@+id/orderClass" />
 
-            <TextView
-                android:id="@+id/oldGoodsID"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="0.1"
-                android:gravity="start|bottom"
-                android:text="旧货号&#12288;8811"
-                android:textColor="@color/black"
-                android:textSize="12sp"
-                android:textStyle="bold" />
+    <TextView
+        android:id="@+id/deadline"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:gravity="start|center"
+        android:text="截至日期&#12288;2020-11-27"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_order_view1"
+        android:textStyle="normal"
+        app:layout_constraintHeight_percent="@dimen/ovhp"
+        app:layout_constraintStart_toStartOf="@+id/branchIdText"
+        app:layout_constraintTop_toBottomOf="@+id/oldGoodsID" />
 
-            <TextView
-                android:id="@+id/warehouse"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="0.1"
-                android:gravity="start|bottom"
-                android:text="&#12288;库房&#12288;文创园JM库房"
-                android:textColor="@color/black"
-                android:textSize="12sp"
-                android:textStyle="bold" />
-        </LinearLayout>
+    <TextView
+        android:id="@+id/createTime"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:gravity="start|center"
+        android:text="下单日期&#12288;2020-11-27 15:30"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_order_view1"
+        android:textStyle="normal"
+        app:layout_constraintHeight_percent="@dimen/ovhp"
+        app:layout_constraintStart_toStartOf="@+id/branchIdText"
+        app:layout_constraintTop_toBottomOf="@+id/deadline" />
 
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.5"
-            android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/goodsType"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="0.1"
-                android:gravity="start|bottom"
-                android:text="类别&#12288;常规套头针织"
-                android:textColor="@color/black"
-                android:textSize="12sp"
-                android:textStyle="normal" />
+    <TextView
+        android:id="@+id/warehouse"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:gravity="start|center"
+        android:text="库房&#12288;文创园JM库房"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_order_view1"
+        android:textStyle="normal"
+        app:layout_constraintHeight_percent="@dimen/ovhp"
+        app:layout_constraintStart_toStartOf="@+id/code"
+        app:layout_constraintTop_toTopOf="@+id/supplier" />
 
-            <TextView
-                android:id="@+id/createTime"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="0.1"
-                android:gravity="start|bottom"
-                android:text="下单日期&#12288;2020-11-27"
-                android:textColor="@color/black"
-                android:textSize="12sp"
-                android:textStyle="normal" />
+    <TextView
+        android:id="@+id/goodsType"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:gravity="start|center"
+        android:text="类别&#12288;常规套头针织"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_order_view1"
+        android:textStyle="normal"
+        app:layout_constraintHeight_percent="@dimen/ovhp"
+        app:layout_constraintStart_toStartOf="@+id/code"
+        app:layout_constraintTop_toBottomOf="@+id/warehouse" />
 
-            <TextView
-                android:id="@+id/deadline"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="0.1"
-                android:gravity="start|bottom"
-                android:text="截至日期&#12288;2020-11-27"
-                android:textColor="@color/black"
-                android:textSize="12sp"
-                android:textStyle="normal" />
+    <TextView
+        android:id="@+id/newGoodsID"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:gravity="start|center"
+        android:text="新货号&#12288;01116059"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_order_view1"
+        android:textStyle="normal"
+        app:layout_constraintHeight_percent="@dimen/ovhp"
+        app:layout_constraintStart_toStartOf="@+id/code"
+        app:layout_constraintTop_toBottomOf="@+id/goodsType" />
 
-            <TextView
-                android:id="@+id/sendAmount"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="0.1"
-                android:gravity="start|bottom"
-                android:text="发货数量&#8194;100"
-                android:textColor="@color/black"
-                android:textSize="12sp"
-                android:textStyle="bold" />
-        </LinearLayout>
-    </LinearLayout>
+    <TextView
+        android:id="@+id/sendAmount"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:gravity="start|center"
+        android:text="发货数量&#8194;100"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_order_view1"
+        android:textStyle="normal"
+        app:layout_constraintHeight_percent="@dimen/ovhp"
+        app:layout_constraintStart_toStartOf="@+id/code"
+        app:layout_constraintTop_toBottomOf="@+id/newGoodsID" />
+
+    <TextView
+        android:id="@+id/Urgent"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:gravity="start|center"
+        android:text="普通"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_order_view2"
+        android:textStyle="bold"
+        app:layout_constraintHeight_percent="@dimen/ovhp"
+        app:layout_constraintStart_toStartOf="@+id/guideline1"
+        app:layout_constraintTop_toBottomOf="@+id/sendAmount" />
+
+    <TextView
+        android:id="@+id/check"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:gravity="start|center"
+        android:text="(检)"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_order_view2"
+        android:textStyle="bold"
+        app:layout_constraintHeight_percent="@dimen/ovhp"
+        app:layout_constraintStart_toEndOf="@+id/Urgent"
+        app:layout_constraintTop_toTopOf="@+id/Urgent" />
+
+    <TextView
+        android:id="@+id/air"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:gravity="start|center"
+        android:text="空运"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_order_view2"
+        android:textStyle="bold"
+        app:layout_constraintHeight_percent="@dimen/ovhp"
+        app:layout_constraintStart_toStartOf="@+id/Urgent"
+        app:layout_constraintTop_toBottomOf="@+id/check" />
 
     <TextView
         android:id="@+id/remark"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="5dp"
-        android:layout_weight="0.3"
-        android:gravity="start|bottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:gravity="start|center"
         android:singleLine="true"
         android:text="备注：测试备注，测试备注，测试备注，测试备注，测试备注，"
         android:textColor="@color/black"
         android:textSize="12sp"
-        android:textStyle="normal" />
+        android:textStyle="normal"
+        app:layout_constraintStart_toStartOf="@+id/branchIdText"
+        app:layout_constraintTop_toBottomOf="@+id/air" />
 
     <ListView
         android:id="@+id/listView"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:layout_marginTop="5dp"
-        android:layout_weight="2" />
-</LinearLayout>
+        android:layout_marginTop="15dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/branchIdText"
+        app:layout_constraintTop_toBottomOf="@+id/remark" />
+</androidx.constraintlayout.widget.ConstraintLayout>

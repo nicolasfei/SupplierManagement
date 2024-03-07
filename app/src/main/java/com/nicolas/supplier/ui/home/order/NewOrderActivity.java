@@ -1,5 +1,6 @@
 package com.nicolas.supplier.ui.home.order;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -34,6 +35,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.nicolas.componentlibrary.datetimepicker.DateTimePicker;
 import com.nicolas.componentlibrary.datetimepicker.DateTimePickerDialog;
 import com.nicolas.componentlibrary.multileveltree.TreeNode;
 import com.nicolas.componentlibrary.multileveltree.TreeNodeViewDialog;
@@ -89,7 +91,7 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
     private boolean orderGoodsCounting = false;       //订单货号统计中
 
     //以下为查询条件
-    private TextView createTime, oldGoodsId, goodsId, goodsClassId, branchId, storeRoomId, orderID, printTime;
+    private TextView createTime,receiptTime, oldGoodsId, goodsId, goodsClassId, branchId, storeRoomId, orderID,printTime;
     private RadioGroup orderClassChip;      //下单类型
     private RadioGroup inStateChip;         //订单接收状态--供应商待接单，供应商已接单，库房已收货，库房已发货，分店已收货
     private RadioGroup isValidChip;         //订单状态--正常,作废
@@ -279,6 +281,11 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
 
         //查询条件
         OrderQueryCondition condition = viewModel.getQueryCondition();
+
+        this.receiptTime = findClickView(R.id.receiptTime);
+        this.updateReceiptTime(condition.getReceiptTime().replace("~", "\u3000~\u3000"));
+
+
         this.createTime = findClickView(R.id.createTime);
         this.updateCreateTime(condition.getCreateTime().replace("~", "\u3000~\u3000"));
 
@@ -299,6 +306,7 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
 
         this.storeRoomId = findClickView(R.id.storeRoomId);
         this.updateStoreRoomId(condition.getStoreRoomID());
+
 
         //下单类型
         this.orderClassChip = findViewById(R.id.orderClassChip);
@@ -350,12 +358,12 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
                     case R.id.inStateChip2:
                         viewModel.getQueryCondition().setInState(OrderStatus.ROOM_RECEIVE);
                         break;
-                    case R.id.inStateChip3:
-                        viewModel.getQueryCondition().setInState(OrderStatus.ROOM_SEND);
-                        break;
-                    case R.id.inStateChip4:
-                        viewModel.getQueryCondition().setInState(OrderStatus.BRANCH_RECEIVE);
-                        break;
+//                    case R.id.inStateChip3:
+//                        viewModel.getQueryCondition().setInState(OrderStatus.ROOM_SEND);
+//                        break;
+//                    case R.id.inStateChip4:
+//                        viewModel.getQueryCondition().setInState(OrderStatus.BRANCH_RECEIVE);
+//                        break;
                     default:
                         break;
                 }
@@ -434,6 +442,8 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
 
         //订单打印时间
         this.printTime = findClickView(R.id.printTime);
+        this.updatePrintTime(condition.getPrintTime().replace("~", "\u3000~\u3000"));
+//        this.updatePrintTime(condition.getPrintTime());
 
         //查询条件clear
        this.orderClassClearButton =  findClickView(R.id.orderClassClear);
@@ -446,6 +456,7 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
         findClickView(R.id.inStateClear);
         findClickView(R.id.isValidClear);
         findClickView(R.id.createTimeClear);
+        findClickView(R.id.receiptTimeClear);
         findClickView(R.id.isOverdueClear);
         findClickView(R.id.printTimeClear);
         findClickView(R.id.clear);
@@ -652,7 +663,7 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
      */
     private void showManualOrderDialog(final String orderID) {
         String[] operation = new String[]{getString(R.string.manual_order), getString(R.string.OrderInValid)};
-        BruceDialog.showSingleChoiceDialog(R.string.orderOperation, this, operation, new BruceDialog.OnChoiceItemListener() {
+        BruceDialog.showSingleChoiceDialog(R.string.orderOperation, (Context) this, operation, new BruceDialog.OnChoiceItemListener() {
             @Override
             public void onChoiceItem(String itemName) {
                 if (itemName.equals(getString(R.string.manual_order))) {
@@ -688,6 +699,27 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
                     }
                 });
                 break;
+            case R.id.receiptTime:
+                OrderQueryCondition conditions = viewModel.getQueryCondition();
+                String receiptTime = conditions.getReceiptTime();
+                String startTime = "";
+                String endTime = "";
+                if(!TextUtils.isEmpty(receiptTime)){
+                    String[] time = receiptTime.split("~");
+                    if(time.length >=2){
+                        startTime = time[0];
+                        endTime = time[1];
+                    }
+                }
+                DateTimePickerDialog.showDateSlotPickerDialog(NewOrderActivity.this, startTime, endTime, new DateTimePickerDialog.OnDateTimeSlotPickListener() {
+                    @Override
+                    public void OnDateTimeSlotPick(String start, String end) {
+                        updateReceiptTime((start + "\u3000~\u3000" + end));
+                        viewModel.getQueryCondition().setReceiptTime((start + "~" + end));
+                    }
+                });
+                break;
+
             case R.id.goodsID:          //新货号
                 BruceDialog.showEditInputDialog(R.string.newGoodsID, R.string.newGoodsID, InputType.TYPE_CLASS_TEXT, NewOrderActivity.this, new BruceDialog.OnInputFinishListener() {
                     @Override
@@ -754,18 +786,31 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
                         });
                 break;
             case R.id.printTime:
-                DateTimePickerDialog.showDateTimePickerDialog(NewOrderActivity.this, viewModel.getQueryCondition().getPrintTime(),
-                        new DateTimePickerDialog.OnDateTimePickListener() {
-                            @Override
-                            public void OnDateTimePick(String dateTime) {
-                                viewModel.getQueryCondition().setPrintTime(dateTime);
-                                updatePrintTime(dateTime);
-                            }
-                        });
+                OrderQueryCondition condition1 = viewModel.getQueryCondition();
+                String printTime = condition1.getCreateTime();
+                String start1 = "";
+                String end1 = "";
+                if (!TextUtils.isEmpty(printTime)) {
+                    String[] times = printTime.split("~");
+                    if (times.length >= 2) {
+                        start = times[0];
+                        end = times[1];
+                    }
+                }
+                DateTimePickerDialog.showDateSlotPickerDialog(NewOrderActivity.this, start1, end1, new DateTimePickerDialog.OnDateTimeSlotPickListener() {
+                    @Override
+                    public void OnDateTimeSlotPick(String start, String end) {
+//                        updateCreateTime((start + "\u3000~\u3000" + end));
+//                        viewModel.getQueryCondition().setCreateTime((start + "~" + end));
+                        viewModel.getQueryCondition().setPrintTime((start + "~" + end));
+                        updatePrintTime((start + "\u3000~\u3000" + end));
+                    }
+                });
                 break;
             case R.id.clear:
                 viewModel.clearQueryCondition();
-                updateCreateTime(viewModel.getQueryCondition().getCreateTime().replace("~", "\u3000~\u3000"));
+                updateCreateTime("");
+                updateReceiptTime("");
                 updateGoodsId("");
                 updateOldGoodsId("");
                 updateStoreRoomId("");
@@ -835,8 +880,12 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
                 resetValidChip();
                 break;
             case R.id.createTimeClear:
-                viewModel.getQueryCondition().setCreateTime(Tool.getNearlyThreeDaysDateSlot());
-                updateCreateTime(viewModel.getQueryCondition().getCreateTime().replace("~", "\u3000~\u3000"));
+                viewModel.getQueryCondition().setCreateTime("");
+                updateCreateTime("");
+                break;
+            case R.id.receiptTimeClear:
+                viewModel.getQueryCondition().setReceiptTime("");
+                updateReceiptTime("");
                 break;
             case R.id.isOverdueClear:
                 viewModel.getQueryCondition().setOverDue(OrderOverdue.NONE);
@@ -886,6 +935,10 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
 
     private void updateCreateTime(String itemValue) {
         createTime.setText(itemValue);
+    }
+
+    private void updateReceiptTime(String itemValue){
+        receiptTime.setText(itemValue);
     }
 
     private void updatePrintTime(String itemValue) {
@@ -967,14 +1020,15 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
                 isInStateChipClear = true;
                 this.inStateChip.check(R.id.inStateChip2);
                 break;
-            case OrderStatus.ROOM_SEND:
-                isInStateChipClear = true;
-                this.inStateChip.check(R.id.inStateChip3);
-                break;
-            case OrderStatus.BRANCH_RECEIVE:
-                isInStateChipClear = true;
-                this.inStateChip.check(R.id.inStateChip4);
-                break;
+//                case OrderStatus.ROOM_SEND:
+//                isInStateChipClear = true;
+//                this.inStateChip.check(R.id.inStateChip3);
+//                break;
+//            case OrderStatus.BRANCH_RECEIVE:
+//                isInStateChipClear = true;
+//                this.inStateChip.check(R.id.inStateChip4);
+//                break;
+//
             default:
                 break;
         }

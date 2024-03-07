@@ -59,6 +59,8 @@ public class UrgentOrderViewModel extends ViewModel {
     private int totalOrderNum;               //被选中的订单数统计
     private float totalOrderPrice;           //被选中的订单价格统计
 
+    private String instate;     //选中库房已收货
+
     private OrderQueryCondition queryCondition;     //订单查询条件
 
     private String orderPropertyID;         //更新的订单属性ID
@@ -252,15 +254,21 @@ public class UrgentOrderViewModel extends ViewModel {
             parameters.put("isPrint", queryCondition.getIsPrint());
         }
         if (!TextUtils.isEmpty(queryCondition.getInState())) {
-            parameters.put("inState", queryCondition.getInState());
+            //选中库房已收货，库房已发货和分店已收货以逗号形式隔开加载后面
+            if(queryCondition.getInState().equals(OrderStatus.REQUEST_ROOM_RECEIVE)){
+                this.instate = OrderStatus.REQUEST_ROOM_RECEIVE+","+OrderStatus.REQUEST_ROOM_SEND+","+OrderStatus.REQUEST_BRANCH_RECEIVE;
+            }else {
+                this.instate = queryCondition.getInState();
+            }
+            parameters.put("inState", this.instate);
         }
         if (!TextUtils.isEmpty(queryCondition.getCreateTime())) {
             //查询日期加一天，以配合服务器
             String newDate = Tool.endDateAddOneDay(queryCondition.getCreateTime());
             parameters.put("createTime", newDate);
         }
-        if (!TextUtils.isEmpty(queryCondition.getRoomReceiveTime())) {
-            parameters.put("roomReceiveTime", queryCondition.getRoomReceiveTime());
+        if (!TextUtils.isEmpty(queryCondition.getReceiptTime())) {
+            parameters.put("roomReceiveTime", queryCondition.getReceiptTime());
         }
         if (!TextUtils.isEmpty(queryCondition.getBranchID())) {
             String branchId = SupplierKeeper.getInstance().getBranchID(queryCondition.getBranchID());

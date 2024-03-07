@@ -113,6 +113,7 @@ public class OrderInformation implements Parcelable {
     public String valid;            //"启用",
     public String isCheck;          //是否需要质检
     public String isUrgent;         //加急(加急/普通)
+    public String isAir;            //是否空运
     public String img;              //图片url
     public List<OrderPropertyRecord> propertyRecords;
 
@@ -154,6 +155,7 @@ public class OrderInformation implements Parcelable {
         this.valid = "正常";            //"启用",
         this.img = "123456";              //图片
         this.isUrgent = "普通";
+        this.isAir = "";        //默认非空运
         this.isCheck="";
         this.propertyRecords = new ArrayList<>();
         for (int i = 0; i < 70; i++) {
@@ -206,6 +208,7 @@ public class OrderInformation implements Parcelable {
             if (object.has("isCheck")){
                 this.isCheck = object.getString("isCheck");
             }
+            this.isAir = object.optString("isAirway","");               //by bruce 24/03/08     是否空运
             this.inState = new OrderStatus(object.getString("inState"));
             this.roomSendTime = object.getString("roomSendTime");
             this.branchReceiveTime = object.getString("branchReceiveTime");
@@ -267,6 +270,7 @@ public class OrderInformation implements Parcelable {
         remark = in.readString();
         valid = in.readString();
         isUrgent = in.readString();
+        isAir = in.readString();
         img = in.readString();
         propertyRecords = in.createTypedArrayList(OrderPropertyRecord.CREATOR);
         showProperties = in.readByte() != 0;
@@ -312,6 +316,7 @@ public class OrderInformation implements Parcelable {
         dest.writeString(remark);
         dest.writeString(valid);
         dest.writeString(isUrgent);
+        dest.writeString(isAir);
         dest.writeString(img);
         dest.writeTypedList(propertyRecords);
         dest.writeByte((byte) (showProperties ? 1 : 0));
@@ -383,5 +388,9 @@ public class OrderInformation implements Parcelable {
 
     public String getIsUrgent() {
         return isUrgent;
+    }
+
+    public String getIsAir() {
+        return isAir;
     }
 }

@@ -10,7 +10,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
@@ -25,15 +24,15 @@ import com.nicolas.componentlibrary.datetimepicker.DateTimePickerDialog;
 import com.nicolas.componentlibrary.multileveltree.TreeNode;
 import com.nicolas.componentlibrary.multileveltree.TreeNodeViewDialog;
 import com.nicolas.componentlibrary.pullrefresh.PullRefreshListView;
-import com.nicolas.supplier.data.GoodsCodeQueryCondition;
-import com.nicolas.toollibrary.BruceDialog;
 import com.nicolas.supplier.R;
 import com.nicolas.supplier.common.OperateResult;
 import com.nicolas.supplier.data.GoodsCodeAdapter;
 import com.nicolas.supplier.data.GoodsCodeClass;
+import com.nicolas.supplier.data.GoodsCodeQueryCondition;
 import com.nicolas.supplier.data.GoodsOrderStatus;
 import com.nicolas.supplier.supplier.SupplierKeeper;
 import com.nicolas.supplier.ui.BaseActivity;
+import com.nicolas.toollibrary.BruceDialog;
 import com.nicolas.toollibrary.Tool;
 
 import java.text.SimpleDateFormat;

@@ -1,5 +1,6 @@
 package com.nicolas.supplier.ui.home.salestatistics;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Message;
 import android.text.Html;
@@ -263,7 +264,7 @@ public class SaleStatisticsActivity extends BaseActivity implements View.OnClick
                         });
                 break;
             case R.id.goodsType:            //货号类型
-                BruceDialog.showSingleChoiceDialog(R.string.goodsType, SaleStatisticsActivity.this,
+                BruceDialog.showSingleChoiceDialog(R.string.goodsType, (Context) SaleStatisticsActivity.this,
                         SupplierKeeper.getInstance().getGoodsTypeShow(), new BruceDialog.OnChoiceItemListener() {
                             @Override
                             public void onChoiceItem(String itemName) {

@@ -11,12 +11,14 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.nicolas.supplier.app.SupplierApp;
 import com.nicolas.supplier.server.CommandResponse;
 import com.nicolas.supplier.server.CommandTypeEnum;
 import com.nicolas.supplier.server.CommandVo;
 import com.nicolas.supplier.server.Invoker;
 import com.nicolas.supplier.server.common.VersionCheck;
 import com.nicolas.supplier.server.login.LoginInterface;
+import com.nicolas.supplier.supplier.Supplier;
 import com.nicolas.supplier.ui.login.LoginActivity;
 import com.nicolas.toollibrary.HttpHandler;
 
@@ -39,16 +41,14 @@ public class FirstActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        check();
-//        if (SheBangsApp.getInstance().isHaveActivity()) {
-//            this.finish();
-//            return;
-//        }
+        check();
         setContentView(R.layout.activity_first);
         requestAppPermissions();
     }
 
-
+    /**
+     * App是否已经启动检测
+     */
     private void check() {
         if (!this.isTaskRoot()) { //判断该Activity是不是任务空间的源Activity，“非”也就是说是被系统重新实例化出来
             // 如果你就放在launcher Activity中话，这里可以直接return了
