@@ -81,9 +81,9 @@ public class OrderView extends LinearLayout {
         int width = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
         int height = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
         this.code.measure(width, height);
-        int codeHeight = this.code.getMeasuredHeight();
-        int codeWidth = this.code.getMeasuredWidth();
-        Log.d("xxxxx------------>", "initData: " + codeHeight + "-->" + codeWidth);
+//        int codeHeight = this.code.getMeasuredHeight();
+//        int codeWidth = this.code.getMeasuredWidth();
+//        Log.d("xxxxx------------>", "initData: " + codeHeight + "-->" + codeWidth);
 //        this.code.setImageBitmap(DCode.createBarcode(order.id, codeWidth, codeHeight));//112, 56));
         this.code.setImageBitmap(DCode.createBarcode(order.id, 112, 56));
 
