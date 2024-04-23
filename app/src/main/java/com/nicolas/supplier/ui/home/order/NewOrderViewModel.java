@@ -305,10 +305,12 @@ public class NewOrderViewModel extends ViewModel {
         if (!TextUtils.isEmpty(queryCondition.getCreateTime())) {
             //查询日期加一天，以配合服务器
             String newDate = Tool.endDateAddOneDay(queryCondition.getCreateTime());
+            Log.d("TAG", "query: createTime is "+newDate + "------" +queryCondition.getCreateTime());
             parameters.put("createTime", newDate);
         }
         if (!TextUtils.isEmpty(queryCondition.getReceiptTime())) {
             String addDate = Tool.endDateAddOneDay(queryCondition.getReceiptTime());
+            Log.d("TAG", "query: roomReceiveTime is "+addDate);
             parameters.put("roomReceiveTime", addDate);
         }
         if (!TextUtils.isEmpty(queryCondition.getBranchID())) {
