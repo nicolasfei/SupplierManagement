@@ -3,16 +3,16 @@ include ':app'
 
 //打印机--优博讯
 include ':printerlibraryforufovo'
-project(':printerlibraryforufovo').projectDir = new File(settingsDir, '../PrinterForUfovo/app/printerlibraryforufovo')
+project(':printerlibraryforufovo').projectDir = new File(settingsDir, '../../PrinterForUfovo/app/printerlibraryforufovo')
 
 //组件库
 include ':componentlibrary'
-project(':componentlibrary').projectDir = new File(settingsDir, '../NicComponent/app/componentlibrary')
+project(':componentlibrary').projectDir = new File(settingsDir, '../../NicComponent/app/componentlibrary')
 
 //工具库
 include ':toollibrary'
-project(':toollibrary').projectDir = new File(settingsDir, '../Tool/app/toollibrary')
+project(':toollibrary').projectDir = new File(settingsDir, '../../Tool/app/toollibrary')
 
 //广告通知管理
 include ':advertnoticelibrary'
-project(':advertnoticelibrary').projectDir = new File(settingsDir, '../AdvertNotice/app/advertnoticelibrary')
+project(':advertnoticelibrary').projectDir = new File(settingsDir, '../../AdvertNotice/app/advertnoticelibrary')
