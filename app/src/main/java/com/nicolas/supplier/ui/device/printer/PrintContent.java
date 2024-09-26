@@ -336,19 +336,19 @@ public class PrintContent {
         tsc.addReference(0, contentStartY +  50 * 5);
         //备注
         tsc.addText(RowStartOffset + wordWidth * 2, 0, LabelCommand.FONTTYPE.SIMPLIFIED_CHINESE,
-                LabelCommand.ROTATION.ROTATION_0, LabelCommand.FONTMUL.MUL_1, LabelCommand.FONTMUL.MUL_1,
+                LabelCommand.ROTATION.ROTATION_0, LabelCommand.FONTMUL.MUL_1, LabelCommand.FONTMUL.MUL_2,
                 "备注");
         //order.remark = "备注测试备注测试备注测试备注测试备注测试备注测试备注测试备注测试备注测试备注测试备注测试备注测试备注测试备注测试备注测试备注测试备注测试备注测试备注测试备注测试";
         if (order.remark.length() <= 30) {
             tsc.addText(RowStartOffset + wordWidth * 6, 0, LabelCommand.FONTTYPE.SIMPLIFIED_CHINESE,
-                    LabelCommand.ROTATION.ROTATION_0, LabelCommand.FONTMUL.MUL_1, LabelCommand.FONTMUL.MUL_1,
+                    LabelCommand.ROTATION.ROTATION_0, LabelCommand.FONTMUL.MUL_1, LabelCommand.FONTMUL.MUL_2,
                     order.remark);
         } else {
             tsc.addText(RowStartOffset + wordWidth * 6, 0, LabelCommand.FONTTYPE.SIMPLIFIED_CHINESE,
-                    LabelCommand.ROTATION.ROTATION_0, LabelCommand.FONTMUL.MUL_1, LabelCommand.FONTMUL.MUL_1,
+                    LabelCommand.ROTATION.ROTATION_0, LabelCommand.FONTMUL.MUL_1, LabelCommand.FONTMUL.MUL_2,
                     order.remark.substring(0, 30));
             tsc.addText(RowStartOffset + wordWidth * 6, RowHeight / 2, LabelCommand.FONTTYPE.SIMPLIFIED_CHINESE,
-                    LabelCommand.ROTATION.ROTATION_0, LabelCommand.FONTMUL.MUL_1, LabelCommand.FONTMUL.MUL_1,
+                    LabelCommand.ROTATION.ROTATION_0, LabelCommand.FONTMUL.MUL_1, LabelCommand.FONTMUL.MUL_2,
                     order.remark.substring(30, Math.min(order.remark.length(), 60)));
         }
 
@@ -373,7 +373,7 @@ public class PrintContent {
 
             //一行排3个
             tsc.addText(LabelWidth / 3 * (j % 3) + RowStartOffset, (RowHeight) * (j / 3) - (10 * (j / 3)), LabelCommand.FONTTYPE.SIMPLIFIED_CHINESE,
-                    LabelCommand.ROTATION.ROTATION_0, LabelCommand.FONTMUL.MUL_1, LabelCommand.FONTMUL.MUL_1,
+                    LabelCommand.ROTATION.ROTATION_0, LabelCommand.FONTMUL.MUL_1, LabelCommand.FONTMUL.MUL_2,
                     (record.actualColor + "*" + record.actualSize + "*" + record.actualNum));
             j++;
         }
