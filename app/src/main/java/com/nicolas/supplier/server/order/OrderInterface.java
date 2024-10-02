@@ -17,4 +17,8 @@ public abstract class OrderInterface extends AbstractInterface {
     public final static String GoodsOrderInValid = AbstractInterface.COMMAND_URL+"Supplier/GoodsOrderInValid";
     //订单配送顺序
     public final static String GoodsOrderDistribution = AbstractInterface.COMMAND_URL+"Supplier/GoodsIdDeliverySortByGoodsId";
+    //订单货号确认数据查询接口
+    public final static String GoodsOrderID = AbstractInterface.COMMAND_URL+"Supplier/StatisticsSwaitOrder";
+    //订单货号确认接口
+    public final static String GoodsOrderSwaited = AbstractInterface.COMMAND_URL+"Supplier/OrderSwaited";
 }

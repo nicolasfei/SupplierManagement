@@ -4,6 +4,7 @@
     <string name="app_login">登陆</string>
     <string name="app_main">主页</string>
     <string name="app_new_order">订单</string>
+    <string name="app_order_submit">订单确认</string>
     <string name="app_order_statistics">订单统计</string>
     <string name="app_printer">打印机</string>
     <string name="title_sale_order">首页</string>
@@ -237,6 +238,8 @@
     <string name="print_attr">颜色</string>
 
     <!--排序-->
+    <string name="sort_order_code_swited">订单是否确认（未确认在前）</string>
+    <string name="sort_order_code_id">订单货号ID（从小到大）</string>
     <string name="sort_order_time">下单时间（从近到远）</string>
     <string name="sort_shipment_time">发货时间（从近到远）</string>
     <string name="sort_branch">分店编号（首字母顺序）</string>
@@ -394,6 +397,8 @@
     <string name="pos">编号</string>
     <string name="inValid_order">订单作废</string>
     <string name="inValid_order_ok">确定要作废此订单吗？</string>
+    <string name="submit_order">订单确认</string>
+    <string name="submit_order_ok">确认此订单吗？</string>
     <string name="querySuccess">查询成功</string>
     <string name="GoodsStatusUpdate">货号状态更新中...</string>
     <string name="GoodsPropertyQuery">货号属性查询中...</string>
@@ -448,6 +453,7 @@
     <string name="password_yam_format_error">密码不能为空，且必须大于等于6位，且验证码不能为空，必须是6位数字</string>
     <string name="nav_about">系统信息</string>
     <string name="nav_order_statistics">订单统计</string>
+    <string name="nav_order_submit">订单确认</string>
     <string name="printeing">订单打印中...</string>
     <string name="print_failed">打印失败</string>
     <string name="returnGoodsCodeTotal">返货总数</string>
@@ -483,4 +489,6 @@
     <string name="order_not_urgent">普通</string>
     <string name="receiptTime">库房收货时间</string>
     <string name="receiptTimeTime">库房收货时间</string>
+    <string name="swaitedCount">带确认件数</string>
+    <string name="submit_order_code_ok">确认</string>
 </resources>

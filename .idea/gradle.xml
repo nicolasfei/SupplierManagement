@@ -10,12 +10,12 @@
         <option name="gradleJvm" value="corretto-1.8" />
         <option name="modules">
           <set>
-            <option value="$PROJECT_DIR$/../../AdvertNotice/app/advertnoticelibrary" />
-            <option value="$PROJECT_DIR$/../../NicComponent/app/componentlibrary" />
-            <option value="$PROJECT_DIR$/../../PrinterForUfovo/app/printerlibraryforufovo" />
+            <option value="$PROJECT_DIR$/../../../AdvertNotice/app/advertnoticelibrary" />
+            <option value="$PROJECT_DIR$/../../../NicComponent/app/componentlibrary" />
+            <option value="$PROJECT_DIR$/../../../PrinterForUfovo/app/printerlibraryforufovo" />
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
-            <option value="$PROJECT_DIR$/../../Tool/app/toollibrary" />
+            <option value="$PROJECT_DIR$/../../../Tool/app/toollibrary" />
           </set>
         </option>
       </GradleProjectSettings>

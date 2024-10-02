@@ -144,6 +144,20 @@
         </activity>
 
         <activity
+            android:name="com.nicolas.supplier.ui.home.order.OrderSubmitActivity"
+            android:label="@string/app_order_submit"
+            android:theme="@style/AppTheme"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask"
+            android:windowSoftInputMode="adjustPan">
+            <intent-filter>
+                <action android:name="android.intent.action.OrderSubmitActivity" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <activity
             android:name="com.nicolas.supplier.ui.home.goods.GoodsQueryActivity"
             android:label="@string/goodsQuery"
             android:theme="@style/AppTheme"
