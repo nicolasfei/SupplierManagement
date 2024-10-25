@@ -23,6 +23,7 @@ public class OrderCommand extends Command {
         OrderInterface inValid = new GoodsOrderInValid();
         OrderInterface distribution = new GoodsOrderDistribution();
         OrderInterface orderSubmit = new GoodsOrderSwait();
+        OrderInterface orderIDCheck = new GoodsOrderIDCheck();
 
         query.setNextHandler(propertyQuery);
         propertyQuery.setNextHandler(print);
@@ -31,7 +32,8 @@ public class OrderCommand extends Command {
         val.setNextHandler(inValid);
         inValid.setNextHandler(distribution);
         distribution.setNextHandler(orderSubmit);
-        orderSubmit.setNextHandler(null);
+        orderSubmit.setNextHandler(orderIDCheck);
+        orderIDCheck.setNextHandler(null);
 
         super.firstNode = query;
     }

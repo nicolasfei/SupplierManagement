@@ -16,7 +16,8 @@ public class OrderQueryCondition {
     private List<String> goodsClassIds;   //货物类型
     private OrderClass orderType;       //下否打印
     private OrderStatus inState;         //发单类型
-    private PrintStatus isPrint;        //是货状态
+    private PrintStatus printState;      //订单打印状态
+    //private PrintStatus isPrint;        //是货状态
     private String createTime;           //下单时间
     private String receiptTime;    //库房收货时间
     private String roomReceiveTime;      //库房发货时间
@@ -35,8 +36,9 @@ public class OrderQueryCondition {
         this.goodsId = "";
         this.goodsClassIds = new ArrayList<>();
         this.orderType = new OrderClass(OrderClass.NONE);
-        this.isPrint = new PrintStatus(PrintStatus.NONE);
-        this.inState = new OrderStatus(OrderStatus.SWAIT);
+        //this.isPrint = new PrintStatus(PrintStatus.NONE);
+        this.inState = new OrderStatus(OrderStatus.SWAITED);
+        this.printState = new PrintStatus(PrintStatus.UN_PRINT);
         this.createTime = "";      //默认查询一天
         this.receiptTime = "";
         this.roomReceiveTime = "";
@@ -54,8 +56,9 @@ public class OrderQueryCondition {
         setGoodsId("");
         setOrderType(OrderClass.NONE);
         addGoodsClassId("");
-        setIsPrint(PrintStatus.NONE);
+        //setIsPrint(PrintStatus.NONE);
         setInState(OrderStatus.NONE);
+        setPrintState(PrintStatus.UN_PRINT);
         setCreateTime("");
         setReceiptTime("");
         setRoomReceiveTime("");
@@ -164,16 +167,16 @@ public class OrderQueryCondition {
         return orderType.getType();
     }
 
-    public void setIsPrint(String isPrint) {
-        if (!(this.isPrint.getStatus().equals(isPrint))) {
-            this.isPrint.updateStatus(isPrint);
-            this.isQueryConditionUpdate = true;
-        }
-    }
+//    public void setIsPrint(String isPrint) {
+//        if (!(this.isPrint.getStatus().equals(isPrint))) {
+//            this.isPrint.updateStatus(isPrint);
+//            this.isQueryConditionUpdate = true;
+//        }
+//    }
 
-    public String getIsPrint() {
-        return isPrint.getStatus();
-    }
+//    public String getIsPrint() {
+//        return isPrint.getStatus();
+//    }
 
     public void setInState(String state) {
         if (!(this.inState.getStatus().equals(state))) {
@@ -182,12 +185,26 @@ public class OrderQueryCondition {
         }
     }
 
+    public void setPrintState(String state) {
+        if (!(this.printState.getStatus().equals(state))) {
+            this.printState.updateStatus(state);
+            this.isQueryConditionUpdate = true;
+        }
+    }
+
     public String getInState() {
         return inState.getRequestStatus();
     }
 
+    public String getPrintState() {
+        return printState.getStatus();
+    }
+
     public String getInStateShow() {
         return inState.getStatus();
+    }
+    public String getPrintStateShow() {
+        return printState.getStatus();
     }
 
     public void setCreateTime(String createTime){

@@ -2,6 +2,7 @@ package com.nicolas.supplier.ui.home.order;
 
 
 import android.os.Message;
+import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -121,11 +122,11 @@ public class OrderSubmitViewModel extends ViewModel {
         vo.typeEnum = CommandTypeEnum.COMMAND_SUPPLIER_ORDER;
         vo.url = OrderInterface.GoodsOrderID;
         vo.contentType = HttpHandler.ContentType_APP;
-        vo.requestMode = HttpHandler.RequestMode_GET;
+        vo.requestMode = HttpHandler.RequestMode_POST;
         Map<String, String> parameters = new HashMap<>();
-//        parameters.put("currentPage", String.valueOf(currentPage));
-//        parameters.put("pageSize", String.valueOf(pageSize));
-//        parameters.put("pageCount", String.valueOf(pageCount));
+        parameters.put("currentPage", String.valueOf(currentPage));
+        parameters.put("pageSize", String.valueOf(pageSize));
+        parameters.put("pageCount", String.valueOf(pageCount));
         vo.parameters = parameters;
 
         Invoker.getInstance().setOnEchoResultCallback(this.callback);
@@ -156,6 +157,7 @@ public class OrderSubmitViewModel extends ViewModel {
     private Invoker.OnExecResultCallback callback = new Invoker.OnExecResultCallback() {
         @Override
         public void execResult(CommandResponse result) {
+            Log.d("TAG", "execResult: response url is "+result.url);
             switch (result.url) {
                 case OrderInterface.GoodsOrderID:         //订单货号数据查询
                     if (result.success) {
@@ -170,6 +172,7 @@ public class OrderSubmitViewModel extends ViewModel {
                             if (array.length() == 0) {
                                 msg.obj = SupplierApp.getInstance().getString(R.string.noOrder);
                                 msg.what = 1;       //表示无订单
+                                orderList.clear();
                                 orderCodeQueryResult.setValue(new OperateResult(new OperateInUserView(msg)));
                             } else {
                                 for (int i = 0; i < array.length(); i++) {

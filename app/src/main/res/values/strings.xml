@@ -491,4 +491,5 @@
     <string name="receiptTimeTime">库房收货时间</string>
     <string name="swaitedCount">带确认件数</string>
     <string name="submit_order_code_ok">确认</string>
+    <string name="printState">订单打印</string>
 </resources>

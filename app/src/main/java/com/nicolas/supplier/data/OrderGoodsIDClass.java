@@ -23,10 +23,10 @@ public class OrderGoodsIDClass implements Parcelable {
     public boolean switen;      //是否确认
 
     public OrderGoodsIDClass(){
-        this.Goodsldd = "";
-        this.Goodsld = "";
-        this.OldGoodsld = "";
-        this.Img = "";
+        this.Goodsldd = " ";
+        this.Goodsld = " ";
+        this.OldGoodsld = " ";
+        this.Img = " ";
         this.SendAmount = 0;
         this.switen  = false;
     }
@@ -47,7 +47,7 @@ public class OrderGoodsIDClass implements Parcelable {
         try {
             JSONObject object = new JSONObject(json);
             this.Goodsldd = object.optString("b_g_GoodsId_Id","");
-            this.Goodsld = object.optString("qoodsId","");
+            this.Goodsld = object.optString("goodsId","");
             this.OldGoodsld = object.optString("oldGoodsId","");
             this.Img = object.optString("img","");
             this.SendAmount = object.optInt("sendAmount",0);

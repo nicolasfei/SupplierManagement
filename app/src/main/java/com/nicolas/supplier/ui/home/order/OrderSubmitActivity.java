@@ -24,6 +24,7 @@ import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -91,6 +92,7 @@ public class OrderSubmitActivity extends BaseActivity {
         this.adapter.setOnOrderCodeSubmitListener(new OrderCodeViewItemAdapter.OnOrderCodeSubmitListener() {
             @Override
             public void onOrderCodeSubmit(OrderGoodsIDClass good) {
+                showProgressDialog(getString(R.string.submitting));
                 viewModel.submitOrders(good);
             }
         });
@@ -103,8 +105,17 @@ public class OrderSubmitActivity extends BaseActivity {
         this.viewModel.getOrderQueryResult().observe(this, new Observer<OperateResult>() {
             @Override
             public void onChanged(OperateResult operateResult) {
+                dismissProgressDialog();
                 if (operateResult.getSuccess() != null) {
+                    Message msg = operateResult.getSuccess().getMessage();
+                    if (msg != null) {
+                        Toast.makeText(OrderSubmitActivity.this, (String) msg.obj, Toast.LENGTH_SHORT).show();
+                    }
                     adapter.notifyDataSetChanged();
+                }
+                if (operateResult.getError() != null) {
+                    BruceDialog.showPromptDialog(OrderSubmitActivity.this,
+                            operateResult.getError().getErrorMsg());
                 }
             }
         });
@@ -128,6 +139,7 @@ public class OrderSubmitActivity extends BaseActivity {
                 if (operateResult.getSuccess() != null) {
                     //更新订单状态
                     adapter.notifyDataSetChanged();
+                    Toast.makeText(OrderSubmitActivity.this, "订单确认成功", Toast.LENGTH_SHORT).show();
                 }
                 if (operateResult.getError() != null) {
                     BruceDialog.showPromptDialog(OrderSubmitActivity.this,

@@ -505,15 +505,15 @@
             android:paddingStart="0dp"
             android:paddingEnd="0dp">
 
-            <RadioButton
-                android:id="@+id/inStateChip0"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@color/red"
-                android:gravity="start|center"
-                android:text="@string/swait"
-                android:textSize="@dimen/drawer_text_size" />
+<!--            <RadioButton-->
+<!--                android:id="@+id/inStateChip0"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="match_parent"-->
+<!--                android:layout_weight="1"-->
+<!--                android:background="@color/red"-->
+<!--                android:gravity="start|center"-->
+<!--                android:text="@string/swait"-->
+<!--                android:textSize="@dimen/drawer_text_size" />-->
 
             <RadioButton
                 android:id="@+id/inStateChip1"
@@ -574,13 +574,77 @@
         app:layout_constraintTop_toBottomOf="@+id/line9" />
 
     <LinearLayout
-        android:id="@+id/line10"
+        android:id="@+id/line91"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:orientation="horizontal"
         app:layout_constraintHeight_percent="0.05"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/divider41">
+
+        <TextView
+            android:id="@+id/printState"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.19"
+            android:gravity="start|center"
+            android:paddingStart="@dimen/drawer_margin"
+            android:paddingEnd="0dp"
+            android:text="@string/printState"
+            android:textSize="@dimen/drawer_text_size" />
+
+        <RadioGroup
+            android:id="@+id/printStateChip"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.66"
+            android:orientation="horizontal"
+            android:paddingStart="0dp"
+            android:paddingEnd="0dp">
+
+            <RadioButton
+                android:id="@+id/printStateChip0"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="start|center"
+                android:text="@string/no_print"
+                android:textSize="@dimen/drawer_text_size" />
+
+            <RadioButton
+                android:id="@+id/printStateChip1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="start|center"
+                android:text="@string/printed"
+                android:textSize="@dimen/drawer_text_size" />
+        </RadioGroup>
+
+        <Button
+            android:id="@+id/printStateClear"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.15"
+            android:text="@string/clear" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/divider411"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/line91" />
+
+    <LinearLayout
+        android:id="@+id/line10"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        app:layout_constraintHeight_percent="0.05"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider411">
 
         <TextView
             android:id="@+id/isValid"

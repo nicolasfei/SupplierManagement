@@ -1,9 +1,9 @@
 package com.nicolas.supplier.server.order;
 
 
-public class GoodsOrderSwait extends OrderInterface {
+public class GoodsOrderIDCheck extends OrderInterface {
     @Override
     public String getUrlParam() {
-        return GoodsOrderSwaited;
+        return GoodsOrderID;
     }
 }

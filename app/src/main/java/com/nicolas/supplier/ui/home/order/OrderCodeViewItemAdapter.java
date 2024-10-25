@@ -47,7 +47,7 @@ public class OrderCodeViewItemAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         final ViewHolder holder;
         if (convertView == null) {
-            convertView = LayoutInflater.from(this.mContext).inflate(R.layout.order_goods_count_item, parent, false);
+            convertView = LayoutInflater.from(this.mContext).inflate(R.layout.item_order_code_switen, parent, false);
             holder = new ViewHolder(convertView);
             convertView.setTag(holder);
         } else {
@@ -57,7 +57,7 @@ public class OrderCodeViewItemAdapter extends BaseAdapter {
         final OrderGoodsIDClass og = orderGoods.get(position);
         holder.newGoodID.setText(og.Goodsld);
         holder.oldGoodID.setText(og.OldGoodsld);
-        holder.count.setText(og.SendAmount);
+        holder.count.setText(String.valueOf(og.SendAmount));
         if (og.switen){
             holder.submit.setEnabled(false);
             holder.submit.setText("已确认");

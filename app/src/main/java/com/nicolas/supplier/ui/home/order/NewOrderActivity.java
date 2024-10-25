@@ -94,6 +94,7 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
     private TextView createTime,receiptTime, oldGoodsId, goodsId, goodsClassId, branchId, storeRoomId, orderID,printTime;
     private RadioGroup orderClassChip;      //下单类型
     private RadioGroup inStateChip;         //订单接收状态--供应商待接单，供应商已接单，库房已收货，库房已发货，分店已收货
+    private RadioGroup printStateChip;      //订单打印状态--未打印，已打印
     private RadioGroup isValidChip;         //订单状态--正常,作废
     private RadioGroup isOverdueChip;       //订单即将过期--即将过期,非即将过期
     private RadioGroup isUrgentChip;        //订单即将过期--即将过期,非即将过期
@@ -102,6 +103,7 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
 
     private boolean isOrderClassChipClear = false;   //标记清理orderClassChip
     private boolean isInStateChipClear = false;      //标记清理isInStateChip
+    private boolean isPrintStateChipClear = false;   //标记清理isPrintInStateChip
     private boolean isValidChipClear = false;        //标记清理isValidChip
     private boolean isOverdueChipClear = false;      //标记清理isOverdueChip
 //    private boolean isOrderUrgentReset = false;      //标记重置isUrgentChip
@@ -349,9 +351,9 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
                     return;
                 }
                 switch (checkedId) {
-                    case R.id.inStateChip0:
-                        viewModel.getQueryCondition().setInState(OrderStatus.SWAIT);
-                        break;
+//                    case R.id.inStateChip0:
+//                        viewModel.getQueryCondition().setInState(OrderStatus.SWAIT);
+//                        break;
                     case R.id.inStateChip1:
                         viewModel.getQueryCondition().setInState(OrderStatus.SWAITED);
                         break;
@@ -370,6 +372,29 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
             }
         });
         this.initInStateChipSelect(condition.getInStateShow());
+
+        //订单打印状态
+        this.printStateChip = findViewById(R.id.printStateChip);
+        this.printStateChip.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                if (isPrintStateChipClear) {
+                    isPrintStateChipClear = false;
+                    return;
+                }
+                switch (checkedId) {
+                    case R.id.printStateChip0:
+                        viewModel.getQueryCondition().setPrintState(PrintStatus.UN_PRINT);
+                        break;
+                    case R.id.printStateChip1:
+                        viewModel.getQueryCondition().setPrintState(PrintStatus.PRINT);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        });
+        this.initPrintStateChipSelect(condition.getPrintStateShow());
 
         //是否加急单
         this.isUrgentChip = findViewById(R.id.urgentChip);
@@ -1029,6 +1054,21 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
 //                this.inStateChip.check(R.id.inStateChip4);
 //                break;
 //
+            default:
+                break;
+        }
+    }
+
+    private void initPrintStateChipSelect(String itemValue) {
+        switch (itemValue) {
+            case PrintStatus.UN_PRINT:
+                isPrintStateChipClear = true;
+                this.inStateChip.check(R.id.inStateChip0);
+                break;
+            case PrintStatus.PRINT:
+                isPrintStateChipClear = true;
+                this.inStateChip.check(R.id.inStateChip1);
+                break;
             default:
                 break;
         }
