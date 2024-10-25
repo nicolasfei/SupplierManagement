@@ -38,7 +38,7 @@ public class OrderQueryCondition {
         this.orderType = new OrderClass(OrderClass.NONE);
         //this.isPrint = new PrintStatus(PrintStatus.NONE);
         this.inState = new OrderStatus(OrderStatus.SWAITED);
-        this.printState = new PrintStatus(PrintStatus.UN_PRINT);
+        this.printState = new PrintStatus(PrintStatus.NONE);
         this.createTime = "";      //默认查询一天
         this.receiptTime = "";
         this.roomReceiveTime = "";
@@ -58,7 +58,7 @@ public class OrderQueryCondition {
         addGoodsClassId("");
         //setIsPrint(PrintStatus.NONE);
         setInState(OrderStatus.NONE);
-        setPrintState(PrintStatus.UN_PRINT);
+        setPrintState(PrintStatus.NONE);
         setCreateTime("");
         setReceiptTime("");
         setRoomReceiveTime("");

@@ -97,7 +97,7 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
     private RadioGroup printStateChip;      //订单打印状态--未打印，已打印
     private RadioGroup isValidChip;         //订单状态--正常,作废
     private RadioGroup isOverdueChip;       //订单即将过期--即将过期,非即将过期
-    private RadioGroup isUrgentChip;        //订单即将过期--即将过期,非即将过期
+    private RadioGroup isUrgentChip;        //订单加急--加急，普通
 
     private Button orderClassClearButton;
 
@@ -106,7 +106,7 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
     private boolean isPrintStateChipClear = false;   //标记清理isPrintInStateChip
     private boolean isValidChipClear = false;        //标记清理isValidChip
     private boolean isOverdueChipClear = false;      //标记清理isOverdueChip
-//    private boolean isOrderUrgentReset = false;      //标记重置isUrgentChip
+    private boolean isOrderUrgentReset = false;      //标记重置isUrgentChip
 
     private boolean manualCheckAll = false;     //手动设置checkAll状态
     private NewOrderViewModel viewModel;
@@ -479,6 +479,7 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
         findClickView(R.id.storeRoomIdClear);
         findClickView(R.id.orderIDClear);
         findClickView(R.id.inStateClear);
+        findClickView(R.id.printStateClear);
         findClickView(R.id.isValidClear);
         findClickView(R.id.createTimeClear);
         findClickView(R.id.receiptTimeClear);
@@ -844,7 +845,11 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
                 updateOrderID("");
                 updatePrintTime("");
                 resetOrderClassChip();
+                resetInStateChip();
+                resetPrintStateChip();
+                resetOverdueChip();
                 resetValidChip();
+                resetUrgentChip();
                 break;
             case R.id.yes:
                 queryOrderForCondition();
@@ -896,6 +901,10 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
                 viewModel.getQueryCondition().setInState(OrderStatus.NONE);
                 resetInStateChip();
                 break;
+            case R.id.printStateClear:
+                viewModel.getQueryCondition().setPrintState(PrintStatus.NONE);
+                resetPrintStateChip();
+                break;
             case R.id.orderIDClear:
                 viewModel.getQueryCondition().setOrderID("");
                 updateOrderID("");
@@ -922,6 +931,11 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
             default:
                 break;
         }
+    }
+
+    private void resetUrgentChip() {
+        isOrderUrgentReset=true;
+        this.isUrgentChip.check(R.id.urgentChip0);
     }
 
     /**
@@ -1130,6 +1144,11 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
     private void resetInStateChip() {
         isInStateChipClear = true;
         inStateChip.clearCheck();
+    }
+
+    private void resetPrintStateChip(){
+        isPrintStateChipClear = true;
+        printStateChip.clearCheck();
     }
 
 

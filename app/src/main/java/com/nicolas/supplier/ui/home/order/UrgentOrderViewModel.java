@@ -250,8 +250,8 @@ public class UrgentOrderViewModel extends ViewModel {
         if (!TextUtils.isEmpty(queryCondition.getOrderType())) {
             parameters.put("orderType", queryCondition.getOrderType());
         }
-        if (!TextUtils.isEmpty(queryCondition.getIsPrint())) {
-            parameters.put("isPrint", queryCondition.getIsPrint());
+        if (!TextUtils.isEmpty(queryCondition.getPrintState())) {
+            parameters.put("isPrint", queryCondition.getPrintState());
         }
         if (!TextUtils.isEmpty(queryCondition.getInState())) {
             //选中库房已收货，库房已发货和分店已收货以逗号形式隔开加载后面
@@ -399,8 +399,8 @@ public class UrgentOrderViewModel extends ViewModel {
             parameters.put("storeRoomId", queryCondition.getStoreRoomID());
         if (!TextUtils.isEmpty(queryCondition.getGoodsId()))
             parameters.put("goodsId", queryCondition.getGoodsId());
-        if (!TextUtils.isEmpty(queryCondition.getIsPrint()))
-            parameters.put("isPrint", queryCondition.getIsPrint());
+        if (!TextUtils.isEmpty(queryCondition.getPrintState()))
+            parameters.put("isPrint", queryCondition.getPrintState());
 
         if (!TextUtils.isEmpty(queryCondition.getIsUrgent()))
             parameters.put("isUrgent", queryCondition.getIsUrgent());
@@ -497,7 +497,7 @@ public class UrgentOrderViewModel extends ViewModel {
      */
     private void sortForInStateAndPrintTime() {
         //已打印订单按打印时间来排序
-        if (this.queryCondition.getIsPrint().equals(PrintStatus.PRINT)) {
+        if (this.queryCondition.getPrintState().equals(PrintStatus.PRINT)) {
             //打印时间
             Comparator<OrderInformation> byPrint = Comparator.comparing(OrderInformation::getPrintTime);
             //加急订单
