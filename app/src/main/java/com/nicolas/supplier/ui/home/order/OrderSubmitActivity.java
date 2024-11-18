@@ -92,8 +92,19 @@ public class OrderSubmitActivity extends BaseActivity {
         this.adapter.setOnOrderCodeSubmitListener(new OrderCodeViewItemAdapter.OnOrderCodeSubmitListener() {
             @Override
             public void onOrderCodeSubmit(OrderGoodsIDClass good) {
-                showProgressDialog(getString(R.string.submitting));
-                viewModel.submitOrders(good);
+                new AlertDialog.Builder(OrderSubmitActivity.this)
+                        .setTitle("订单确认？")
+                        .setMessage("是否确认提交订单？")
+                        .setNegativeButton("取消", null)
+                        .setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                showProgressDialog(getString(R.string.submitting));
+                                viewModel.submitOrders(good);
+                            }
+                        })
+                        .create().show();
+
             }
         });
 
@@ -106,6 +117,12 @@ public class OrderSubmitActivity extends BaseActivity {
             @Override
             public void onChanged(OperateResult operateResult) {
                 dismissProgressDialog();
+                if (listView.isPullToRefreshing()) {
+                    listView.disablePullRefresh();
+                }
+                if (listView.isPushLoadingMore()) {
+                    listView.disablePushLoadMore();
+                }
                 if (operateResult.getSuccess() != null) {
                     Message msg = operateResult.getSuccess().getMessage();
                     if (msg != null) {

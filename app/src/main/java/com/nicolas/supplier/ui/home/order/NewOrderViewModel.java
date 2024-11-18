@@ -111,6 +111,7 @@ public class NewOrderViewModel extends ViewModel {
         this.orderDistributionQueryList = new ArrayList<>();
         this.queryCondition = new OrderQueryCondition();
         this.queryCondition.setIsUrgent(OrderUrgent.URGENT_URGENT);     //默认查询加急单子
+        this.queryCondition.setPrintState(PrintStatus.UN_PRINT);
         this.queryCondition.setCreateTime("");
     }
 
@@ -182,7 +183,7 @@ public class NewOrderViewModel extends ViewModel {
     /**
      * 清空查询条件
      */
-    void clearQueryCondition() {
+    void reInitQueryCondition() {
         this.queryCondition.clear();
         SupplierKeeper.getInstance().clearGoodsClassSelect();
         SupplierKeeper.getInstance().clearStorehouseSelect();

@@ -106,7 +106,7 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
     private boolean isPrintStateChipClear = false;   //标记清理isPrintInStateChip
     private boolean isValidChipClear = false;        //标记清理isValidChip
     private boolean isOverdueChipClear = false;      //标记清理isOverdueChip
-    private boolean isOrderUrgentReset = false;      //标记重置isUrgentChip
+    private boolean isOrderUrgentClear = false;      //标记清理isUrgentChip
 
     private boolean manualCheckAll = false;     //手动设置checkAll状态
     private NewOrderViewModel viewModel;
@@ -312,6 +312,7 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
 
         //下单类型
         this.orderClassChip = findViewById(R.id.orderClassChip);
+        this.initOrderClassChipSelect(condition.getOrderType());
         this.orderClassChip.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -339,10 +340,11 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
                 }
             }
         });
-        this.initOrderClassChipSelect(condition.getOrderType());
+
 
         //订单发货状态
         this.inStateChip = findViewById(R.id.inStateChip);
+        this.initInStateChipSelect(condition.getInStateShow());
         this.inStateChip.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -371,10 +373,11 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
                 }
             }
         });
-        this.initInStateChipSelect(condition.getInStateShow());
+
 
         //订单打印状态
         this.printStateChip = findViewById(R.id.printStateChip);
+        this.initPrintStateChipSelect(condition.getPrintStateShow());
         this.printStateChip.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -394,10 +397,11 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
                 }
             }
         });
-        this.initPrintStateChipSelect(condition.getPrintStateShow());
+
 
         //是否加急单
         this.isUrgentChip = findViewById(R.id.urgentChip);
+        this.initIsUrgentChipSelect(condition.getIsUrgent());
         this.isUrgentChip.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -423,8 +427,10 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
             }
         });
 
+
         //订单状态--正常，作废
         this.isValidChip = findViewById(R.id.isValidChip);
+        this.initIsValidChipSelect(condition.getValid());
         this.isValidChip.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -442,10 +448,11 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
                 }
             }
         });
-        this.initIsValidChipSelect(condition.getValid());
+
 
         //订单超期--超期，未超期
         this.isOverdueChip = findViewById(R.id.isOverdueChip);
+        this.initOverdueChipSelect(condition.getOverDue());
         this.isOverdueChip.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -463,7 +470,7 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
                 }
             }
         });
-        this.initOverdueChipSelect(condition.getOverDue());
+
 
         //订单打印时间
         this.printTime = findClickView(R.id.printTime);
@@ -677,8 +684,10 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
             }
         });
 
-        //默认为查询加急
-        this.isUrgentChip.check(R.id.urgentChip0);
+//        //默认为查询加急
+//        this.isUrgentChip.check(R.id.urgentChip0);
+//        //打印状态默认为未打印订单
+//        this.printStateChip.check(R.id.printStateChip0);
         //默认查询近3天的订单
         showProgressDialog(getString(R.string.querying));
         viewModel.queryOrder();
@@ -834,7 +843,7 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
                 });
                 break;
             case R.id.clear:
-                viewModel.clearQueryCondition();
+                viewModel.reInitQueryCondition();
                 updateCreateTime("");
                 updateReceiptTime("");
                 updateGoodsId("");
@@ -931,11 +940,6 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
             default:
                 break;
         }
-    }
-
-    private void resetUrgentChip() {
-        isOrderUrgentReset=true;
-        this.isUrgentChip.check(R.id.urgentChip0);
     }
 
     /**
@@ -1077,11 +1081,26 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
         switch (itemValue) {
             case PrintStatus.UN_PRINT:
                 isPrintStateChipClear = true;
-                this.inStateChip.check(R.id.inStateChip0);
+                this.printStateChip.check(R.id.printStateChip0);
                 break;
             case PrintStatus.PRINT:
                 isPrintStateChipClear = true;
-                this.inStateChip.check(R.id.inStateChip1);
+                this.printStateChip.check(R.id.printStateChip1);
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void initIsUrgentChipSelect(String itemValue){
+        switch (itemValue) {
+            case OrderUrgent.URGENT_URGENT:
+                isOrderUrgentClear = true;
+                this.isUrgentChip.check(R.id.urgentChip0);
+                break;
+            case OrderUrgent.URGENT_COMMON:
+                isOrderUrgentClear = true;
+                this.isUrgentChip.check(R.id.urgentChip1);
                 break;
             default:
                 break;
@@ -1133,7 +1152,7 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
 
     private void resetValidChip() {
         isValidChipClear = true;
-        isValidChip.clearCheck();
+        isValidChip.check(R.id.isValid1);
     }
 
     private void resetOverdueChip() {
@@ -1143,14 +1162,18 @@ public class NewOrderActivity extends BaseActivity implements View.OnClickListen
 
     private void resetInStateChip() {
         isInStateChipClear = true;
-        inStateChip.clearCheck();
+        inStateChip.check(R.id.inStateChip1);
     }
 
     private void resetPrintStateChip(){
         isPrintStateChipClear = true;
-        printStateChip.clearCheck();
+        printStateChip.check(R.id.printStateChip0);
     }
 
+    private void resetUrgentChip() {
+        isOrderUrgentClear=true;
+        this.isUrgentChip.check(R.id.urgentChip0);
+    }
 
     /**
      * 查询订单
